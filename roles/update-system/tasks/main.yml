@@ -1,0 +1,39 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/update-system
+# ============================================================
+# roles/update-system/tasks/main.yml
+# Full system update — DNF upgrade, kernel, drivers, firmware
+# ============================================================
+
+- name: Upgrade all packages to latest
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+    update_cache: true
+
+- name: Install kernel and core driver packages
+  ansible.builtin.dnf:
+    name:
+      - kernel
+      - kernel-devel
+      - kernel-headers
+      - kernel-modules-extra
+      - akmods
+      - dkms
+    state: latest
+
+- name: Update firmware (fwupd)
+  ansible.builtin.dnf:
+    name: fwupd
+    state: latest
+
+- name: Refresh firmware metadata
+  ansible.builtin.command: fwupdmgr refresh --force
+  changed_when: false
+
+- name: Apply available firmware updates
+  ansible.builtin.command: fwupdmgr update --no-reboot-check
+  register: fwupd_result
+  changed_when: "'No upgrades' not in fwupd_result.stdout"
+  failed_when: false

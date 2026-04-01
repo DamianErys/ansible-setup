@@ -7,6 +7,7 @@
 # User
 main_user: "damian"
 home_dir: "/home/{{ main_user }}"
+ansible_become_password: "{{ vault_ssh_password }}"
 
 # Git / GitHub (values come from vault)
 github_user:  "{{ vault_github_user }}"

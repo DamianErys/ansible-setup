@@ -6,3 +6,4 @@
   hosts: "{{ machine_type }}"
   become: true
   roles:
+    - update-system
