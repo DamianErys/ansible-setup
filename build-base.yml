@@ -1,0 +1,8 @@
+# ============================================================
+# build-base.yml
+# Brings the system to a clean, up-to-date baseline.
+# ============================================================
+- name: Build Base
+  hosts: "{{ machine_type }}"
+  become: true
+  roles:

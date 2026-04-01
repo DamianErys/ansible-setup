@@ -1,0 +1,8 @@
+# ============================================================
+# desktop.yml
+# Desktop environment — folders, theme, GNOME settings.
+# ============================================================
+- name: Desktop
+  hosts: "{{ machine_type }}"
+  become: true
+  roles:

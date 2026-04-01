@@ -1,0 +1,8 @@
+# ============================================================
+# configure.yml
+# Configures apps and the terminal environment.
+# ============================================================
+- name: Configure
+  hosts: "{{ machine_type }}"
+  become: true
+  roles:

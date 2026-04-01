@@ -1,0 +1,8 @@
+# ============================================================
+# connectivity.yml
+# SSH keypair generation and peer trust between machines.
+# ============================================================
+- name: Connectivity
+  hosts: "{{ machine_type }}"
+  become: true
+  roles:

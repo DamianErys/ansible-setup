@@ -1,0 +1,17 @@
+# ============================================================
+# group_vars/all.yml
+# Variables that apply to every machine (laptop and pc).
+# Secrets are referenced here by name — values live in vault.yml
+# ============================================================
+
+# User
+main_user: "damian"
+home_dir: "/home/{{ main_user }}"
+
+# Git / GitHub (values come from vault)
+github_user:  "{{ vault_github_user }}"
+github_email: "{{ vault_github_email }}"
+github_pat:   "{{ vault_github_pat }}"
+
+# SSH
+ssh_password: "{{ vault_ssh_password }}"
