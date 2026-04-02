@@ -10,3 +10,5 @@
     - flatpak-packages
     - remove-packages
     - distrobox
+    - vmm
+    - vm-windows

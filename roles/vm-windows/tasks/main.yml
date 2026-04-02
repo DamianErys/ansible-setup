@@ -1,0 +1,148 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/vm-windows
+# ============================================================
+# roles/vm-windows/tasks/main.yml
+# Creates tiny11 Windows VM — laptop only
+# Requires tiny11.iso in ~/ansible-setup/isos/
+# ============================================================
+
+- name: Set VM variables
+  ansible.builtin.set_fact:
+    vm_name: "tiny11"
+    vm_ram_mb: 4096
+    vm_vcpus: 4
+    vm_disk_path: "/var/lib/libvirt/images/tiny11.qcow2"
+    iso_src_path: "{{ home_dir }}/ansible-setup/isos/tiny11.iso"
+    iso_path: "/var/lib/libvirt/images/tiny11.iso"
+    shared_folder_host: "/var/lib/libvirt/vm-share"
+    shared_folder_tag: "vmshare"
+
+# -----------------------------------------------
+# Step 1 — Verify ISO exists
+# -----------------------------------------------
+- name: Check tiny11.iso exists
+  ansible.builtin.stat:
+    path: "{{ iso_src_path }}"
+  register: iso_stat
+
+- name: Fail if ISO is missing
+  ansible.builtin.fail:
+    msg: >
+      tiny11.iso not found at {{ iso_src_path }}.
+      Copy it next to RunAnsible.sh on the USB.
+  when: not iso_stat.stat.exists
+
+# -----------------------------------------------
+# Step 2 — Clean up any previous failed attempt
+# -----------------------------------------------
+- name: Check if stale VM exists
+  ansible.builtin.command: virsh dominfo {{ vm_name }}
+  register: stale_vm_check
+  failed_when: false
+  changed_when: false
+
+- name: Destroy stale VM if exists
+  ansible.builtin.command: virsh destroy {{ vm_name }}
+  when: stale_vm_check.rc == 0
+  failed_when: false
+  changed_when: true
+
+- name: Undefine stale VM
+  ansible.builtin.command: virsh undefine {{ vm_name }} --nvram
+  when: stale_vm_check.rc == 0
+  failed_when: false
+  changed_when: true
+
+# -----------------------------------------------
+# Step 3 — Copy ISO and create shared folder
+# -----------------------------------------------
+- name: Copy tiny11.iso into libvirt images dir
+  ansible.builtin.copy:
+    src: "{{ iso_src_path }}"
+    dest: "{{ iso_path }}"
+    owner: qemu
+    group: qemu
+    mode: '0644'
+    remote_src: true
+
+- name: Create host-side shared folder
+  ansible.builtin.file:
+    path: "{{ shared_folder_host }}"
+    state: directory
+    mode: '0755'
+    owner: qemu
+    group: qemu
+
+# -----------------------------------------------
+# Step 4 — Create disk and VM
+# -----------------------------------------------
+- name: Remove stale disk if VM was cleaned up
+  ansible.builtin.file:
+    path: "{{ vm_disk_path }}"
+    state: absent
+  when: stale_vm_check.rc == 0
+
+- name: Create qcow2 disk image
+  ansible.builtin.command:
+    cmd: qemu-img create -f qcow2 {{ vm_disk_path }} 60G
+    creates: "{{ vm_disk_path }}"
+
+- name: Create tiny11 VM
+  ansible.builtin.command: >
+    virt-install
+    --name {{ vm_name }}
+    --ram {{ vm_ram_mb }}
+    --vcpus {{ vm_vcpus }}
+    --cpu host-model
+    --os-variant win11
+    --disk path={{ vm_disk_path }},format=qcow2,bus=sata
+    --cdrom {{ iso_path }}
+    --network network=default,model=virtio
+    --graphics spice
+    --video qxl
+    --channel spicevmc
+    --filesystem {{ shared_folder_host }},{{ shared_folder_tag }},driver.type=path,accessmode=mapped
+    --boot uefi
+    --noautoconsole
+
+# -----------------------------------------------
+# Step 5 — Verify and drop instructions
+# -----------------------------------------------
+- name: Confirm VM is defined
+  ansible.builtin.command: virsh dominfo {{ vm_name }}
+  register: vm_info
+  changed_when: false
+
+- name: Show VM info
+  ansible.builtin.debug:
+    var: vm_info.stdout_lines
+
+- name: Write VM setup instructions to Desktop
+  ansible.builtin.copy:
+    dest: "{{ home_dir }}/Desktop/VM-SETUP-INSTRUCTIONS.txt"
+    mode: '0644'
+    content: |
+      ============================================================
+       tiny11 VM — POST-SETUP STEPS
+      ============================================================
+
+      STEP 1 — Open virt-manager, double-click tiny11, complete Windows install.
+
+      STEP 2 — Shared folder
+        Host path : /var/lib/libvirt/vm-share
+        Inside Windows:
+          1. Install WinFSP        : https://winfsp.dev/rel/
+          2. Install virtio-win guest tools
+          3. Map \\vmshare\ in Windows Explorer
+
+      STEP 3 — Clipboard (copy/paste between host and VM)
+        Install SPICE guest tools inside Windows:
+          https://www.spice-space.org/download.html
+          → Windows Binaries → spice-guest-tools
+        Clipboard sharing activates automatically once installed.
+
+      STEP 4 — Office
+        Drop installer into /var/lib/libvirt/vm-share from host,
+        then install inside the VM.
+      ============================================================
