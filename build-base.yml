@@ -7,3 +7,5 @@
   become: true
   roles:
     - update-system
+    - flatpak-packages
+    - remove-packages

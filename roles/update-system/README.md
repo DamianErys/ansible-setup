@@ -1,38 +1,17 @@
-Role Name
-=========
+# update-system
 
-A brief description of the role goes here.
+Performs a full system update on Fedora before any apps or config are applied.
 
-Requirements
-------------
+## What it does
+- Upgrades all installed packages via DNF
+- Installs and updates kernel, kernel headers, and module packages
+- Installs fwupd and applies any available firmware updates
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Variables
+None — this role uses no custom variables.
 
-Role Variables
---------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+## Notes
+- Must run before any other role to ensure the system is on a clean baseline
+- fwupd will not fail the play if no firmware updates are available
+- A reboot may be required after a kernel update for the new kernel to take effect —
+  this is left intentional and manual so you control when it happens

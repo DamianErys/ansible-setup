@@ -1,0 +1,72 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/flatpak-packages
+# ============================================================
+# roles/flatpak-packages/tasks/main.yml
+# Install Flatpak, add Flathub, and install apps by machine type
+# ============================================================
+
+# -----------------------------------------------
+# Flatpak setup
+# -----------------------------------------------
+- name: Install flatpak
+  ansible.builtin.dnf:
+    name: flatpak
+    state: present
+
+- name: Add Flathub remote
+  ansible.builtin.command: >
+    flatpak remote-add --if-not-exists flathub
+    https://dl.flathub.org/repo/flathub.flatpakrepo
+  changed_when: false
+
+# -----------------------------------------------
+# Apps — both machines
+# -----------------------------------------------
+- name: Install shared Flatpak apps
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: present
+    remote: flathub
+  loop:
+    - com.visualstudio.code
+    - com.spotify.Client
+    - org.texstudio.TeXstudio
+    - com.anydesk.Anydesk
+    - com.protonvpn.www
+    - me.proton.Mail
+    - me.proton.Pass
+    - org.videolan.VLC
+    - org.inkscape.Inkscape
+    - com.github.raggesilver.BlackBox       # zapzap replaces whatsapp
+    - io.github.zapzap                      # zapzap
+    - com.discordapp.Discord
+    - org.kicad.KiCad
+    - org.sigrok.PulseView
+    - org.raspberrypi.rpi-imager
+
+# -----------------------------------------------
+# Apps — laptop only
+# -----------------------------------------------
+- name: Install laptop Flatpak apps
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: present
+    remote: flathub
+  loop:
+    - []                                    # placeholder — add laptop-only apps here
+  when: machine_type == 'laptop'
+
+# -----------------------------------------------
+# Apps — PC only
+# -----------------------------------------------
+- name: Install PC Flatpak apps
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: present
+    remote: flathub
+  loop:
+    - com.valvesoftware.Steam
+    - com.epicgames.Launcher
+    - com.heroicgameslauncher.hgl
+  when: machine_type == 'pc'

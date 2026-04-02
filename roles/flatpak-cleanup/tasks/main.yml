@@ -1,0 +1,124 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/flatpak-cleanup
+# ============================================================
+# roles/remove-packages/tasks/main.yml
+# Remove Fedora bloat and permanently exclude it from DNF
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Remove dependants first
+# -----------------------------------------------
+- name: Remove packages that depend on bloat (must go first)
+  ansible.builtin.dnf:
+    name:
+      - unoconv
+      - malcontent-control
+      - abrt-tui
+      - abrt-cli
+      - abrt-addon-ccpp
+      - abrt-addon-kerneloops
+      - abrt-addon-pstoreoops
+      - abrt-addon-vmcore
+      - abrt-addon-xorg
+      - abrt-desktop
+      - abrt-java-connector
+      - python3-abrt-addon
+    state: absent
+    autoremove: false
+  ignore_errors: true
+
+# -----------------------------------------------
+# Step 2 — Remove main bloat packages
+# -----------------------------------------------
+- name: Remove bloat packages
+  ansible.builtin.dnf:
+    name:
+      - libreoffice-core
+      - libreoffice-common
+      - libreoffice-data
+      - libreoffice-calc
+      - libreoffice-writer
+      - libreoffice-impress
+      - libreoffice-draw
+      - libreoffice-base
+      - libreoffice-filters
+      - libreoffice-graphicfilter
+      - libreoffice-gtk3
+      - libreoffice-help-en
+      - libreoffice-langpack-en
+      - libreoffice-pyuno
+      - libreoffice-emailmerge
+      - rhythmbox
+      - totem
+      - gnome-maps
+      - gnome-weather
+      - gnome-contacts
+      - gnome-calendar
+      - gnome-boxes
+      - gnome-connections
+      - gnome-tour
+      - gnome-font-viewer
+      - gnome-characters
+      - simple-scan
+      - cheese
+      - malcontent
+      - abrt
+    state: absent
+    autoremove: true
+  ignore_errors: true
+
+# -----------------------------------------------
+# Step 3 — Permanently exclude from DNF
+# Prevents GNOME Software suggesting reinstall
+# or updates pulling them back in
+# -----------------------------------------------
+- name: Permanently exclude bloat from DNF
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/dnf.conf
+    regexp: '^excludepkgs='
+    line: "excludepkgs=libreoffice*,abrt*,malcontent*,rhythmbox,totem,gnome-maps,\
+           gnome-weather,gnome-contacts,gnome-calendar,gnome-boxes,gnome-connections,\
+           gnome-tour,gnome-font-viewer,gnome-characters,simple-scan,cheese,unoconv"
+
+# -----------------------------------------------
+# Step 4 — Remove orphaned .desktop files
+# -----------------------------------------------
+- name: Remove orphaned desktop files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /usr/share/applications/libreoffice-calc.desktop
+    - /usr/share/applications/libreoffice-impress.desktop
+    - /usr/share/applications/libreoffice-startcenter.desktop
+    - /usr/share/applications/libreoffice-writer.desktop
+    - /usr/share/applications/libreoffice-xsltfilter.desktop
+    - /usr/share/applications/org.freedesktop.GnomeAbrt.desktop
+    - /usr/share/applications/org.freedesktop.problems.applet.desktop
+    - /usr/share/applications/org.gnome.Boxes.desktop
+    - /usr/share/applications/org.gnome.Characters.desktop
+    - /usr/share/applications/org.gnome.Connections.desktop
+    - /usr/share/applications/org.gnome.Tour.desktop
+    - /usr/share/applications/org.gnome.font-viewer.desktop
+    - /usr/share/applications/simple-scan.desktop
+
+# -----------------------------------------------
+# Step 5 — Hide from GNOME Software via Flatpak
+# Masks the Flathub listing so it won't appear
+# as a suggested install in GNOME Software
+# -----------------------------------------------
+- name: Mask bloat apps from GNOME Software (Flatpak)
+  ansible.builtin.command: >
+    flatpak mask {{ item }}
+  loop:
+    - org.gnome.Boxes
+    - org.gnome.Characters
+    - org.gnome.Contacts
+    - org.gnome.Maps
+    - org.gnome.Weather
+    - org.libreoffice.LibreOffice
+    - org.gnome.SimpleScan
+    - org.gnome.Cheese
+  changed_when: false
+  ignore_errors: true
