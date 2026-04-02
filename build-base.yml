@@ -9,3 +9,4 @@
     - update-system
     - flatpak-packages
     - remove-packages
+    - distrobox

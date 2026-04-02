@@ -1,0 +1,29 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/distrobox
+# ============================================================
+# roles/distrobox/tasks/main.yml
+# Installs Podman + Distrobox and creates ubuntu-box on both machines
+# ============================================================
+
+- name: Install Podman and Distrobox
+  ansible.builtin.dnf:
+    name:
+      - podman
+      - distrobox
+    state: present
+
+- name: Create ubuntu-box container
+  ansible.builtin.command: >
+    distrobox create -n ubuntu-box --image ubuntu:22.04 --yes
+  register: create_result
+  changed_when: "'already exists' not in create_result.stderr"
+
+- name: Install base dependencies inside ubuntu-box
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- sudo apt update && sudo apt install -y
+    git xdg-desktop-portal xdg-desktop-portal-gtk xdg-utils
+    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2
+    libgtk-3-0 libgbm1 libasound2 libxshmfence1 libxcomposite1
+    libxdamage1 libxrandr2 libxkbcommon0
+  changed_when: false
