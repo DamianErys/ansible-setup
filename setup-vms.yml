@@ -1,0 +1,24 @@
+# ============================================================
+# setup-vms.yml
+# Distrobox and VMM on both machines.
+# Windows VM on laptop, gaming emulators on PC.
+# ============================================================
+
+- name: Setup VMs
+  hosts: "{{ machine_type }}"
+  become: true
+  roles:
+    - distrobox
+    - vmm
+
+- name: Windows VM (laptop only)
+  hosts: laptop
+  become: true
+  roles:
+    - vm-windows
+
+- name: Gaming VMs (PC only)
+  hosts: pc
+  become: true
+  roles:
+    - vm-gaming
