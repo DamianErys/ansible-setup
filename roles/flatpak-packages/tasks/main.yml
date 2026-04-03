@@ -18,7 +18,6 @@
   ansible.builtin.command: >
     flatpak remote-add --if-not-exists flathub
     https://dl.flathub.org/repo/flathub.flatpakrepo
-  changed_when: false
 
 # -----------------------------------------------
 # Apps — both machines
@@ -45,17 +44,17 @@
     - org.sigrok.PulseView
     - org.raspberrypi.rpi-imager
 
-# -----------------------------------------------
-# Apps — laptop only
-# -----------------------------------------------
-- name: Install laptop Flatpak apps
-  community.general.flatpak:
-    name: "{{ item }}"
-    state: present
-    remote: flathub
-  loop:
-    - []                                    # placeholder — add laptop-only apps here
-  when: machine_type == 'laptop'
+# # -----------------------------------------------
+# # Apps — laptop only
+# # -----------------------------------------------
+# - name: Install laptop Flatpak apps
+#   community.general.flatpak:
+#     name: "{{ item }}"
+#     state: present
+#     remote: flathub
+#   loop:
+#     - []                                    # placeholder — add laptop-only apps here
+#   when: machine_type == 'laptop'
 
 # -----------------------------------------------
 # Apps — PC only

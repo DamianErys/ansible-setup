@@ -122,3 +122,6 @@
     - org.gnome.Cheese
   changed_when: false
   ignore_errors: true
+  register: mask_result
+  changed_when: "'is not installed' not in mask_result.stderr"
+  failed_when: mask_result.rc != 0 and 'is not installed' not in mask_result.stderr

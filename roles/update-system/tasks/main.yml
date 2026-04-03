@@ -22,6 +22,7 @@
       - akmods
       - dkms
     state: latest
+    update_cache: true  # Add this - kernel might be newer than cache
 
 - name: Update firmware (fwupd)
   ansible.builtin.dnf:
@@ -32,8 +33,9 @@
   ansible.builtin.command: fwupdmgr refresh --force
   changed_when: false
 
-- name: Apply available firmware updates
-  ansible.builtin.command: fwupdmgr update --no-reboot-check
+- name: Apply firmware updates
+  ansible.builtin.command: fwupdmgr update -y
   register: fwupd_result
-  changed_when: "'No upgrades' not in fwupd_result.stdout"
-  failed_when: false
+  changed_when: fwupd_result.rc == 0 and 'No updates' not in fwupd_result.stdout
+  failed_when: fwupd_result.rc not in [0, 2]  # 2 = no updates available
+  notify: reboot if firmware updated  # add handler
