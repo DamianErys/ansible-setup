@@ -1,0 +1,4 @@
+vault_github_pat: <VALUE>
+vault_github_user: <VALUE>
+vault_github_email: <VALUE>
+vault_ssh_password: <VALUE>
