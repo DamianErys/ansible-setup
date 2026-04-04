@@ -5,7 +5,7 @@ set -euo pipefail
 REPO_URL="https://github.com/DamianErys/ansible-setup"
 REPO_DIR="$HOME/ansible-setup"
 VAULT_PASS_FILE="$REPO_DIR/vault-pass.txt"
-VAULT_FILE="$REPO_DIR/vault.yml"
+VAULT_FILE="$REPO_DIR/group_vars/vault.yml"
 INVENTORY="$REPO_DIR/inventory.ini"
 PLAYBOOK="$REPO_DIR/site.yml"
 ISO_DIR="$REPO_DIR/isos"
