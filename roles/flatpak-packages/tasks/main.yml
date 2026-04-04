@@ -68,4 +68,5 @@
     - com.valvesoftware.Steam
     - com.epicgames.Launcher
     - com.heroicgameslauncher.hgl
+    - com.gameconqueror.GameConqueror
   when: machine_type == 'pc'
