@@ -4,10 +4,9 @@
 # Secrets are referenced here by name — values live in vault.yml
 # ============================================================
 
-# Git / GitHub (values come from vault)
 github_user:  "{{ vault_github_user }}"
 github_email: "{{ vault_github_email }}"
 github_pat:   "{{ vault_github_pat }}"
 
-# SSH
-ssh_password: "{{ vault_ssh_password }}"
+ssh_password:            "{{ vault_ssh_password }}"
+ansible_become_password: "{{ vault_ssh_password }}"
