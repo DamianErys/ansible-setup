@@ -19,20 +19,6 @@
       - kernel-devel
       - kernel-headers
 
-- name: Install core driver build tools
-  ansible.builtin.dnf:
-    name:
-      - akmods
-      - dkms
-      - "kernel-devel-{{ ansible_kernel }}"
-      - "kernel-headers-{{ ansible_kernel }}"
-    state: present
-    exclude:
-      - kernel
-      - kernel-core
-      - kernel-modules
-      - kernel-modules-extra
-
 - name: Update firmware (fwupd)
   ansible.builtin.dnf:
     name: fwupd
@@ -47,4 +33,3 @@
   register: fwupd_result
   changed_when: fwupd_result.rc == 0 and 'No updates' not in fwupd_result.stdout
   failed_when: fwupd_result.rc not in [0, 2]
-  notify: reboot if firmware updated
