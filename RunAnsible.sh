@@ -196,4 +196,5 @@ echo ""
 ansible-playbook "$PLAYBOOK" \
   -i "$INVENTORY" \
   --vault-password-file "$VAULT_PASS_FILE" \
-  -e "machine_type=$MACHINE_TYPE"
+  -e "machine_type=$MACHINE_TYPE" \
+  -e "ansible_become_password=$(ansible-vault view "$VAULT_FILE" --vault-password-file "$VAULT_PASS_FILE" | grep vault_ssh_password | awk '{print $2}')"
