@@ -1,0 +1,8 @@
+#SPDX-License-Identifier: MIT-0
+---
+# handlers file for roles/asus-zenscreen
+
+- name: Restart displaylink-driver
+  ansible.builtin.systemd:
+    name: displaylink-driver.service
+    state: restarted

@@ -3,26 +3,35 @@
 # tasks file for roles/update-system
 # ============================================================
 # roles/update-system/tasks/main.yml
-# Full system update — DNF upgrade, kernel, drivers, firmware
+# Full system update — DNF upgrade, drivers, firmware
+# Kernel is intentionally locked to running version
 # ============================================================
-
-- name: Upgrade all packages to latest
+- name: Upgrade all packages to latest (excluding kernel)
   ansible.builtin.dnf:
     name: "*"
     state: latest
     update_cache: true
-
-- name: Install kernel and core driver packages
-  ansible.builtin.dnf:
-    name:
+    exclude:
       - kernel
+      - kernel-core
+      - kernel-modules
+      - kernel-modules-extra
       - kernel-devel
       - kernel-headers
-      - kernel-modules-extra
+
+- name: Install core driver build tools
+  ansible.builtin.dnf:
+    name:
       - akmods
       - dkms
-    state: latest
-    update_cache: true  # Add this - kernel might be newer than cache
+      - "kernel-devel-{{ ansible_kernel }}"
+      - "kernel-headers-{{ ansible_kernel }}"
+    state: present
+    exclude:
+      - kernel
+      - kernel-core
+      - kernel-modules
+      - kernel-modules-extra
 
 - name: Update firmware (fwupd)
   ansible.builtin.dnf:
@@ -37,5 +46,5 @@
   ansible.builtin.command: fwupdmgr update -y
   register: fwupd_result
   changed_when: fwupd_result.rc == 0 and 'No updates' not in fwupd_result.stdout
-  failed_when: fwupd_result.rc not in [0, 2]  # 2 = no updates available
-  notify: reboot if firmware updated  # add handler
+  failed_when: fwupd_result.rc not in [0, 2]
+  notify: reboot if firmware updated

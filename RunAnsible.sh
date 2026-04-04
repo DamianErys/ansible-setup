@@ -9,6 +9,7 @@ VAULT_FILE="$REPO_DIR/vault.yml"
 INVENTORY="$REPO_DIR/inventory.ini"
 PLAYBOOK="$REPO_DIR/site.yml"
 ISO_DIR="$REPO_DIR/isos"
+INSTALLERS_DIR="$REPO_DIR/installers"
 
 # Colors
 RED='\033[0;31m'
@@ -138,6 +139,24 @@ if [[ "$MACHINE_TYPE" == "laptop" ]]; then
     warn "tiny11.iso not found on USB or in repo — VM setup will be skipped"
     warn "Copy tiny11.iso next to RunAnsible.sh and re-run to set up the VM"
   fi
+fi
+
+# DisplayLink RPM
+echo "Checking for DisplayLink.rpm..."
+SCRIPT_RPM="$SCRIPT_DIR/DisplayLink.rpm"
+REPO_RPM="$INSTALLERS_DIR/DisplayLink.rpm"
+
+mkdir -p "$INSTALLERS_DIR"
+
+if [[ -f "$SCRIPT_RPM" ]] && [[ ! -f "$REPO_RPM" ]]; then
+  info "Moving DisplayLink.rpm from USB to repo installers folder..."
+  mv "$SCRIPT_RPM" "$REPO_RPM"
+  pass "DisplayLink.rpm moved to $INSTALLERS_DIR"
+elif [[ -f "$REPO_RPM" ]]; then
+  pass "DisplayLink.rpm already in place"
+else
+  warn "DisplayLink.rpm not found on USB or in repo — ZenScreen role will fail if run"
+  warn "Copy DisplayLink.rpm next to RunAnsible.sh and re-run"
 fi
 
 # Required files

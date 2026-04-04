@@ -1,0 +1,70 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/asus-zenscreen
+# ============================================================
+# roles/asus-zenscreen/tasks/main.yml
+# Installs DisplayLink driver (EVDI) for ASUS ZenScreen MB165B
+# Supports: Fedora 43, kernel locked to running version
+# RPM source: $REPO_DIR/installers/DisplayLink.rpm
+# ============================================================
+
+- name: Check that DisplayLink RPM exists in installers folder
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/installers/DisplayLink.rpm"
+  register: displaylink_rpm
+
+- name: Fail early if RPM is missing
+  ansible.builtin.fail:
+    msg: >
+      DisplayLink.rpm not found at {{ playbook_dir }}/installers/DisplayLink.rpm.
+      Copy it from your USB drive and re-run.
+  when: not displaylink_rpm.stat.exists
+
+- name: Install kernel-devel and kernel-headers for running kernel
+  ansible.builtin.dnf:
+    name:
+      - "kernel-devel-{{ ansible_kernel }}"
+      - "kernel-headers-{{ ansible_kernel }}"
+      - gcc
+      - make
+      - dkms
+    state: present
+
+- name: Check if DisplayLink is already installed
+  ansible.builtin.command: rpm -q displaylink
+  register: displaylink_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install DisplayLink RPM
+  ansible.builtin.dnf:
+    name: "{{ playbook_dir }}/installers/DisplayLink.rpm"
+    state: present
+    disable_gpg_check: true
+  when: displaylink_installed.rc != 0
+
+- name: Check DKMS build status for evdi
+  ansible.builtin.command: dkms status evdi
+  register: dkms_status
+  changed_when: false
+  failed_when: false
+
+- name: Fail if DKMS evdi module did not build successfully
+  ansible.builtin.fail:
+    msg: >
+      DKMS evdi module did not build correctly for kernel {{ ansible_kernel }}.
+      Run: dkms status and check /var/lib/dkms/evdi/ for build logs.
+      Output was: {{ dkms_status.stdout }}
+  when: "'installed' not in dkms_status.stdout"
+
+- name: Ensure evdi module is loaded
+  community.general.modprobe:
+    name: evdi
+    state: present
+
+- name: Enable and start displaylink-driver service
+  ansible.builtin.systemd:
+    name: displaylink-driver.service
+    enabled: true
+    state: started
+    daemon_reload: true

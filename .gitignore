@@ -1,3 +1,5 @@
 *.retry
 *.log
 vault-pass.txt
+*.iso
+*.rpm
