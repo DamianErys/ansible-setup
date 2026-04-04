@@ -5,4 +5,6 @@
 - name: Desktop
   hosts: "{{ machine_type }}"
   become: true
+  vars_files:
+    - vault.yml
   roles:

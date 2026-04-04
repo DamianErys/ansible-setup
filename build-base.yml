@@ -5,6 +5,8 @@
 - name: Build Base
   hosts: "{{ machine_type }}"
   become: true
+  vars_files:
+    - vault.yml
   roles:
     - update-system
     - flatpak-packages

@@ -7,6 +7,8 @@
 - name: Setup VMs
   hosts: "{{ machine_type }}"
   become: true
+  vars_files:
+    - vault.yml
   roles:
     - distrobox
     - vmm
@@ -14,11 +16,15 @@
 - name: Windows VM (laptop only)
   hosts: laptop
   become: true
+  vars_files:
+    - vault.yml
   roles:
     - vm-windows
 
 - name: Gaming VMs (PC only)
   hosts: pc
   become: true
+  vars_files:
+    - vault.yml
   roles:
     - vm-gaming
