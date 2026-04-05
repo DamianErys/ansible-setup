@@ -37,8 +37,7 @@
     - me.proton.Pass
     - org.videolan.VLC
     - org.inkscape.Inkscape
-    - com.raggesilver.BlackBox        # fixed: dropped github. prefix
-    - com.rtosta.zapzap               # fixed: new ID
+    - com.rtosta.zapzap
     - com.discordapp.Discord
     - org.kicad.KiCad
     - org.raspberrypi.rpi-imager
@@ -70,7 +69,6 @@
     remote: flathub
   loop:
     - com.valvesoftware.Steam
-    - com.epicgames.Launcher
     - com.heroicgameslauncher.hgl
-    - com.gameconqueror.GameConqueror
+    - org.gameconqueror.GameConqueror
   when: machine_type == 'pc'
