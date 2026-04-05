@@ -25,7 +25,7 @@ info() { echo -e "${CYAN}  → $1${NC}"; }
 
 echo ""
 echo "======================================="
-echo "   Laptop Setup — Bootstrap & Preflight"
+echo " Machine Setup — Bootstrap & Preflight " 
 echo "======================================="
 echo ""
 
