@@ -1,0 +1,42 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/7_ubuntu-packages
+---
+# tasks file for roles/7_ubuntu-packages
+
+- name: Install dependencies and Git inside ubuntu-box
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- /bin/bash -c "sudo apt update && sudo apt install -y 
+    git xdg-desktop-portal xdg-desktop-portal-gtk xdg-utils
+    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2
+    libgtk-3-0 libgbm1 libasound2 libxshmfence1 libxcomposite1 
+    libxdamage1 libxrandr2 libxkbcommon0"
+  become: false
+  changed_when: false
+
+- name: Ensure installer directory exists in home
+  ansible.builtin.file:
+    path: "~/tmp_installers"
+    state: directory
+    mode: '0755'
+  become: false
+
+- name: Copy ReqView installer to host tmp
+  # Path adjusted to where you stored the .deb
+  ansible.builtin.copy:
+    src: "ansible-setup/installers/ReqView-2.21.2-linux-amd64.deb"
+    dest: "~/tmp_installers/ReqView.deb"
+    mode: '0644'
+  become: false
+
+- name: Install ReqView inside ubuntu-box
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- sudo apt install -y /home/{{ ansible_user_id }}/tmp_installers/ReqView.deb
+  become: false
+  register: req_install
+  changed_when: "'is already the newest version' not in req_install.stdout"
+
+- name: Export ReqView to Fedora app menu
+  ansible.builtin.command: distrobox enter ubuntu-box -- distrobox-export --app reqview
+  become: false
+  changed_when: false
