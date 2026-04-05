@@ -20,9 +20,9 @@
   become: false
 
 - name: Copy ReqView installer to host tmp
-  # Path adjusted to where you stored the .deb
   ansible.builtin.copy:
-    src: "ansible-setup/installers/ReqView-2.21.2-linux-amd64.deb"
+    # Use playbook_dir to reference the project root
+    src: "{{ playbook_dir }}/installers/ReqView.deb"
     dest: "~/tmp_installers/ReqView.deb"
     mode: '0644'
   become: false
