@@ -1,7 +1,12 @@
-# SPDX-License-Identifier: MIT-0
+#SPDX-License-Identifier: MIT-0
 ---
 # roles/17_custom-commands/tasks/main.yml
+# Custom helper commands for daily workflow
+# ============================================================
 
+# -----------------------------------------------
+# Create custom scripts directory
+# -----------------------------------------------
 - name: Create ~/.local/bin directory
   ansible.builtin.file:
     path: "/home/{{ main_user }}/.local/bin"
@@ -15,9 +20,12 @@
     path: "/home/{{ main_user }}/.bashrc"
     line: 'export PATH="$HOME/.local/bin:$PATH"'
     insertbefore: '^# Source global bashrc'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
 
 # -----------------------------------------------
-# GoToUbuntu
+# Command: GoToUbuntu (enter ubuntu-box)
 # -----------------------------------------------
 - name: Create GoToUbuntu command
   ansible.builtin.copy:
@@ -26,11 +34,12 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/usr/bin/env bash
+      #!/bin/bash
+      # GoToUbuntu - Enter ubuntu-box distrobox
       distrobox enter ubuntu-box
 
 # -----------------------------------------------
-# Windows boot
+# Command: windows-boot (PC only - reboot to Windows)
 # -----------------------------------------------
 - name: Create windows-boot command for PC
   ansible.builtin.copy:
@@ -39,164 +48,51 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/usr/bin/env bash
-
+      #!/bin/bash
+      # windows-boot - Set next boot to Windows and reboot
+      
+      # Method 1: Try grub2-reboot with the menu entry name
       if grub2-reboot "Windows Boot Manager (on /dev/nvme0n1p1)" 2>/dev/null; then
+          echo "Setting next boot to Windows (via grub2-reboot)..."
+          echo "Rebooting now..."
           sudo reboot
+      # Method 2: Try using efibootmgr with boot number
       elif sudo efibootmgr -n 0000 2>/dev/null; then
+          echo "Setting next boot to Windows (Boot0000)..."
+          echo "Rebooting now..."
           sudo reboot
       else
-          echo "Could not find Windows boot entry"
+          echo "Error: Could not find Windows boot entry"
+          echo "Available boot entries:"
           sudo efibootmgr
           exit 1
       fi
   when: machine_type == 'pc'
 
-- name: Create reboot-windows alias
+# -----------------------------------------------
+# Command: reboot-windows (alias for windows-boot)
+# -----------------------------------------------
+- name: Create reboot-windows alias command
   ansible.builtin.copy:
     dest: "/home/{{ main_user }}/.local/bin/reboot-windows"
     mode: '0755'
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/usr/bin/env bash
+      #!/bin/bash
       exec ~/.local/bin/windows-boot
   when: machine_type == 'pc'
 
 # -----------------------------------------------
-# Serial tool
+# Command: serial (interactive serial port tool)
 # -----------------------------------------------
-- name: Install picocom
+- name: Install picocom for serial communication
   ansible.builtin.dnf:
     name: picocom
     state: present
 
-- name: Create serial command
-  ansible.builtin.copy:
-    dest: "/home/{{ main_user }}/.local/bin/serial"
-    mode: '0755'
-    owner: "{{ main_user }}"
-    group: "{{ main_user }}"
-    content: |
-      #!/usr/bin/env bash
-      set -euo pipefail
-
-      CONFIG_FILE="$HOME/.serial_config"
-
-      load_defaults() {
-          SERIAL_PORT="/dev/ttyUSB0"
-          BAUD="115200"
-          DATABITS="8"
-          PARITY="none"
-          STOPBITS="1"
-      }
-
-      list_ports() {
-          echo "Available serial ports:"
-          ls /dev/ttyUSB* /dev/ttyACM* /dev/ttyS* 2>/dev/null || echo "None found"
-      }
-
-      show_config() {
-          if [[ -f "$CONFIG_FILE" ]]; then
-              source "$CONFIG_FILE"
-          else
-              load_defaults
-          fi
-
-          echo "Port: $SERIAL_PORT"
-          echo "Baud: $BAUD"
-          echo "Data bits: $DATABITS"
-          echo "Parity: $PARITY"
-          echo "Stop bits: $STOPBITS"
-      }
-
-      save_config() {
-          printf '%s\n' \
-          "SERIAL_PORT=\"$SERIAL_PORT\"" \
-          "BAUD=\"$BAUD\"" \
-          "DATABITS=\"$DATABITS\"" \
-          "PARITY=\"$PARITY\"" \
-          "STOPBITS=\"$STOPBITS\"" \
-          > "$CONFIG_FILE"
-      }
-
-      configure_serial() {
-          load_defaults
-          [[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
-
-          list_ports
-          echo ""
-
-          read -r -p "Port [$SERIAL_PORT]: " input
-          SERIAL_PORT="${input:-$SERIAL_PORT}"
-
-          read -r -p "Baud [$BAUD]: " input
-          BAUD="${input:-$BAUD}"
-
-          read -r -p "Data bits [$DATABITS]: " input
-          DATABITS="${input:-$DATABITS}"
-
-          read -r -p "Parity [$PARITY]: " input
-          PARITY="${input:-$PARITY}"
-
-          read -r -p "Stop bits [$STOPBITS]: " input
-          STOPBITS="${input:-$STOPBITS}"
-
-          save_config
-          echo "Saved."
-      }
-
-      connect_serial() {
-          [[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE" || load_defaults
-
-          if [[ ! -e "$SERIAL_PORT" ]]; then
-              echo "Port not found"
-              list_ports
-              exit 1
-          fi
-
-          case "$PARITY" in
-              even) P="e" ;;
-              odd)  P="o" ;;
-              *)    P="n" ;;
-          esac
-
-          picocom -b "$BAUD" --databits "$DATABITS" --parity "$P" --stopbits "$STOPBITS" "$SERIAL_PORT"
-      }
-
-      menu() {
-          echo "1) Ports"
-          echo "2) Config"
-          echo "3) Setup"
-          echo "4) Connect"
-          echo "5) Exit"
-
-          read -r -p "> " opt
-
-          case "$opt" in
-              1) list_ports ;;
-              2) show_config ;;
-              3) configure_serial ;;
-              4) connect_serial ;;
-              5) exit 0 ;;
-          esac
-
-          menu
-      }
-
-      if [[ $# -eq 0 ]]; then
-          menu
-      else
-          SERIAL_PORT="$1"
-          BAUD="${2:-115200}"
-          DATABITS="8"
-          PARITY="none"
-          STOPBITS="1"
-          connect_serial
-      fi
-
 # -----------------------------------------------
-# Update system
+# Command: update-system (update both host and containers)
 # -----------------------------------------------
 - name: Create update-system command
   ansible.builtin.copy:
@@ -205,12 +101,19 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/usr/bin/env bash
+      #!/bin/bash
+      # update-system - Update Fedora host and all distroboxes
+      
+      echo "Updating Fedora host..."
       sudo dnf update -y
+      
+      echo "Updating ubuntu-box container..."
       distrobox enter ubuntu-box -- sudo apt update && sudo apt upgrade -y
+      
+      echo "Update complete!"
 
 # -----------------------------------------------
-# Find file
+# Command: find-file (smart file search)
 # -----------------------------------------------
 - name: Create find-file command
   ansible.builtin.copy:
@@ -219,23 +122,41 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/usr/bin/env bash
-      [[ -z "$1" ]] && echo "Usage: find-file <pattern>" && exit 1
+      #!/bin/bash
+      # find-file - Smart file search
+      # Usage: find-file <pattern>
+      
+      if [[ -z "$1" ]]; then
+          echo "Usage: find-file <pattern>"
+          exit 1
+      fi
+      
+      echo "Searching for: $1"
       find ~ -type f -iname "*$1*" 2>/dev/null | head -20
 
 # -----------------------------------------------
-# mkcd
+# Command: mkcd (mkdir + cd) - FIXED as bash function
 # -----------------------------------------------
-- name: Add mkcd function
+- name: Add mkcd as bash function to .bashrc
   ansible.builtin.blockinfile:
     path: "/home/{{ main_user }}/.bashrc"
     block: |
+      # mkcd - Create directory and cd into it
       mkcd() {
+          if [[ -z "$1" ]]; then
+              echo "Usage: mkcd <directory>"
+              return 1
+          fi
           mkdir -p "$1" && cd "$1"
       }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - mkcd function"
+    insertbefore: '^# Source global bashrc'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
 
 # -----------------------------------------------
-# Ports
+# Command: ports (show listening ports)
 # -----------------------------------------------
 - name: Create ports command
   ansible.builtin.copy:
@@ -244,5 +165,8 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/usr/bin/env bash
+      #!/bin/bash
+      # ports - Show listening ports with process names
+      
+      echo "Listening ports:"
       sudo ss -tulpn | grep LISTEN
