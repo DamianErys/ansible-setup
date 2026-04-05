@@ -6,24 +6,48 @@
 # Installs Podman + Distrobox and creates ubuntu-box on both machines
 # ============================================================
 
-- name: Install Podman and Distrobox
+- name: Install Podman and Distrobox on Fedora host
   ansible.builtin.dnf:
     name:
       - podman
       - distrobox
     state: present
+  become: true  # This stays true as dnf requires root
 
 - name: Create ubuntu-box container
-  ansible.builtin.command: >
-    distrobox create -n ubuntu-box --image ubuntu:22.04 --yes
+  # Run as your user, NOT root
+  ansible.builtin.command: distrobox create -n ubuntu-box --image ubuntu:22.04 --yes
+  become: false
   register: create_result
   changed_when: "'already exists' not in create_result.stderr"
+  failed_when: 
+    - create_result.rc != 0
+    - "'already exists' not in create_result.stderr"
 
-- name: Install base dependencies inside ubuntu-box
+- name: Install dependencies inside ubuntu-box
+  # We use 'distrobox enter' with '--' to pass the command directly
   ansible.builtin.command: >
-    distrobox enter ubuntu-box -- sudo apt update && sudo apt install -y
+    distrobox enter ubuntu-box -- /bin/bash -c "sudo apt update && sudo apt install -y 
     git xdg-desktop-portal xdg-desktop-portal-gtk xdg-utils
     libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2
     libgtk-3-0 libgbm1 libasound2 libxshmfence1 libxcomposite1
-    libxdamage1 libxrandr2 libxkbcommon0
+    libxdamage1 libxrandr2 libxkbcommon0"
+  become: false
   changed_when: false
+
+- name: Install ReqView .deb if it exists
+  # Checks if you've already downloaded the file to your Downloads folder
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- /bin/bash -c "sudo apt install -f -y /home/{{ ansible_user_id }}/Downloads/ReqView-2.21.2-linux-amd64.deb"
+  become: false
+  register: reqview_install
+  # Only run if the file is actually there to avoid breaking the playbook
+  args:
+    creates: "/home/{{ ansible_user_id }}/.local/share/applications/ubuntu-box-reqview.desktop"
+  ignore_errors: true
+
+- name: Export ReqView to host menu
+  ansible.builtin.command: distrobox enter ubuntu-box -- distrobox-export --app reqview
+  become: false
+  changed_when: false
+  ignore_errors: true

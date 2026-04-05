@@ -13,18 +13,18 @@
     - 5_distrobox
     - 6_vmm
 
-- name: Windows VM (laptop only)
-  hosts: laptop
-  become: true
-  vars_files:
-    - vault.yml
-  roles:
-    - 7_vm-windows
+# - name: Windows VM (laptop only)
+#   hosts: laptop
+#   become: true
+#   vars_files:
+#     - vault.yml
+#   roles:
+#     - 7_vm-windows
 
-- name: Gaming VMs (PC only)
-  hosts: pc
-  become: true
-  vars_files:
-    - vault.yml
-  roles:
-    - 8_vm-gaming
+# - name: Gaming VMs (PC only)
+#   hosts: pc
+#   become: true
+#   vars_files:
+#     - vault.yml
+#   roles:
+#     - 8_vm-gaming
