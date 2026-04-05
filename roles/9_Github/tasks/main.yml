@@ -54,14 +54,18 @@
   args:
     executable: /bin/bash
   changed_when: false
+  become: false
 
 - name: Set gh git protocol to https
   ansible.builtin.command: gh config set git_protocol https
   changed_when: false
+  become: false
 
 - name: Configure git to use gh as credential helper
   ansible.builtin.command: gh auth setup-git
   changed_when: false
+  become: false
+
 
 # -----------------------------------------------
 # Step 4 — Verify
@@ -70,6 +74,7 @@
   ansible.builtin.command: gh auth status
   register: gh_status
   changed_when: false
+  become: false
 
 - name: Show auth status
   ansible.builtin.debug:
