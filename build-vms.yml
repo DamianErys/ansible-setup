@@ -10,8 +10,8 @@
   vars_files:
     - vault.yml
   roles:
-    - distrobox
-    - vmm
+    - 5_distrobox
+    - 6_vmm
 
 - name: Windows VM (laptop only)
   hosts: laptop
@@ -19,7 +19,7 @@
   vars_files:
     - vault.yml
   roles:
-    - vm-windows
+    - 7_vm-windows
 
 - name: Gaming VMs (PC only)
   hosts: pc
@@ -27,4 +27,4 @@
   vars_files:
     - vault.yml
   roles:
-    - vm-gaming
+    - 8_vm-gaming

@@ -191,6 +191,33 @@ echo "======================================="
 echo ""
 
 # -----------------------------------------------
+# STAGE 3.5 — Temporary System Tweaks
+# -----------------------------------------------
+echo "--- Stage 3.5: Inhibiting sleep & disabling IPv6 ---"
+echo ""
+
+# Prevent screen dimming and suspend (GNOME)
+if command -v gsettings &>/dev/null; then
+  info "Disabling sleep and screen dimming..."
+  # Set sleep to 'never' on AC
+  gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+  # Set screen blank to 'never'
+  gsettings set org.gnome.desktop.session idle-delay 0
+  pass "Power management inhibited"
+fi
+
+# Disable IPv6
+info "Disabling IPv6..."
+if sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null && \
+   sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null; then
+  pass "IPv6 disabled"
+else
+  warn "Failed to disable IPv6 via sysctl"
+fi
+
+echo ""
+
+# -----------------------------------------------
 # STAGE 4 — Run Ansible
 # -----------------------------------------------
 ansible-playbook "$PLAYBOOK" \

@@ -37,12 +37,16 @@
     - me.proton.Pass
     - org.videolan.VLC
     - org.inkscape.Inkscape
-    - com.github.raggesilver.BlackBox       # zapzap replaces whatsapp
-    - io.github.zapzap                      # zapzap
+    - com.raggesilver.BlackBox        # fixed: dropped github. prefix
+    - com.rtosta.zapzap               # fixed: new ID
     - com.discordapp.Discord
     - org.kicad.KiCad
-    - org.sigrok.PulseView
     - org.raspberrypi.rpi-imager
+
+- name: Install PulseView via DNF
+  ansible.builtin.dnf:
+    name: pulseview
+    state: present
 
 # # -----------------------------------------------
 # # Apps — laptop only
