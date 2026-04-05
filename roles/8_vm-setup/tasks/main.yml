@@ -1,12 +1,14 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# tasks file for roles/vm-windows
+# tasks file for roles/8_vm-setup
 # ============================================================
-# roles/vm-windows/tasks/main.yml
-# Creates tiny11 Windows VM — laptop only
-# Requires tiny11.iso in ~/ansible-setup/isos/
+# roles/8_vm-setup/tasks/main.yml
+# Windows VM on laptop, gaming emulators on PC.
 # ============================================================
 
+# -----------------------------------------------
+# LAPTOP — Windows VM
+# -----------------------------------------------
 - name: Set VM variables
   ansible.builtin.set_fact:
     vm_name: "tiny11"
@@ -17,45 +19,40 @@
     iso_path: "/var/lib/libvirt/images/tiny11.iso"
     shared_folder_host: "/var/lib/libvirt/vm-share"
     shared_folder_tag: "vmshare"
-# -----------------------------------------------
-# Step 1 — Verify ISO exists
-# -----------------------------------------------
+  when: machine_type == 'laptop'
+
 - name: Check tiny11.iso exists
   ansible.builtin.stat:
     path: "{{ iso_src_path }}"
   register: iso_stat
+  when: machine_type == 'laptop'
 
 - name: Fail if ISO is missing
   ansible.builtin.fail:
     msg: >
       tiny11.iso not found at {{ iso_src_path }}.
       Copy it next to RunAnsible.sh on the USB.
-  when: not iso_stat.stat.exists
+  when: machine_type == 'laptop' and not iso_stat.stat.exists
 
-# -----------------------------------------------
-# Step 2 — Clean up any previous failed attempt
-# -----------------------------------------------
 - name: Check if stale VM exists
   ansible.builtin.command: virsh dominfo {{ vm_name }}
   register: stale_vm_check
   failed_when: false
   changed_when: false
+  when: machine_type == 'laptop'
 
 - name: Destroy stale VM if exists
   ansible.builtin.command: virsh destroy {{ vm_name }}
-  when: stale_vm_check.rc == 0
   failed_when: false
   changed_when: true
+  when: machine_type == 'laptop' and stale_vm_check.rc == 0
 
 - name: Undefine stale VM
   ansible.builtin.command: virsh undefine {{ vm_name }} --nvram
-  when: stale_vm_check.rc == 0
   failed_when: false
   changed_when: true
+  when: machine_type == 'laptop' and stale_vm_check.rc == 0
 
-# -----------------------------------------------
-# Step 3 — Copy ISO and create shared folder
-# -----------------------------------------------
 - name: Copy tiny11.iso into libvirt images dir
   ansible.builtin.copy:
     src: "{{ iso_src_path }}"
@@ -64,6 +61,7 @@
     group: qemu
     mode: '0644'
     remote_src: true
+  when: machine_type == 'laptop'
 
 - name: Create host-side shared folder
   ansible.builtin.file:
@@ -72,20 +70,19 @@
     mode: '0755'
     owner: qemu
     group: qemu
+  when: machine_type == 'laptop'
 
-# -----------------------------------------------
-# Step 4 — Create disk and VM
-# -----------------------------------------------
 - name: Remove stale disk if VM was cleaned up
   ansible.builtin.file:
     path: "{{ vm_disk_path }}"
     state: absent
-  when: stale_vm_check.rc == 0
+  when: machine_type == 'laptop' and stale_vm_check.rc == 0
 
 - name: Create qcow2 disk image
   ansible.builtin.command:
     cmd: qemu-img create -f qcow2 {{ vm_disk_path }} 60G
     creates: "{{ vm_disk_path }}"
+  when: machine_type == 'laptop'
 
 - name: Create tiny11 VM
   ansible.builtin.command: >
@@ -104,16 +101,28 @@
     --filesystem {{ shared_folder_host }},{{ shared_folder_tag }},driver.type=path,accessmode=mapped
     --boot uefi
     --noautoconsole
+  when: machine_type == 'laptop'
 
-# -----------------------------------------------
-# Step 5 — Verify and drop instructions
-# -----------------------------------------------
 - name: Confirm VM is defined
   ansible.builtin.command: virsh dominfo {{ vm_name }}
   register: vm_info
   changed_when: false
+  when: machine_type == 'laptop'
 
 - name: Show VM info
   ansible.builtin.debug:
     var: vm_info.stdout_lines
-    
+  when: machine_type == 'laptop'
+
+# -----------------------------------------------
+# PC — Gaming emulators
+# -----------------------------------------------
+- name: Install RPCS3 and PCSX2 via Flatpak
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: present
+    remote: flathub
+  loop:
+    - net.rpcs3.RPCS3
+    - net.pcsx2.PCSX2
+  when: machine_type == 'pc'

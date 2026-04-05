@@ -13,21 +13,4 @@
     # - 5_distrobox
     # - 6_vmm
     # - 7_ubuntu-packages
-
-- name: Windows VM (laptop only)
-  hosts: "{{ machine_type }}"
-  become: true
-  vars_files:
-    - vault.yml
-  roles:
-    - 8a_vm-windows
-  when: machine_type == 'laptop'
-
-- name: Gaming VMs (PC only)
-  hosts: "{{ machine_type }}"
-  become: true
-  vars_files:
-    - vault.yml
-  roles:
-    - 8b_vm-gaming
-  when: machine_type == 'pc'
+    - 8_vm-setup
