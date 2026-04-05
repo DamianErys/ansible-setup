@@ -20,33 +20,43 @@
 
 # -----------------------------------------------
 # Step 2 — Git global config
+# Runs as main_user so config writes to ~/.gitconfig
 # -----------------------------------------------
 - name: Configure git user name
   community.general.git_config:
     name: user.name
     value: "{{ vault_github_user }}"
     scope: global
+  become: true
+  become_user: "{{ main_user }}"
 
 - name: Configure git user email
   community.general.git_config:
     name: user.email
     value: "{{ vault_github_email }}"
     scope: global
+  become: true
+  become_user: "{{ main_user }}"
 
 - name: Configure git default branch
   community.general.git_config:
     name: init.defaultBranch
     value: main
     scope: global
+  become: true
+  become_user: "{{ main_user }}"
 
 - name: Configure git editor
   community.general.git_config:
     name: core.editor
     value: nano
     scope: global
+  become: true
+  become_user: "{{ main_user }}"
 
 # -----------------------------------------------
 # Step 3 — gh CLI auth
+# Runs as main_user so token stores in ~/.config/gh
 # -----------------------------------------------
 - name: Authenticate gh CLI with PAT
   ansible.builtin.shell: |
@@ -54,18 +64,20 @@
   args:
     executable: /bin/bash
   changed_when: false
-  become: false
+  become: true
+  become_user: "{{ main_user }}"
 
 - name: Set gh git protocol to https
   ansible.builtin.command: gh config set git_protocol https
   changed_when: false
-  become: false
+  become: true
+  become_user: "{{ main_user }}"
 
 - name: Configure git to use gh as credential helper
   ansible.builtin.command: gh auth setup-git
   changed_when: false
-  become: false
-
+  become: true
+  become_user: "{{ main_user }}"
 
 # -----------------------------------------------
 # Step 4 — Verify
@@ -74,10 +86,9 @@
   ansible.builtin.command: gh auth status
   register: gh_status
   changed_when: false
-  become: false
+  become: true
+  become_user: "{{ main_user }}"
 
 - name: Show auth status
   ansible.builtin.debug:
     var: gh_status.stdout_lines
-
-    

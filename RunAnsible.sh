@@ -234,10 +234,13 @@ else
 fi
 
 
+<<<<<<< HEAD
 sudo dnf install [package] --exclude=kernel*
 sudo dnf install 'dnf-command(versionlock)'
 sudo dnf versionlock add kernel-core-6.17.1-300.fc43
 
+=======
+>>>>>>> aa89cc239707f7492f09bc292251db19244f1658
 echo ""
 
 # -----------------------------------------------
