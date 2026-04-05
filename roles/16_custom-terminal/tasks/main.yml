@@ -148,7 +148,7 @@
       _RESET='\[\e[0m\]'
 
       # -----------------------------------------------
-      # Distrobox detection - returns "@boxname" instead of "[boxname]"
+      # Distrobox detection - returns "@boxname" or "@HostDistro"
       # -----------------------------------------------
       _distrobox_label() {
         if [[ -f /run/.containerenv ]]; then
@@ -160,13 +160,15 @@
             echo "@${boxname}"
           fi
         else
-          # Not in a container - show @Fedora (or detect host distro)
-          if command -v lsb_release &>/dev/null; then
-            echo "@$(lsb_release -si)"
-          elif [[ -f /etc/fedora-release ]]; then
+          # Not in a container - detect host distro
+          if [[ -f /etc/fedora-release ]]; then
             echo "@Fedora"
           elif [[ -f /etc/debian_version ]]; then
             echo "@Debian"
+          elif [[ -f /etc/arch-release ]]; then
+            echo "@Arch"
+          elif command -v lsb_release &>/dev/null; then
+            echo "@$(lsb_release -si)"
           else
             echo "@Host"
           fi
