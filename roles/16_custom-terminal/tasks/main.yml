@@ -6,19 +6,83 @@
 # Custom bash prompt + quality of life bash config
 #
 # Prompt logic:
-#   Normal:   erys_pc /full/path $                (all red)
-#   Git repo: erys_pc /full/path (branch ✚✘ ↑↓)  (red / blue / purple)
+#   Normal:   erys_pc /full/path $                (all dark red)
+#   Git repo: erys_pc (dark red) /path (dark blue) (branch ✚✘ ↑↓) (purple)
 #   Distrobox: erys_pc [ubuntu] /full/path $      (red prefix, same logic)
 #
 # QoL:
 #   - Case-insensitive tab completion
-#   - Double-tab scrollable menu
+#   - Single-tab scrollable menu
 #   - Useful aliases
 #   - Persistent history with timestamps
 # ============================================================
 
 # -----------------------------------------------
-# Step 1 — Deploy .bashrc
+# Step 1 — Install FiraCode Nerd Font
+# -----------------------------------------------
+- name: Install fira-code-fonts base package
+  ansible.builtin.dnf:
+    name: fira-code-fonts
+    state: present
+
+- name: Create local fonts directory
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.local/share/fonts"
+    state: directory
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0755'
+
+- name: Download FiraCode Nerd Font zip
+  ansible.builtin.get_url:
+    url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip"
+    dest: "/tmp/FiraCode.zip"
+    mode: '0644'
+
+- name: Unzip FiraCode Nerd Font into user fonts folder
+  ansible.builtin.unarchive:
+    src: "/tmp/FiraCode.zip"
+    dest: "/home/{{ main_user }}/.local/share/fonts/"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    remote_src: true
+
+- name: Rebuild font cache
+  ansible.builtin.command: fc-cache -fv
+  become: true
+  become_user: "{{ main_user }}"
+  changed_when: false
+
+# -----------------------------------------------
+# Step 2 — Set Ptyxis terminal font
+# -----------------------------------------------
+- name: Get Ptyxis default profile UUID
+  ansible.builtin.shell: |
+    gsettings get org.gnome.Ptyxis default-profile-uuid 2>/dev/null | tr -d "'"
+  register: ptyxis_profile_uuid
+  changed_when: false
+  failed_when: false
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: Set Ptyxis font to FiraCode Nerd Font 12
+  community.general.dconf:
+    key: "/org/gnome/Ptyxis/Profiles/{{ ptyxis_profile_uuid.stdout | trim }}/font"
+    value: "'FiraCode Nerd Font 12'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: ptyxis_profile_uuid.stdout | trim != ""
+
+- name: Disable system font in Ptyxis to use custom font
+  community.general.dconf:
+    key: "/org/gnome/Ptyxis/Profiles/{{ ptyxis_profile_uuid.stdout | trim }}/use-system-font"
+    value: "false"
+  become: true
+  become_user: "{{ main_user }}"
+  when: ptyxis_profile_uuid.stdout | trim != ""
+
+# -----------------------------------------------
+# Step 3 — Deploy .bashrc
 # -----------------------------------------------
 - name: Deploy .bashrc for main user
   ansible.builtin.copy:
@@ -46,7 +110,7 @@
       HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S  "
       HISTCONTROL=ignoredups:erasedups
       shopt -s histappend
-      PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+      PROMPT_COMMAND="history -a; history -c; history -r; ${PROMPT_COMMAND:-}"
 
       # -----------------------------------------------
       # Shell options
@@ -72,9 +136,20 @@
       alias gl='git log --oneline --graph --decorate'
 
       # -----------------------------------------------
+      # Colours
+      # 256-colour codes picked for darker, richer tones
+      #   dark red  = 124  (deep crimson)
+      #   dark blue =  24  (steel blue)
+      #   purple    =  91  (deep violet)
+      # -----------------------------------------------
+      _DARK_RED='\[\e[38;5;124m\]'
+      _DARK_BLUE='\[\e[38;5;24m\]'
+      _PURPLE='\[\e[38;5;91m\]'
+      _RESET='\[\e[0m\]'
+
+      # -----------------------------------------------
       # Distrobox detection
-      # Returns "[boxname]" if inside a distrobox,
-      # empty string otherwise
+      # Prints "[boxname]" when inside a distrobox
       # -----------------------------------------------
       _distrobox_label() {
         if [[ -f /run/.containerenv ]]; then
@@ -86,75 +161,62 @@
 
       # -----------------------------------------------
       # Git prompt info
-      # Returns "(branch ✚✘ ↑↓)" in the right colours
+      # Returns plain text "(branch ✚ ✘ ↑2 ↓1)"
+      # The whole string is wrapped in purple by _build_prompt
       # -----------------------------------------------
       _git_prompt() {
-        # Are we inside a git repo?
         local branch
         branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
         [[ -z "$branch" ]] && return
 
-        local staged='' unstaged=''
-        local ahead=0 behind=0
         local status_sym=''
 
         # Staged changes
-        if ! git diff --cached --quiet 2>/dev/null; then
-          staged='\[\e[0;35m\]✚'
-        fi
+        git diff --cached --quiet 2>/dev/null || status_sym+=' ✚'
 
         # Unstaged changes
-        if ! git diff --quiet 2>/dev/null; then
-          unstaged='\[\e[0;35m\]✘'
-        fi
+        git diff --quiet 2>/dev/null || status_sym+=' ✘'
 
         # Ahead / behind remote
-        local remote
+        local remote ahead=0 behind=0
         remote=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
         if [[ -n "$remote" ]]; then
           ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null || echo 0)
           behind=$(git rev-list --count HEAD..@{u} 2>/dev/null || echo 0)
+          [[ "$ahead"  -gt 0 ]] && status_sym+=" ↑${ahead}"
+          [[ "$behind" -gt 0 ]] && status_sym+=" ↓${behind}"
         fi
 
-        [[ -n "$staged" || -n "$unstaged" ]] && status_sym=" ${staged}${unstaged}"
-        [[ "$ahead" -gt 0 ]]  && status_sym+=" \[\e[0;35m\]↑${ahead}"
-        [[ "$behind" -gt 0 ]] && status_sym+=" \[\e[0;35m\]↓${behind}"
-
-        # Blue for branch + path, purple for status symbols
-        echo "\[\e[0;34m\](${branch}${status_sym}\[\e[0;34m\])"
+        echo "(${branch}${status_sym})"
       }
 
       # -----------------------------------------------
-      # Prompt builder — runs before every prompt
+      # Prompt builder — called before every prompt
+      #
+      # Git repo:
+      #   erys_pc [box]   → dark red
+      #   ~/path/to/dir   → dark blue
+      #   (main ✚ ✘ ↑1)  → purple   ← entire branch section
+      #
+      # Normal:
+      #   erys_pc [box] ~/path  → all dark red
       # -----------------------------------------------
       _build_prompt() {
-        local exit_code=$?
-
-        local RED='\[\e[0;31m\]'
-        local BLUE='\[\e[0;34m\]'
-        local RESET='\[\e[0m\]'
-
-        local user="${main_user:-\u}"
-        local box_label
+        local box_label git_info
         box_label=$(_distrobox_label)
-        local git_info
         git_info=$(_git_prompt)
 
         if [[ -n "$git_info" ]]; then
-          # Git repo: username in red, path + git info in blue
-          PS1="${RED}${user}${box_label:+ ${box_label}} ${BLUE}\w ${git_info} ${RESET}\$ "
+          PS1="${_DARK_RED}{{ main_user }}${box_label:+ ${box_label}} ${_DARK_BLUE}\w ${_PURPLE}${git_info}${_RESET} \$ "
         else
-          # Normal: everything in red
-          PS1="${RED}${user}${box_label:+ ${box_label}} \w ${RESET}\$ "
+          PS1="${_DARK_RED}{{ main_user }}${box_label:+ ${box_label}} \w${_RESET} \$ "
         fi
-
-        return $exit_code
       }
 
-      PROMPT_COMMAND="_build_prompt; $PROMPT_COMMAND"
+      PROMPT_COMMAND="_build_prompt; ${PROMPT_COMMAND:-}"
 
 # -----------------------------------------------
-# Step 2 — Deploy .inputrc (tab completion QoL)
+# Step 4 — Deploy .inputrc (tab completion QoL)
 # -----------------------------------------------
 - name: Deploy .inputrc for main user
   ansible.builtin.copy:
@@ -173,10 +235,10 @@
       # Treat - and _ as equivalent in completion
       set completion-map-case on
 
-      # Show all matches on first tab press (no need to press twice)
+      # Show all matches on first tab press
       set show-all-if-ambiguous on
 
-      # Scrollable menu on double-tab (like zsh)
+      # Cycle through completions with TAB, reverse with Shift+TAB
       set menu-complete-display-prefix on
       TAB: menu-complete
       "\e[Z": menu-complete-backward
@@ -184,11 +246,11 @@
       # Show file type indicators (/ for dirs, * for executables)
       set visible-stats on
 
-      # Color completions by file type
+      # Colour completions by file type
       set colored-stats on
 
-      # Show common prefix in a different colour
+      # Highlight common prefix
       set colored-completion-prefix on
 
-      # Don't ring bell on completion
+      # No bell
       set bell-style none

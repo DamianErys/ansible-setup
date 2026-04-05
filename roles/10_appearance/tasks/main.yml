@@ -5,6 +5,10 @@
 # roles/10_appearance/tasks/main.yml
 # Dark mode, wallpaper, lock screen, user avatar
 # Applies to both machines
+#
+# Note: wallpaper uses gsettings via shell rather than the
+# dconf module — on GNOME 47+ (Fedora 43) the background
+# schema must be written through gsettings to take effect.
 # ============================================================
 
 # -----------------------------------------------
@@ -50,18 +54,18 @@
 # Step 2 — Dark mode
 # -----------------------------------------------
 - name: Set color scheme to dark
-  community.general.dconf:
-    key: /org/gnome/desktop/interface/color-scheme
-    value: "'prefer-dark'"
+  ansible.builtin.shell: |
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
   become: true
   become_user: "{{ main_user }}"
+  changed_when: false
 
 - name: Set GTK theme to dark
-  community.general.dconf:
-    key: /org/gnome/desktop/interface/gtk-theme
-    value: "'Adwaita-dark'"
+  ansible.builtin.shell: |
+    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
   become: true
   become_user: "{{ main_user }}"
+  changed_when: false
 
 # -----------------------------------------------
 # Step 3 — Desktop wallpaper
@@ -84,28 +88,30 @@
     remote_src: true
   when: wallpaper_stat.stat.exists
 
-- name: Set wallpaper (light mode)
-  community.general.dconf:
-    key: /org/gnome/desktop/background/picture-uri
-    value: "'file:///home/{{ main_user }}/.local/share/backgrounds/Desktop.png'"
+- name: Set wallpaper via gsettings (light mode)
+  ansible.builtin.shell: |
+    gsettings set org.gnome.desktop.background picture-uri \
+      'file:///home/{{ main_user }}/.local/share/backgrounds/Desktop.png'
   become: true
   become_user: "{{ main_user }}"
+  changed_when: false
   when: wallpaper_stat.stat.exists
 
-- name: Set wallpaper (dark mode)
-  community.general.dconf:
-    key: /org/gnome/desktop/background/picture-uri-dark
-    value: "'file:///home/{{ main_user }}/.local/share/backgrounds/Desktop.png'"
+- name: Set wallpaper via gsettings (dark mode)
+  ansible.builtin.shell: |
+    gsettings set org.gnome.desktop.background picture-uri-dark \
+      'file:///home/{{ main_user }}/.local/share/backgrounds/Desktop.png'
   become: true
   become_user: "{{ main_user }}"
+  changed_when: false
   when: wallpaper_stat.stat.exists
 
 - name: Set wallpaper scaling mode
-  community.general.dconf:
-    key: /org/gnome/desktop/background/picture-options
-    value: "'zoom'"
+  ansible.builtin.shell: |
+    gsettings set org.gnome.desktop.background picture-options 'zoom'
   become: true
   become_user: "{{ main_user }}"
+  changed_when: false
 
 # -----------------------------------------------
 # Step 4 — Lock screen wallpaper
@@ -120,20 +126,21 @@
     remote_src: true
   when: lockscreen_stat.stat.exists
 
-- name: Set lock screen wallpaper (light mode)
-  community.general.dconf:
-    key: /org/gnome/desktop/screensaver/picture-uri
-    value: "'file:///home/{{ main_user }}/.local/share/backgrounds/Lockscreen.png'"
+- name: Set lock screen wallpaper via gsettings
+  ansible.builtin.shell: |
+    gsettings set org.gnome.desktop.screensaver picture-uri \
+      'file:///home/{{ main_user }}/.local/share/backgrounds/Lockscreen.png'
   become: true
   become_user: "{{ main_user }}"
+  changed_when: false
   when: lockscreen_stat.stat.exists
 
-- name: Set lock screen wallpaper scaling mode
-  community.general.dconf:
-    key: /org/gnome/desktop/screensaver/picture-options
-    value: "'zoom'"
+- name: Set lock screen scaling mode
+  ansible.builtin.shell: |
+    gsettings set org.gnome.desktop.screensaver picture-options 'zoom'
   become: true
   become_user: "{{ main_user }}"
+  changed_when: false
 
 # -----------------------------------------------
 # Step 5 — User avatar
