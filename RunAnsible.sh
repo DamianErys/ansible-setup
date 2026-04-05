@@ -233,6 +233,11 @@ else
   warn "Failed to disable IPv6 via sysctl"
 fi
 
+
+sudo dnf install [package] --exclude=kernel*
+sudo dnf install 'dnf-command(versionlock)'
+sudo dnf versionlock add kernel-core-6.17.1-300.fc43
+
 echo ""
 
 # -----------------------------------------------
