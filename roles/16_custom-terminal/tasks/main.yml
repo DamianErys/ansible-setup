@@ -148,14 +148,28 @@
       _RESET='\[\e[0m\]'
 
       # -----------------------------------------------
-      # Distrobox detection
-      # Prints "[boxname]" when inside a distrobox
+      # Distrobox detection - returns "@boxname" instead of "[boxname]"
       # -----------------------------------------------
       _distrobox_label() {
         if [[ -f /run/.containerenv ]]; then
           local boxname
           boxname=$(grep -oP '(?<=^name=").*(?=")' /run/.containerenv 2>/dev/null)
-          [[ -n "$boxname" ]] && echo "[$boxname]"
+          if [[ -n "$boxname" ]]; then
+            # Clean up boxname - remove "-box" suffix if present
+            boxname=${boxname%-box}
+            echo "@${boxname}"
+          fi
+        else
+          # Not in a container - show @Fedora (or detect host distro)
+          if command -v lsb_release &>/dev/null; then
+            echo "@$(lsb_release -si)"
+          elif [[ -f /etc/fedora-release ]]; then
+            echo "@Fedora"
+          elif [[ -f /etc/debian_version ]]; then
+            echo "@Debian"
+          else
+            echo "@Host"
+          fi
         fi
       }
 
@@ -193,13 +207,11 @@
       # -----------------------------------------------
       # Prompt builder — called before every prompt
       #
-      # Git repo:
-      #   erys_pc [box]   → dark red
-      #   ~/path/to/dir   → dark blue
-      #   (main ✚ ✘ ↑1)  → purple   ← entire branch section
+      # In Git repo:
+      #   erys_pc @ubuntu ~/path (main ✚ ✘ ↑1) $ 
       #
-      # Normal:
-      #   erys_pc [box] ~/path  → all dark red
+      # Not in Git:
+      #   erys_pc @ubuntu ~/path $ 
       # -----------------------------------------------
       _build_prompt() {
         local box_label git_info
@@ -207,9 +219,9 @@
         git_info=$(_git_prompt)
 
         if [[ -n "$git_info" ]]; then
-          PS1="${_DARK_RED}{{ main_user }}${box_label:+ ${box_label}} ${_DARK_BLUE}\w ${_PURPLE}${git_info}${_RESET} \$ "
+          PS1="${_DARK_RED}{{ main_user }}${box_label} ${_DARK_BLUE}\w ${_PURPLE}${git_info}${_RESET} \$ "
         else
-          PS1="${_DARK_RED}{{ main_user }}${box_label:+ ${box_label}} \w${_RESET} \$ "
+          PS1="${_DARK_RED}{{ main_user }}${box_label} \w${_RESET} \$ "
         fi
       }
 
