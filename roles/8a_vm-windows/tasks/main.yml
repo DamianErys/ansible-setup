@@ -117,32 +117,3 @@
   ansible.builtin.debug:
     var: vm_info.stdout_lines
     
-
-- name: Write VM setup instructions to Desktop
-  ansible.builtin.copy:
-    dest: "/root/Desktop/VM-SETUP-INSTRUCTIONS.txt"
-    mode: '0644'
-    content: |
-      ============================================================
-       tiny11 VM — POST-SETUP STEPS
-      ============================================================
-
-      STEP 1 — Open virt-manager, double-click tiny11, complete Windows install.
-
-      STEP 2 — Shared folder
-        Host path : /var/lib/libvirt/vm-share
-        Inside Windows:
-          1. Install WinFSP        : https://winfsp.dev/rel/
-          2. Install virtio-win guest tools
-          3. Map \\vmshare\ in Windows Explorer
-
-      STEP 3 — Clipboard (copy/paste between host and VM)
-        Install SPICE guest tools inside Windows:
-          https://www.spice-space.org/download.html
-          → Windows Binaries → spice-guest-tools
-        Clipboard sharing activates automatically once installed.
-
-      STEP 4 — Office
-        Drop installer into /var/lib/libvirt/vm-share from host,
-        then install inside the VM.
-      ============================================================
