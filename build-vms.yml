@@ -12,7 +12,7 @@
   roles:
     # - 5_distrobox
     # - 6_vmm
-    - 7_ubuntu-packages
+    # - 7_ubuntu-packages
 
 - name: Windows VM (laptop only)
   hosts: laptop

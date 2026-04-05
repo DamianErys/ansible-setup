@@ -13,11 +13,10 @@
     vm_ram_mb: 4096
     vm_vcpus: 4
     vm_disk_path: "/var/lib/libvirt/images/tiny11.qcow2"
-    iso_src_path: "{{ home_dir }}/ansible-setup/isos/tiny11.iso"
+    iso_src_path: "{{ playbook_dir }}/isos/tiny11.iso"
     iso_path: "/var/lib/libvirt/images/tiny11.iso"
     shared_folder_host: "/var/lib/libvirt/vm-share"
     shared_folder_tag: "vmshare"
-
 # -----------------------------------------------
 # Step 1 — Verify ISO exists
 # -----------------------------------------------
@@ -117,10 +116,11 @@
 - name: Show VM info
   ansible.builtin.debug:
     var: vm_info.stdout_lines
+    
 
 - name: Write VM setup instructions to Desktop
   ansible.builtin.copy:
-    dest: "{{ home_dir }}/Desktop/VM-SETUP-INSTRUCTIONS.txt"
+    dest: "/root/Desktop/VM-SETUP-INSTRUCTIONS.txt"
     mode: '0644'
     content: |
       ============================================================
