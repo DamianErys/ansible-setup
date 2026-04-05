@@ -28,3 +28,26 @@
 - name: Show install script output
   ansible.builtin.debug:
     msg: "{{ displaylink_result.stdout_lines }}"
+
+- name: Show any install errors
+  ansible.builtin.debug:
+    msg: "{{ displaylink_result.stderr_lines }}"
+  when: displaylink_result.stderr_lines | length > 0
+
+- name: Confirm DKMS module status
+  ansible.builtin.command: dkms status
+  register: dkms_status
+  changed_when: false
+
+- name: Show DKMS status
+  ansible.builtin.debug:
+    msg: "{{ dkms_status.stdout_lines }}"
+
+- name: Confirm displaylink-driver.service is running
+  ansible.builtin.systemd:
+    name: displaylink-driver.service
+  register: dl_service
+
+- name: Show service status
+  ansible.builtin.debug:
+    msg: "displaylink-driver.service is {{ dl_service.status.ActiveState }}"
