@@ -1,243 +1,236 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # roles/18_app-organise/tasks/main.yml
-# Organize GNOME app grid into folders and set pinned dash items
-# ============================================================
 
-# -----------------------------------------------
-# Step 1: Create folder definitions
-# -----------------------------------------------
-- name: Create app folders via dconf
+# ============================================================
+# Step 1: Define folders
+# ============================================================
+- name: Define GNOME app folders
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/shell/app-folder/folder-names"
     value: "['Proton', 'KiCad', 'VMs', 'Games', 'Media', 'Interfaces', 'Accessories', 'Documentation']"
 
-# -----------------------------------------------
-# Step 2: Proton folder
-# -----------------------------------------------
-- name: Create Proton folder structure
+# ============================================================
+# Proton
+# ============================================================
+- name: Proton folder name
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
-    key: "/org/gnome/shell/app-folder/folders/Proton"
-    value: |
-      {
-        'name': 'Proton',
-        'apps': [
-          'me.proton.Mail.desktop',
-          'me.proton.Pass.desktop',
-          'com.protonvpn.www.desktop'
-        ],
-        'categories': [],
-        'translations': {}
-      }
+    key: "/org/gnome/shell/app-folder/folders/Proton/name"
+    value: "'Proton'"
 
-# -----------------------------------------------
-# Step 3: KiCad folder (all KiCad apps)
-# -----------------------------------------------
-- name: Create KiCad folder structure
+- name: Proton folder apps
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
-    key: "/org/gnome/shell/app-folder/folders/KiCad"
-    value: |
-      {
-        'name': 'KiCad',
-        'apps': [
-          'org.kicad.KiCad.desktop',
-          'org.kicad.KiCadGerberViewer.desktop',
-          'org.kicad.KiCadImageConverter.desktop',
-          'org.kicad.KiCadCalculator.desktop',
-          'org.kicad.KiCadPcbEditor.desktop',
-          'org.kicad.KiCadSchematicEditor.desktop'
-        ],
-        'categories': [],
-        'translations': {}
-      }
+    key: "/org/gnome/shell/app-folder/folders/Proton/apps"
+    value: "['me.proton.Mail.desktop', 'me.proton.Pass.desktop', 'com.protonvpn.www.desktop']"
 
-# -----------------------------------------------
-# Step 4: VMs folder
-# -----------------------------------------------
-- name: Create VMs folder structure
+- name: Proton folder categories
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
-    key: "/org/gnome/shell/app-folder/folders/VMs"
-    value: |
-      {
-        'name': 'VMs',
-        'apps': [
-          'ubuntu-box.desktop',
-          'net.pcsx2.PCSX2.desktop',
-          'net.rpcs3.RPCS3.desktop'
-        ],
-        'categories': [],
-        'translations': {}
-      }
+    key: "/org/gnome/shell/app-folder/folders/Proton/categories"
+    value: "@as []"
 
-# -----------------------------------------------
-# Step 5: Games folder
-# -----------------------------------------------
-- name: Create Games folder structure
+# ============================================================
+# KiCad (safe even if not installed)
+# ============================================================
+- name: KiCad folder name
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
-    key: "/org/gnome/shell/app-folder/folders/Games"
-    value: |
-      {
-        'name': 'Games',
-        'apps': [
-          'com.valvesoftware.Steam.desktop',
-          'com.heroicgameslauncher.hgl.desktop',
-          'GameConqueror.desktop'
-        ],
-        'categories': [],
-        'translations': {}
-      }
+    key: "/org/gnome/shell/app-folder/folders/KiCad/name"
+    value: "'KiCad'"
 
-# -----------------------------------------------
-# Step 6: Media folder
-# -----------------------------------------------
-- name: Create Media folder structure
+- name: KiCad folder apps
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
-    key: "/org/gnome/shell/app-folder/folders/Media"
-    value: |
-      {
-        'name': 'Media',
-        'apps': [
-          'org.videolan.VLC.desktop',
-          'org.gnome.Totem.desktop',
-          'org.gnome.Rhythmbox3.desktop',
-          'org.gnome.eog.desktop'
-        ],
-        'categories': [],
-        'translations': {}
-      }
+    key: "/org/gnome/shell/app-folder/folders/KiCad/apps"
+    value: "['org.kicad.KiCad.desktop']"
 
-# -----------------------------------------------
-# Step 7: Interfaces folder (hardware tools)
-# -----------------------------------------------
-- name: Create Interfaces folder structure
+- name: KiCad folder categories
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
-    key: "/org/gnome/shell/app-folder/folders/Interfaces"
-    value: |
-      {
-        'name': 'Interfaces',
-        'apps': [
-          'org.gnome.DiskUtility.desktop',
-          'org.raspberrypi.rpi-imager.desktop',
-          'pulseview.desktop',
-          'org.gnome.baobab.desktop'
-        ],
-        'categories': [],
-        'translations': {}
-      }
+    key: "/org/gnome/shell/app-folder/folders/KiCad/categories"
+    value: "@as []"
 
-# -----------------------------------------------
-# Step 8: Accessories folder
-# -----------------------------------------------
-- name: Create Accessories folder structure
+# ============================================================
+# VMs
+# ============================================================
+- name: VMs folder name
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
-    key: "/org/gnome/shell/app-folder/folders/Accessories"
-    value: |
-      {
-        'name': 'Accessories',
-        'apps': [
-          'org.gnome.Contacts.desktop',
-          'org.gnome.Weather.desktop',
-          'org.gnome.clocks.desktop',
-          'org.gnome.Maps.desktop',
-          'org.gnome.Camera.desktop',
-          'gnome-system-monitor.desktop',
-          'org.gnome.Logs.desktop'
-        ],
-        'categories': [],
-        'translations': {}
-      }
+    key: "/org/gnome/shell/app-folder/folders/VMs/name"
+    value: "'VMs'"
 
-# -----------------------------------------------
-# Step 9: Documentation folder
-# -----------------------------------------------
-- name: Create Documentation folder structure
+- name: VMs folder apps
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
-    key: "/org/gnome/shell/app-folder/folders/Documentation"
-    value: |
-      {
-        'name': 'Documentation',
-        'apps': [
-          'org.texstudio.TeXstudio.desktop',
-          'reqview.desktop',
-          'org.inkscape.Inkscape.desktop'
-        ],
-        'categories': [],
-        'translations': {}
-      }
+    key: "/org/gnome/shell/app-folder/folders/VMs/apps"
+    value: "['ubuntu-box.desktop', 'virt-manager.desktop']"
 
-# -----------------------------------------------
-# Step 10: Hide clutter from main app grid
-# -----------------------------------------------
-- name: Hide system settings duplicates and unwanted apps
+- name: VMs folder categories
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/VMs/categories"
+    value: "@as []"
+
+# ============================================================
+# Games
+# ============================================================
+- name: Games folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Games/name"
+    value: "'Games'"
+
+- name: Games folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Games/apps"
+    value: "['GameConqueror.desktop']"
+
+- name: Games folder categories
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Games/categories"
+    value: "@as []"
+
+# ============================================================
+# Media (FIXED names)
+# ============================================================
+- name: Media folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Media/name"
+    value: "'Media'"
+
+- name: Media folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Media/apps"
+    value: "['org.gnome.Showtime.desktop', 'org.gnome.Decibels.desktop', 'org.gnome.Loupe.desktop']"
+
+- name: Media folder categories
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Media/categories"
+    value: "@as []"
+
+# ============================================================
+# Interfaces (FIXED PulseView)
+# ============================================================
+- name: Interfaces folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Interfaces/name"
+    value: "'Interfaces'"
+
+- name: Interfaces folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Interfaces/apps"
+    value: "['org.gnome.DiskUtility.desktop', 'org.sigrok.PulseView.desktop', 'org.gnome.baobab.desktop']"
+
+- name: Interfaces folder categories
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Interfaces/categories"
+    value: "@as []"
+
+# ============================================================
+# Accessories (FIXED names)
+# ============================================================
+- name: Accessories folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Accessories/name"
+    value: "'Accessories'"
+
+- name: Accessories folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Accessories/apps"
+    value: "['org.gnome.Contacts.desktop', 'org.gnome.Weather.desktop', 'org.gnome.clocks.desktop', 'org.gnome.Maps.desktop', 'org.gnome.Snapshot.desktop', 'org.gnome.SystemMonitor.desktop', 'org.gnome.Logs.desktop']"
+
+- name: Accessories folder categories
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Accessories/categories"
+    value: "@as []"
+
+# ============================================================
+# Documentation
+# ============================================================
+- name: Documentation folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Documentation/name"
+    value: "'Documentation'"
+
+- name: Documentation folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Documentation/apps"
+    value: "['reqview.desktop']"
+
+- name: Documentation folder categories
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Documentation/categories"
+    value: "@as []"
+
+# ============================================================
+# Hide clutter
+# ============================================================
+- name: Hide unwanted apps
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/shell/app-picker-view/entries-to-hide"
-    value: |
-      [
-        'org.gnome.Calendar.desktop',
-        'org.gnome.TextEditor.desktop',
-        'org.gnome.Calculator.desktop',
-        'gnome-system-monitor.desktop',
-        'org.gnome.Logs.desktop',
-        'org.gnome.baobab.desktop'
-      ]
+    value: "['org.gnome.Calendar.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.SystemMonitor.desktop', 'org.gnome.Logs.desktop', 'org.gnome.baobab.desktop']"
 
-# -----------------------------------------------
-# Step 11: Set pinned/favorite apps on dash
-# -----------------------------------------------
-- name: Set favorite apps on dash
+# ============================================================
+# Favourites (FIXED terminal)
+# ============================================================
+- name: Set favourites
   become: true
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/shell/favorite-apps"
-    value: |
-      [
-        'org.mozilla.firefox.desktop',
-        'com.spotify.Client.desktop',
-        'com.rtosta.zapzap.desktop',
-        'com.discordapp.Discord.desktop',
-        'virt-manager.desktop',
-        'com.visualstudio.code.desktop',
-        'org.gnome.Nautilus.desktop',
-        'org.gnome.Terminal.desktop'
-      ]
+    value: "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Ptyxis.desktop', 'virt-manager.desktop']"
 
-# -----------------------------------------------
-# Step 12: Clean up desktop entry cache
-# -----------------------------------------------
-- name: Refresh GNOME Shell app cache
+# ============================================================
+# Reload GNOME Shell (safe)
+# ============================================================
+- name: Reload GNOME Shell
   become: true
   become_user: "{{ main_user }}"
-  ansible.builtin.command: 
-    cmd: killall -3 gnome-shell
-  changed_when: false
+  ansible.builtin.command:
+    cmd: busctl --user call org.gnome.Shell /org/gnome/Shell org.gnome.Shell Eval s 'global.reexec_self()'
   ignore_errors: true
-
-# -----------------------------------------------
-# Step 13: Remove any existing folder entries that might conflict
-# -----------------------------------------------
-- name: Ensure no old folder conflicts
-  become: true
-  become_user: "{{ main_user }}"
-  community.general.dconf:
-    key: "/org/gnome/shell/app-folder/folder-names"
-    value: "['Proton', 'KiCad', 'VMs', 'Games', 'Media', 'Interfaces', 'Accessories', 'Documentation']"
+  changed_when: false
