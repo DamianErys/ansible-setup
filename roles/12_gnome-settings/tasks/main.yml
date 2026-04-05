@@ -1,0 +1,114 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/12_gnome-settings
+# ============================================================
+# roles/12_gnome-settings/tasks/main.yml
+# Clock, night light, privacy, numlock, Nautilus
+# Applies to both machines
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Clock
+# -----------------------------------------------
+- name: Show weekday in top bar clock
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/clock-show-weekday
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: Show week numbers in calendar
+  community.general.dconf:
+    key: /org/gnome/desktop/calendar/show-weekdate
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 2 — Night light
+# -----------------------------------------------
+- name: Enable night light
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: Set night light schedule to sunset-to-sunrise
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/color/night-light-schedule-automatic
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: Set night light temperature (warm)
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/color/night-light-temperature
+    value: "uint32 3500"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 3 — Privacy / diagnostics
+# -----------------------------------------------
+- name: Disable location services
+  community.general.dconf:
+    key: /org/gnome/system/location/enabled
+    value: "false"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: Disable Fedora problem reporting (ABRT)
+  ansible.builtin.systemd:
+    name: abrtd
+    enabled: false
+    state: stopped
+  failed_when: false
+
+- name: Disable automatic bug reporting service
+  ansible.builtin.systemd:
+    name: abrt-ccpp
+    enabled: false
+    state: stopped
+  failed_when: false
+
+- name: Disable usage stats reporting
+  community.general.dconf:
+    key: /org/gnome/desktop/privacy/report-technical-problems
+    value: "false"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: Disable recent files tracking
+  community.general.dconf:
+    key: /org/gnome/desktop/privacy/remember-recent-files
+    value: "false"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 4 — Numlock on at login
+# -----------------------------------------------
+- name: Enable numlock on login
+  community.general.dconf:
+    key: /org/gnome/desktop/peripherals/keyboard/numlock-state
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 5 — Nautilus file manager
+# -----------------------------------------------
+- name: Show hidden files in Nautilus
+  community.general.dconf:
+    key: /org/gtk/settings/file-chooser/show-hidden
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: Sort folders before files in Nautilus
+  community.general.dconf:
+    key: /org/gnome/nautilus/preferences/sort-directories-first
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"

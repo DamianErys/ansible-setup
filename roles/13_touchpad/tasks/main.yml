@@ -1,0 +1,54 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/13_touchpad
+# ============================================================
+# roles/13_touchpad/tasks/main.yml
+# Touchpad config and battery indicator — laptop only
+# Fixes right-click, enables tap-to-click, natural scroll
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Touchpad (laptop only)
+# -----------------------------------------------
+- name: Enable tap to click
+  community.general.dconf:
+    key: /org/gnome/desktop/peripherals/touchpad/tap-to-click
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: Enable two-finger right click
+  community.general.dconf:
+    key: /org/gnome/desktop/peripherals/touchpad/click-method
+    value: "'fingers'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: Enable natural scrolling on touchpad
+  community.general.dconf:
+    key: /org/gnome/desktop/peripherals/touchpad/natural-scroll
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: Enable touchpad while typing
+  community.general.dconf:
+    key: /org/gnome/desktop/peripherals/touchpad/disable-while-typing
+    value: "false"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+# -----------------------------------------------
+# Step 2 — Battery indicator (laptop only)
+# -----------------------------------------------
+- name: Show battery percentage in top bar
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/show-battery-percentage
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'

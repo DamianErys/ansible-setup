@@ -1,0 +1,127 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/11_power
+# ============================================================
+# roles/11_power/tasks/main.yml
+# Power saving, screen dim, suspend rules, hot corners
+# Both: powersave profile, dim after 5 min, no auto suspend on AC
+# Laptop only: dim after 2 min on battery, suspend after 10 min on battery
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Power profile (both machines)
+# -----------------------------------------------
+- name: Install tuned-ppd
+  ansible.builtin.dnf:
+    name: tuned-ppd
+    state: present
+
+- name: Enable and start tuned-ppd service
+  ansible.builtin.systemd:
+    name: tuned-ppd
+    enabled: true
+    state: started
+
+- name: Set power profile to powersave
+  ansible.builtin.command: tuned-adm profile powersave
+  changed_when: false
+
+# -----------------------------------------------
+# Step 2 — Screen dim and suspend (both machines)
+# AC: dim after 5 min, never suspend
+# -----------------------------------------------
+- name: "AC: dim screen after 5 minutes"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout
+    value: "300"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: "AC: action on timeout is blank"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type
+    value: "'blank'"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: "AC: never suspend"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout
+    value: "0"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: "Both: enable screen dimming when idle"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/idle-dim
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: "Both: screen blank after 5 minutes (screensaver)"
+  community.general.dconf:
+    key: /org/gnome/desktop/session/idle-delay
+    value: "uint32 300"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 3 — Laptop battery rules
+# -----------------------------------------------
+- name: "Battery: dim screen after 2 minutes"
+  community.general.dconf:
+    key: /org/gnome/desktop/session/idle-delay
+    value: "uint32 120"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: "Battery: suspend after 10 minutes"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-timeout
+    value: "600"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: "Battery: suspend action"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-type
+    value: "'suspend'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: "Laptop: lid close on battery — suspend"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/lid-close-battery-action
+    value: "'suspend'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: "Laptop: lid close on AC — suspend"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/lid-close-ac-action
+    value: "'suspend'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: "Laptop: power button action — suspend"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/power-button-action
+    value: "'suspend'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+# -----------------------------------------------
+# Step 4 — Disable hot corners (both machines)
+# -----------------------------------------------
+- name: Disable hot corners
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/enable-hot-corners
+    value: "false"
+  become: true
+  become_user: "{{ main_user }}"

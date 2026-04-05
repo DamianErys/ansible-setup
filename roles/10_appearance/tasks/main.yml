@@ -1,0 +1,174 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/10_appearance
+# ============================================================
+# roles/10_appearance/tasks/main.yml
+# Dark mode, wallpaper, lock screen, user avatar
+# Applies to both machines
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Verify media files exist
+# -----------------------------------------------
+- name: Check Desktop.png exists
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/Media/Desktop.png"
+  register: wallpaper_stat
+
+- name: Warn if Desktop.png is missing
+  ansible.builtin.debug:
+    msg: >
+      Desktop.png not found at {{ playbook_dir }}/Media/Desktop.png.
+      Add it under Media/ in the repo and re-run to set wallpaper.
+  when: not wallpaper_stat.stat.exists
+
+- name: Check Lockscreen.png exists
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/Media/Lockscreen.png"
+  register: lockscreen_stat
+
+- name: Warn if Lockscreen.png is missing
+  ansible.builtin.debug:
+    msg: >
+      Lockscreen.png not found at {{ playbook_dir }}/Media/Lockscreen.png.
+      Add it under Media/ in the repo and re-run to set lock screen wallpaper.
+  when: not lockscreen_stat.stat.exists
+
+- name: Check Icon.png exists
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/Media/Icon.png"
+  register: icon_stat
+
+- name: Warn if Icon.png is missing
+  ansible.builtin.debug:
+    msg: >
+      Icon.png not found at {{ playbook_dir }}/Media/Icon.png.
+      Add it under Media/ in the repo and re-run to set avatar.
+  when: not icon_stat.stat.exists
+
+# -----------------------------------------------
+# Step 2 — Dark mode
+# -----------------------------------------------
+- name: Set color scheme to dark
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/color-scheme
+    value: "'prefer-dark'"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: Set GTK theme to dark
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/gtk-theme
+    value: "'Adwaita-dark'"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 3 — Desktop wallpaper
+# -----------------------------------------------
+- name: Ensure backgrounds directory exists
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.local/share/backgrounds"
+    state: directory
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+
+- name: Copy wallpaper to backgrounds folder
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/Media/Desktop.png"
+    dest: "/home/{{ main_user }}/.local/share/backgrounds/Desktop.png"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
+    remote_src: true
+  when: wallpaper_stat.stat.exists
+
+- name: Set wallpaper (light mode)
+  community.general.dconf:
+    key: /org/gnome/desktop/background/picture-uri
+    value: "'file:///home/{{ main_user }}/.local/share/backgrounds/Desktop.png'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: wallpaper_stat.stat.exists
+
+- name: Set wallpaper (dark mode)
+  community.general.dconf:
+    key: /org/gnome/desktop/background/picture-uri-dark
+    value: "'file:///home/{{ main_user }}/.local/share/backgrounds/Desktop.png'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: wallpaper_stat.stat.exists
+
+- name: Set wallpaper scaling mode
+  community.general.dconf:
+    key: /org/gnome/desktop/background/picture-options
+    value: "'zoom'"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 4 — Lock screen wallpaper
+# -----------------------------------------------
+- name: Copy lock screen wallpaper to backgrounds folder
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/Media/Lockscreen.png"
+    dest: "/home/{{ main_user }}/.local/share/backgrounds/Lockscreen.png"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
+    remote_src: true
+  when: lockscreen_stat.stat.exists
+
+- name: Set lock screen wallpaper (light mode)
+  community.general.dconf:
+    key: /org/gnome/desktop/screensaver/picture-uri
+    value: "'file:///home/{{ main_user }}/.local/share/backgrounds/Lockscreen.png'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: lockscreen_stat.stat.exists
+
+- name: Set lock screen wallpaper scaling mode
+  community.general.dconf:
+    key: /org/gnome/desktop/screensaver/picture-options
+    value: "'zoom'"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 5 — User avatar
+# -----------------------------------------------
+- name: Ensure icons directory exists
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.local/share/icons"
+    state: directory
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+
+- name: Copy avatar to icons folder
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/Media/Icon.png"
+    dest: "/home/{{ main_user }}/.local/share/icons/user-avatar.png"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
+    remote_src: true
+  when: icon_stat.stat.exists
+
+- name: Copy avatar to AccountsService
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/Media/Icon.png"
+    dest: "/var/lib/AccountsService/icons/{{ main_user }}"
+    mode: '0644'
+    remote_src: true
+  when: icon_stat.stat.exists
+
+- name: Set avatar path in AccountsService user file
+  ansible.builtin.lineinfile:
+    path: "/var/lib/AccountsService/users/{{ main_user }}"
+    regexp: '^Icon='
+    line: "Icon=/var/lib/AccountsService/icons/{{ main_user }}"
+    create: true
+    mode: '0644'
+  when: icon_stat.stat.exists

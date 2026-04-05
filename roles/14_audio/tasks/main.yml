@@ -1,0 +1,50 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/14_audio
+# ============================================================
+# roles/14_audio/tasks/main.yml
+# PipeWire device management tool — PC only
+# Installs qpwgraph so you can manually hide unused
+# audio sinks/sources (HDMI, S/PDIF, Line Out etc.)
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Install qpwgraph (PC only)
+# -----------------------------------------------
+- name: Install qpwgraph for PipeWire device management
+  ansible.builtin.dnf:
+    name: qpwgraph
+    state: present
+  when: machine_type == 'pc'
+
+- name: Drop usage instructions on Desktop
+  ansible.builtin.copy:
+    dest: "/home/{{ main_user }}/Desktop/AUDIO-SETUP.txt"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
+    content: |
+      ============================================================
+       Audio Device Cleanup — qpwgraph
+      ============================================================
+
+      To hide unused audio devices (HDMI, S/PDIF, Line Out etc.):
+
+      OPTION 1 — qpwgraph (visual)
+        Launch: qpwgraph from app menu
+        Shows all PipeWire nodes — you can disconnect unused ones.
+
+      OPTION 2 — Disable via PulseAudio/PipeWire profile
+        Run: pactl list cards
+        Find the card with the unwanted ports, then:
+        pactl set-card-profile <card_index> <profile_name>
+        Example: pactl set-card-profile 0 output:analog-stereo
+
+      OPTION 3 — Hide a sink permanently
+        Create /etc/pipewire/pipewire.conf.d/hide-sinks.conf
+        and add rules to filter out specific nodes by name.
+        Ask Claude for help generating this file once you know
+        which devices you want to hide.
+
+      ============================================================
+  when: machine_type == 'pc'
