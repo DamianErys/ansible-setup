@@ -15,3 +15,4 @@
     # - 13_touchpad
     # - 14_audio
     - 15_package-config
+    - 16_custom-terminal

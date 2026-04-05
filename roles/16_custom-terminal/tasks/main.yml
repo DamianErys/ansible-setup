@@ -1,0 +1,194 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/16_custom-terminal
+# ============================================================
+# roles/16_custom-terminal/tasks/main.yml
+# Custom bash prompt + quality of life bash config
+#
+# Prompt logic:
+#   Normal:   erys_pc /full/path $                (all red)
+#   Git repo: erys_pc /full/path (branch ✚✘ ↑↓)  (red / blue / purple)
+#   Distrobox: erys_pc [ubuntu] /full/path $      (red prefix, same logic)
+#
+# QoL:
+#   - Case-insensitive tab completion
+#   - Double-tab scrollable menu
+#   - Useful aliases
+#   - Persistent history with timestamps
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Deploy .bashrc
+# -----------------------------------------------
+- name: Deploy .bashrc for main user
+  ansible.builtin.copy:
+    dest: "/home/{{ main_user }}/.bashrc"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
+    content: |
+      # ============================================================
+      # .bashrc
+      # ============================================================
+
+      # Source global bashrc if it exists
+      [[ -f /etc/bashrc ]] && source /etc/bashrc
+
+      # Don't run if not interactive
+      [[ $- != *i* ]] && return
+
+      # -----------------------------------------------
+      # History
+      # -----------------------------------------------
+      HISTFILE=~/.bash_history
+      HISTSIZE=10000
+      HISTFILESIZE=10000
+      HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S  "
+      HISTCONTROL=ignoredups:erasedups
+      shopt -s histappend
+      PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+      # -----------------------------------------------
+      # Shell options
+      # -----------------------------------------------
+      shopt -s autocd        # type a dir name to cd into it
+      shopt -s cdspell       # fix minor typos in cd paths
+      shopt -s dirspell      # fix minor typos in directory completion
+      shopt -s checkwinsize  # update LINES/COLUMNS after each command
+
+      # -----------------------------------------------
+      # Aliases
+      # -----------------------------------------------
+      alias ll='ls -lah --color=auto'
+      alias la='ls -A --color=auto'
+      alias ls='ls --color=auto'
+      alias ..='cd ..'
+      alias ...='cd ../..'
+      alias grep='grep --color=auto'
+      alias gs='git status'
+      alias ga='git add'
+      alias gc='git commit'
+      alias gp='git push'
+      alias gl='git log --oneline --graph --decorate'
+
+      # -----------------------------------------------
+      # Distrobox detection
+      # Returns "[boxname]" if inside a distrobox,
+      # empty string otherwise
+      # -----------------------------------------------
+      _distrobox_label() {
+        if [[ -f /run/.containerenv ]]; then
+          local boxname
+          boxname=$(grep -oP '(?<=^name=").*(?=")' /run/.containerenv 2>/dev/null)
+          [[ -n "$boxname" ]] && echo "[$boxname]"
+        fi
+      }
+
+      # -----------------------------------------------
+      # Git prompt info
+      # Returns "(branch ✚✘ ↑↓)" in the right colours
+      # -----------------------------------------------
+      _git_prompt() {
+        # Are we inside a git repo?
+        local branch
+        branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        [[ -z "$branch" ]] && return
+
+        local staged='' unstaged=''
+        local ahead=0 behind=0
+        local status_sym=''
+
+        # Staged changes
+        if ! git diff --cached --quiet 2>/dev/null; then
+          staged='\[\e[0;35m\]✚'
+        fi
+
+        # Unstaged changes
+        if ! git diff --quiet 2>/dev/null; then
+          unstaged='\[\e[0;35m\]✘'
+        fi
+
+        # Ahead / behind remote
+        local remote
+        remote=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
+        if [[ -n "$remote" ]]; then
+          ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null || echo 0)
+          behind=$(git rev-list --count HEAD..@{u} 2>/dev/null || echo 0)
+        fi
+
+        [[ -n "$staged" || -n "$unstaged" ]] && status_sym=" ${staged}${unstaged}"
+        [[ "$ahead" -gt 0 ]]  && status_sym+=" \[\e[0;35m\]↑${ahead}"
+        [[ "$behind" -gt 0 ]] && status_sym+=" \[\e[0;35m\]↓${behind}"
+
+        # Blue for branch + path, purple for status symbols
+        echo "\[\e[0;34m\](${branch}${status_sym}\[\e[0;34m\])"
+      }
+
+      # -----------------------------------------------
+      # Prompt builder — runs before every prompt
+      # -----------------------------------------------
+      _build_prompt() {
+        local exit_code=$?
+
+        local RED='\[\e[0;31m\]'
+        local BLUE='\[\e[0;34m\]'
+        local RESET='\[\e[0m\]'
+
+        local user="${main_user:-\u}"
+        local box_label
+        box_label=$(_distrobox_label)
+        local git_info
+        git_info=$(_git_prompt)
+
+        if [[ -n "$git_info" ]]; then
+          # Git repo: username in red, path + git info in blue
+          PS1="${RED}${user}${box_label:+ ${box_label}} ${BLUE}\w ${git_info} ${RESET}\$ "
+        else
+          # Normal: everything in red
+          PS1="${RED}${user}${box_label:+ ${box_label}} \w ${RESET}\$ "
+        fi
+
+        return $exit_code
+      }
+
+      PROMPT_COMMAND="_build_prompt; $PROMPT_COMMAND"
+
+# -----------------------------------------------
+# Step 2 — Deploy .inputrc (tab completion QoL)
+# -----------------------------------------------
+- name: Deploy .inputrc for main user
+  ansible.builtin.copy:
+    dest: "/home/{{ main_user }}/.inputrc"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
+    content: |
+      # ============================================================
+      # .inputrc — readline config (affects bash tab completion)
+      # ============================================================
+
+      # Case-insensitive completion
+      set completion-ignore-case on
+
+      # Treat - and _ as equivalent in completion
+      set completion-map-case on
+
+      # Show all matches on first tab press (no need to press twice)
+      set show-all-if-ambiguous on
+
+      # Scrollable menu on double-tab (like zsh)
+      set menu-complete-display-prefix on
+      TAB: menu-complete
+      "\e[Z": menu-complete-backward
+
+      # Show file type indicators (/ for dirs, * for executables)
+      set visible-stats on
+
+      # Color completions by file type
+      set colored-stats on
+
+      # Show common prefix in a different colour
+      set colored-completion-prefix on
+
+      # Don't ring bell on completion
+      set bell-style none
