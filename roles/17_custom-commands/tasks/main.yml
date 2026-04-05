@@ -1,12 +1,7 @@
-#SPDX-License-Identifier: MIT-0
+# SPDX-License-Identifier: MIT-0
 ---
 # roles/17_custom-commands/tasks/main.yml
-# Custom helper commands for daily workflow
-# ============================================================
 
-# -----------------------------------------------
-# Create custom scripts directory
-# -----------------------------------------------
 - name: Create ~/.local/bin directory
   ansible.builtin.file:
     path: "/home/{{ main_user }}/.local/bin"
@@ -20,12 +15,9 @@
     path: "/home/{{ main_user }}/.bashrc"
     line: 'export PATH="$HOME/.local/bin:$PATH"'
     insertbefore: '^# Source global bashrc'
-    owner: "{{ main_user }}"
-    group: "{{ main_user }}"
-    mode: '0644'
 
 # -----------------------------------------------
-# Command: GoToUbuntu (enter ubuntu-box)
+# GoToUbuntu
 # -----------------------------------------------
 - name: Create GoToUbuntu command
   ansible.builtin.copy:
@@ -34,12 +26,11 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/bin/bash
-      # GoToUbuntu - Enter ubuntu-box distrobox
+      #!/usr/bin/env bash
       distrobox enter ubuntu-box
 
 # -----------------------------------------------
-# Command: windows-boot (PC only - reboot to Windows)
+# Windows boot
 # -----------------------------------------------
 - name: Create windows-boot command for PC
   ansible.builtin.copy:
@@ -48,45 +39,34 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/bin/bash
-      # windows-boot - Set next boot to Windows and reboot
-      
-      # Method 1: Try grub2-reboot with the menu entry name
+      #!/usr/bin/env bash
+
       if grub2-reboot "Windows Boot Manager (on /dev/nvme0n1p1)" 2>/dev/null; then
-          echo "Setting next boot to Windows (via grub2-reboot)..."
-          echo "Rebooting now..."
           sudo reboot
-      # Method 2: Try using efibootmgr with boot number
       elif sudo efibootmgr -n 0000 2>/dev/null; then
-          echo "Setting next boot to Windows (Boot0000)..."
-          echo "Rebooting now..."
           sudo reboot
       else
-          echo "Error: Could not find Windows boot entry"
-          echo "Available boot entries:"
+          echo "Could not find Windows boot entry"
           sudo efibootmgr
           exit 1
       fi
   when: machine_type == 'pc'
 
-# -----------------------------------------------
-# Command: reboot-windows (alias for windows-boot)
-# -----------------------------------------------
-- name: Create reboot-windows alias command
+- name: Create reboot-windows alias
   ansible.builtin.copy:
     dest: "/home/{{ main_user }}/.local/bin/reboot-windows"
     mode: '0755'
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/bin/bash
+      #!/usr/bin/env bash
       exec ~/.local/bin/windows-boot
   when: machine_type == 'pc'
 
 # -----------------------------------------------
-# Command: serial (interactive serial port tool)
+# Serial tool
 # -----------------------------------------------
-- name: Install picocom for serial communication
+- name: Install picocom
   ansible.builtin.dnf:
     name: picocom
     state: present
@@ -99,20 +79,9 @@
     group: "{{ main_user }}"
     content: |
       #!/usr/bin/env bash
-      # serial - Interactive serial port connection tool
-
       set -euo pipefail
 
       CONFIG_FILE="$HOME/.serial_config"
-
-      list_ports() {
-          echo "Available serial ports:"
-          if ls /dev/ttyUSB* /dev/ttyACM* /dev/ttyS* 1>/dev/null 2>&1; then
-              ls /dev/ttyUSB* /dev/ttyACM* /dev/ttyS* 2>/dev/null
-          else
-              echo "No serial ports found"
-          fi
-      }
 
       load_defaults() {
           SERIAL_PORT="/dev/ttyUSB0"
@@ -122,140 +91,101 @@
           STOPBITS="1"
       }
 
+      list_ports() {
+          echo "Available serial ports:"
+          ls /dev/ttyUSB* /dev/ttyACM* /dev/ttyS* 2>/dev/null || echo "None found"
+      }
+
       show_config() {
           if [[ -f "$CONFIG_FILE" ]]; then
-              # shellcheck disable=SC1090
               source "$CONFIG_FILE"
-              echo "Current configuration:"
           else
-              echo "No saved configuration. Using defaults."
               load_defaults
           fi
 
-          echo "  Port: $SERIAL_PORT"
-          echo "  Baud rate: $BAUD"
-          echo "  Data bits: $DATABITS"
-          echo "  Parity: $PARITY"
-          echo "  Stop bits: $STOPBITS"
+          echo "Port: $SERIAL_PORT"
+          echo "Baud: $BAUD"
+          echo "Data bits: $DATABITS"
+          echo "Parity: $PARITY"
+          echo "Stop bits: $STOPBITS"
+      }
+
+      save_config() {
+          printf '%s\n' \
+          "SERIAL_PORT=\"$SERIAL_PORT\"" \
+          "BAUD=\"$BAUD\"" \
+          "DATABITS=\"$DATABITS\"" \
+          "PARITY=\"$PARITY\"" \
+          "STOPBITS=\"$STOPBITS\"" \
+          > "$CONFIG_FILE"
       }
 
       configure_serial() {
-          echo "========================================="
-          echo "Serial Port Configuration"
-          echo "========================================="
-
           load_defaults
-
-          if [[ -f "$CONFIG_FILE" ]]; then
-              # shellcheck disable=SC1090
-              source "$CONFIG_FILE"
-          fi
+          [[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
 
           list_ports
           echo ""
 
-          read -r -p "Enter serial port [$SERIAL_PORT]: " input_port
-          SERIAL_PORT="${input_port:-$SERIAL_PORT}"
+          read -r -p "Port [$SERIAL_PORT]: " input
+          SERIAL_PORT="${input:-$SERIAL_PORT}"
 
-          echo ""
-          echo "Common baud rates: 9600, 19200, 38400, 57600, 115200, 230400, 460800"
-          read -r -p "Enter baud rate [$BAUD]: " input_baud
-          BAUD="${input_baud:-$BAUD}"
+          read -r -p "Baud [$BAUD]: " input
+          BAUD="${input:-$BAUD}"
 
-          echo ""
-          echo "Data bits options: 5, 6, 7, 8"
-          read -r -p "Enter data bits [$DATABITS]: " input_databits
-          DATABITS="${input_databits:-$DATABITS}"
+          read -r -p "Data bits [$DATABITS]: " input
+          DATABITS="${input:-$DATABITS}"
 
-          echo ""
-          echo "Parity options: none, even, odd"
-          read -r -p "Enter parity [$PARITY]: " input_parity
-          PARITY="${input_parity:-$PARITY}"
+          read -r -p "Parity [$PARITY]: " input
+          PARITY="${input:-$PARITY}"
 
-          echo ""
-          echo "Stop bits options: 1, 2"
-          read -r -p "Enter stop bits [$STOPBITS]: " input_stopbits
-          STOPBITS="${input_stopbits:-$STOPBITS}"
+          read -r -p "Stop bits [$STOPBITS]: " input
+          STOPBITS="${input:-$STOPBITS}"
 
-        cat > "$CONFIG_FILE" <<-EOF
-            SERIAL_PORT="$SERIAL_PORT"
-            BAUD="$BAUD"
-            DATABITS="$DATABITS"
-            PARITY="$PARITY"
-            STOPBITS="$STOPBITS"
-            EOF
-
-          echo ""
-          echo "Configuration saved to $CONFIG_FILE"
+          save_config
+          echo "Saved."
       }
 
       connect_serial() {
-          if [[ -f "$CONFIG_FILE" ]]; then
-              # shellcheck disable=SC1090
-              source "$CONFIG_FILE"
-          else
-              load_defaults
-          fi
+          [[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE" || load_defaults
 
           if [[ ! -e "$SERIAL_PORT" ]]; then
-              echo "Error: Serial port $SERIAL_PORT does not exist"
+              echo "Port not found"
               list_ports
               exit 1
           fi
 
-          if [[ ! -r "$SERIAL_PORT" || ! -w "$SERIAL_PORT" ]]; then
-              echo "Warning: No permission to access $SERIAL_PORT"
-              echo "Attempting to connect with sudo..."
-              SUDO="sudo"
-          else
-              SUDO=""
-          fi
-
           case "$PARITY" in
-              even) PARITY_FLAG="--parity e" ;;
-              odd)  PARITY_FLAG="--parity o" ;;
-              none) PARITY_FLAG="--parity n" ;;
-              *)    PARITY_FLAG="--parity n" ;;
+              even) P="e" ;;
+              odd)  P="o" ;;
+              *)    P="n" ;;
           esac
 
-          echo "========================================="
-          echo "Connecting to $SERIAL_PORT at $BAUD baud"
-          echo "Data bits: $DATABITS, Parity: $PARITY, Stop bits: $STOPBITS"
-          echo "Press Ctrl+A then Ctrl+Q to exit"
-          echo "========================================="
-          sleep 1
-
-          $SUDO picocom -b "$BAUD" --databits "$DATABITS" $PARITY_FLAG --stopbits "$STOPBITS" "$SERIAL_PORT"
+          picocom -b "$BAUD" --databits "$DATABITS" --parity "$P" --stopbits "$STOPBITS" "$SERIAL_PORT"
       }
 
-      show_menu() {
-          echo ""
-          echo "========================================="
-          echo "Serial Port Tool"
-          echo "========================================="
-          echo "1. Show available ports"
-          echo "2. Show current configuration"
-          echo "3. Configure serial settings"
-          echo "4. Connect to serial port"
-          echo "5. Exit"
-          echo "========================================="
+      menu() {
+          echo "1) Ports"
+          echo "2) Config"
+          echo "3) Setup"
+          echo "4) Connect"
+          echo "5) Exit"
 
-          read -r -p "Select option [1-5]: " option
+          read -r -p "> " opt
 
-          case "$option" in
+          case "$opt" in
               1) list_ports ;;
               2) show_config ;;
               3) configure_serial ;;
               4) connect_serial ;;
-              5) echo "Goodbye!"; exit 0 ;;
-              *) echo "Invalid option" ;;
+              5) exit 0 ;;
           esac
 
-          show_menu
+          menu
       }
 
       if [[ $# -eq 0 ]]; then
-          show_menu
+          menu
       else
           SERIAL_PORT="$1"
           BAUD="${2:-115200}"
@@ -266,7 +196,7 @@
       fi
 
 # -----------------------------------------------
-# Command: update-system (update both host and containers)
+# Update system
 # -----------------------------------------------
 - name: Create update-system command
   ansible.builtin.copy:
@@ -275,19 +205,12 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/bin/bash
-      # update-system - Update Fedora host and all distroboxes
-      
-      echo "Updating Fedora host..."
+      #!/usr/bin/env bash
       sudo dnf update -y
-      
-      echo "Updating ubuntu-box container..."
       distrobox enter ubuntu-box -- sudo apt update && sudo apt upgrade -y
-      
-      echo "Update complete!"
 
 # -----------------------------------------------
-# Command: find-file (smart file search)
+# Find file
 # -----------------------------------------------
 - name: Create find-file command
   ansible.builtin.copy:
@@ -296,41 +219,23 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/bin/bash
-      # find-file - Smart file search
-      # Usage: find-file <pattern>
-      
-      if [[ -z "$1" ]]; then
-          echo "Usage: find-file <pattern>"
-          exit 1
-      fi
-      
-      echo "Searching for: $1"
+      #!/usr/bin/env bash
+      [[ -z "$1" ]] && echo "Usage: find-file <pattern>" && exit 1
       find ~ -type f -iname "*$1*" 2>/dev/null | head -20
 
 # -----------------------------------------------
-# Command: mkcd (mkdir + cd) - FIXED as bash function
+# mkcd
 # -----------------------------------------------
-- name: Add mkcd as bash function to .bashrc
+- name: Add mkcd function
   ansible.builtin.blockinfile:
     path: "/home/{{ main_user }}/.bashrc"
     block: |
-      # mkcd - Create directory and cd into it
       mkcd() {
-          if [[ -z "$1" ]]; then
-              echo "Usage: mkcd <directory>"
-              return 1
-          fi
           mkdir -p "$1" && cd "$1"
       }
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - mkcd function"
-    insertbefore: '^# Source global bashrc'
-    owner: "{{ main_user }}"
-    group: "{{ main_user }}"
-    mode: '0644'
 
 # -----------------------------------------------
-# Command: ports (show listening ports)
+# Ports
 # -----------------------------------------------
 - name: Create ports command
   ansible.builtin.copy:
@@ -339,8 +244,5 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     content: |
-      #!/bin/bash
-      # ports - Show listening ports with process names
-      
-      echo "Listening ports:"
+      #!/usr/bin/env bash
       sudo ss -tulpn | grep LISTEN
