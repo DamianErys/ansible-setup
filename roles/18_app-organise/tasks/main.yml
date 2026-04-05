@@ -1,0 +1,243 @@
+#SPDX-License-Identifier: MIT-0
+---
+# roles/18_app-organise/tasks/main.yml
+# Organize GNOME app grid into folders and set pinned dash items
+# ============================================================
+
+# -----------------------------------------------
+# Step 1: Create folder definitions
+# -----------------------------------------------
+- name: Create app folders via dconf
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folder-names"
+    value: "['Proton', 'KiCad', 'VMs', 'Games', 'Media', 'Interfaces', 'Accessories', 'Documentation']"
+
+# -----------------------------------------------
+# Step 2: Proton folder
+# -----------------------------------------------
+- name: Create Proton folder structure
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Proton"
+    value: |
+      {
+        'name': 'Proton',
+        'apps': [
+          'me.proton.Mail.desktop',
+          'me.proton.Pass.desktop',
+          'com.protonvpn.www.desktop'
+        ],
+        'categories': [],
+        'translations': {}
+      }
+
+# -----------------------------------------------
+# Step 3: KiCad folder (all KiCad apps)
+# -----------------------------------------------
+- name: Create KiCad folder structure
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/KiCad"
+    value: |
+      {
+        'name': 'KiCad',
+        'apps': [
+          'org.kicad.KiCad.desktop',
+          'org.kicad.KiCadGerberViewer.desktop',
+          'org.kicad.KiCadImageConverter.desktop',
+          'org.kicad.KiCadCalculator.desktop',
+          'org.kicad.KiCadPcbEditor.desktop',
+          'org.kicad.KiCadSchematicEditor.desktop'
+        ],
+        'categories': [],
+        'translations': {}
+      }
+
+# -----------------------------------------------
+# Step 4: VMs folder
+# -----------------------------------------------
+- name: Create VMs folder structure
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/VMs"
+    value: |
+      {
+        'name': 'VMs',
+        'apps': [
+          'ubuntu-box.desktop',
+          'net.pcsx2.PCSX2.desktop',
+          'net.rpcs3.RPCS3.desktop'
+        ],
+        'categories': [],
+        'translations': {}
+      }
+
+# -----------------------------------------------
+# Step 5: Games folder
+# -----------------------------------------------
+- name: Create Games folder structure
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Games"
+    value: |
+      {
+        'name': 'Games',
+        'apps': [
+          'com.valvesoftware.Steam.desktop',
+          'com.heroicgameslauncher.hgl.desktop',
+          'GameConqueror.desktop'
+        ],
+        'categories': [],
+        'translations': {}
+      }
+
+# -----------------------------------------------
+# Step 6: Media folder
+# -----------------------------------------------
+- name: Create Media folder structure
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Media"
+    value: |
+      {
+        'name': 'Media',
+        'apps': [
+          'org.videolan.VLC.desktop',
+          'org.gnome.Totem.desktop',
+          'org.gnome.Rhythmbox3.desktop',
+          'org.gnome.eog.desktop'
+        ],
+        'categories': [],
+        'translations': {}
+      }
+
+# -----------------------------------------------
+# Step 7: Interfaces folder (hardware tools)
+# -----------------------------------------------
+- name: Create Interfaces folder structure
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Interfaces"
+    value: |
+      {
+        'name': 'Interfaces',
+        'apps': [
+          'org.gnome.DiskUtility.desktop',
+          'org.raspberrypi.rpi-imager.desktop',
+          'pulseview.desktop',
+          'org.gnome.baobab.desktop'
+        ],
+        'categories': [],
+        'translations': {}
+      }
+
+# -----------------------------------------------
+# Step 8: Accessories folder
+# -----------------------------------------------
+- name: Create Accessories folder structure
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Accessories"
+    value: |
+      {
+        'name': 'Accessories',
+        'apps': [
+          'org.gnome.Contacts.desktop',
+          'org.gnome.Weather.desktop',
+          'org.gnome.clocks.desktop',
+          'org.gnome.Maps.desktop',
+          'org.gnome.Camera.desktop',
+          'gnome-system-monitor.desktop',
+          'org.gnome.Logs.desktop'
+        ],
+        'categories': [],
+        'translations': {}
+      }
+
+# -----------------------------------------------
+# Step 9: Documentation folder
+# -----------------------------------------------
+- name: Create Documentation folder structure
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders/Documentation"
+    value: |
+      {
+        'name': 'Documentation',
+        'apps': [
+          'org.texstudio.TeXstudio.desktop',
+          'reqview.desktop',
+          'org.inkscape.Inkscape.desktop'
+        ],
+        'categories': [],
+        'translations': {}
+      }
+
+# -----------------------------------------------
+# Step 10: Hide clutter from main app grid
+# -----------------------------------------------
+- name: Hide system settings duplicates and unwanted apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-picker-view/entries-to-hide"
+    value: |
+      [
+        'org.gnome.Calendar.desktop',
+        'org.gnome.TextEditor.desktop',
+        'org.gnome.Calculator.desktop',
+        'gnome-system-monitor.desktop',
+        'org.gnome.Logs.desktop',
+        'org.gnome.baobab.desktop'
+      ]
+
+# -----------------------------------------------
+# Step 11: Set pinned/favorite apps on dash
+# -----------------------------------------------
+- name: Set favorite apps on dash
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/favorite-apps"
+    value: |
+      [
+        'org.mozilla.firefox.desktop',
+        'com.spotify.Client.desktop',
+        'com.rtosta.zapzap.desktop',
+        'com.discordapp.Discord.desktop',
+        'virt-manager.desktop',
+        'com.visualstudio.code.desktop',
+        'org.gnome.Nautilus.desktop',
+        'org.gnome.Terminal.desktop'
+      ]
+
+# -----------------------------------------------
+# Step 12: Clean up desktop entry cache
+# -----------------------------------------------
+- name: Refresh GNOME Shell app cache
+  become: true
+  become_user: "{{ main_user }}"
+  ansible.builtin.command: 
+    cmd: killall -3 gnome-shell
+  changed_when: false
+  ignore_errors: true
+
+# -----------------------------------------------
+# Step 13: Remove any existing folder entries that might conflict
+# -----------------------------------------------
+- name: Ensure no old folder conflicts
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folder-names"
+    value: "['Proton', 'KiCad', 'VMs', 'Games', 'Media', 'Interfaces', 'Accessories', 'Documentation']"
