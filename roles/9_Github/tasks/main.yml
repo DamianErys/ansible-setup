@@ -1,0 +1,79 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/9_github
+# ============================================================
+# roles/9_github/tasks/main.yml
+# Installs git and gh CLI, configures git globals,
+# authenticates gh with PAT from vault.
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Install packages
+# -----------------------------------------------
+- name: Install git and gh CLI
+  ansible.builtin.dnf:
+    name:
+      - git
+      - gh
+    state: present
+  become: true
+
+# -----------------------------------------------
+# Step 2 — Git global config
+# -----------------------------------------------
+- name: Configure git user name
+  community.general.git_config:
+    name: user.name
+    value: "{{ vault_github_user }}"
+    scope: global
+
+- name: Configure git user email
+  community.general.git_config:
+    name: user.email
+    value: "{{ vault_github_email }}"
+    scope: global
+
+- name: Configure git default branch
+  community.general.git_config:
+    name: init.defaultBranch
+    value: main
+    scope: global
+
+- name: Configure git editor
+  community.general.git_config:
+    name: core.editor
+    value: nano
+    scope: global
+
+# -----------------------------------------------
+# Step 3 — gh CLI auth
+# -----------------------------------------------
+- name: Authenticate gh CLI with PAT
+  ansible.builtin.shell: |
+    echo "{{ vault_github_pat }}" | gh auth login --with-token
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Set gh git protocol to https
+  ansible.builtin.command: gh config set git_protocol https
+  changed_when: false
+
+- name: Configure git to use gh as credential helper
+  ansible.builtin.command: gh auth setup-git
+  changed_when: false
+
+# -----------------------------------------------
+# Step 4 — Verify
+# -----------------------------------------------
+- name: Verify gh auth status
+  ansible.builtin.command: gh auth status
+  register: gh_status
+  changed_when: false
+
+- name: Show auth status
+  ansible.builtin.debug:
+    var: gh_status.stdout_lines
+
+
+    
