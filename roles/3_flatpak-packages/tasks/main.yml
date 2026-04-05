@@ -70,5 +70,11 @@
   loop:
     - com.valvesoftware.Steam
     - com.heroicgameslauncher.hgl
-    - org.gameconqueror.GameConqueror
+  when: machine_type == 'pc'
+
+- name: Install PC DNF apps
+  ansible.builtin.dnf:
+    name:
+      - gameconqueror
+    state: present
   when: machine_type == 'pc'
