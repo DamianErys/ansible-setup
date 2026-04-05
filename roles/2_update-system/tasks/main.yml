@@ -16,8 +16,12 @@
       - kernel-core
       - kernel-modules
       - kernel-modules-extra
+      - kernel-modules-core
       - kernel-devel
+      - kernel-devel-matched
       - kernel-headers
+      - kernel-tools
+      - kernel-tools-libs
 
 - name: Update firmware (fwupd)
   ansible.builtin.dnf:

@@ -34,8 +34,16 @@
   register: req_install
   changed_when: "'is already the newest version' not in req_install.stdout"
 
-- name: Export ReqView to Fedora app menu with Portal Fix
+- name: Export ReqView with Portal Fix
   ansible.builtin.command: >
     distrobox enter ubuntu-box -- distrobox-export --app reqview --extra-flags "env GTK_USE_PORTAL=1"
+  become: false
+
+- name: Install ReqView graphical dependencies
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- /bin/bash -c "sudo apt update && sudo apt install -y 
+    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 
+    libgtk-3-0 libgbm1 libasound2 libxshmfence1 libxcomposite1 
+    libxdamage1 libxrandr2 libxkbcommon0"
   become: false
   changed_when: false
