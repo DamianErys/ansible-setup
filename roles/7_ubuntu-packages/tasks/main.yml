@@ -29,12 +29,13 @@
 
 - name: Install ReqView inside ubuntu-box
   ansible.builtin.command: >
-    distrobox enter ubuntu-box -- sudo apt install -y /home/{{ ansible_user_id }}/tmp_installers/ReqView.deb
+    distrobox enter ubuntu-box -- sudo apt install -y /home/{{ lookup('env', 'USER') }}/tmp_installers/ReqView.deb
   become: false
   register: req_install
   changed_when: "'is already the newest version' not in req_install.stdout"
 
-- name: Export ReqView to Fedora app menu
-  ansible.builtin.command: distrobox enter ubuntu-box -- distrobox-export --app reqview
+- name: Export ReqView to Fedora app menu with Portal Fix
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- distrobox-export --app reqview --extra-flags "env GTK_USE_PORTAL=1"
   become: false
   changed_when: false
