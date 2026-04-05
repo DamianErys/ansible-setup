@@ -62,7 +62,7 @@
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/desktop/app-folders/folders/VMs/apps"
-    value: "['ubuntu-box.desktop', 'virt-manager.desktop']"
+    value: "['ubuntu-box.desktop', 'virt-manager.desktop', 'net.rpcs3.RPCS3.desktop', 'net.pcsx2.PCSX2.desktop']"
 
 # ============================================================
 # Games
@@ -79,7 +79,7 @@
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/desktop/app-folders/folders/Games/apps"
-    value: "['GameConqueror.desktop']"
+    value: "['GameConqueror.desktop', 'com.valvesoftware.Steam.desktop', 'com.heroicgameslauncher.hgl.desktop']"
 
 # ============================================================
 # Media
@@ -96,7 +96,7 @@
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/desktop/app-folders/folders/Media/apps"
-    value: "['org.gnome.Showtime.desktop', 'org.gnome.Decibels.desktop', 'org.gnome.Loupe.desktop']"
+    value: "['org.gnome.Showtime.desktop', 'org.gnome.Decibels.desktop', 'org.gnome.Loupe.desktop', 'org.videolan.VLC.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Evince.desktop']"
 
 # ============================================================
 # Interfaces
@@ -113,7 +113,7 @@
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/desktop/app-folders/folders/Interfaces/apps"
-    value: "['org.gnome.DiskUtility.desktop', 'org.sigrok.PulseView.desktop', 'org.gnome.baobab.desktop']"
+    value: "['org.gnome.DiskUtility.desktop', 'org.sigrok.PulseView.desktop', 'org.gnome.baobab.desktop', 'com.raspberrypi.rpi-imager.desktop', 'org.fedoraproject.MediaWriter.desktop', 'com.anydesk.Anydesk.desktop']"
 
 # ============================================================
 # Accessories
@@ -130,7 +130,7 @@
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/desktop/app-folders/folders/Accessories/apps"
-    value: "['org.gnome.Contacts.desktop', 'org.gnome.Weather.desktop', 'org.gnome.clocks.desktop', 'org.gnome.Maps.desktop', 'org.gnome.Snapshot.desktop', 'org.gnome.SystemMonitor.desktop', 'org.gnome.Logs.desktop']"
+    value: "['org.gnome.Contacts.desktop', 'org.gnome.Weather.desktop', 'org.gnome.clocks.desktop', 'org.gnome.Maps.desktop', 'org.gnome.Snapshot.desktop', 'org.gnome.SystemMonitor.desktop', 'org.gnome.Logs.desktop', 'org.gnome.Calendar.desktop', 'org.gnome.Software.desktop', 'yelp.desktop', 'gnome-control-center.desktop']"
 
 # ============================================================
 # Documentation
@@ -147,7 +147,7 @@
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/desktop/app-folders/folders/Documentation/apps"
-    value: "['reqview.desktop']"
+    value: "['reqview.desktop', 'com.github.PintaProject.Pinta.desktop', 'org.inkscape.Inkscape.desktop']"
 
 # ============================================================
 # Favourites (dash/taskbar)
@@ -157,7 +157,7 @@
   become_user: "{{ main_user }}"
   community.general.dconf:
     key: "/org/gnome/shell/favorite-apps"
-    value: "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Ptyxis.desktop', 'virt-manager.desktop']"
+    value: "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Ptyxis.desktop', 'virt-manager.desktop', 'com.spotify.Client.desktop', 'com.visualstudio.code.desktop', 'com.discordapp.Discord.desktop']"
 
 # ============================================================
 # Clean up the old wrong-path keys left by previous runs
