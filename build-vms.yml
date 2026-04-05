@@ -14,11 +14,3 @@
     # - 6_vmm
     - 7_ubuntu-packages
     # - 8_vm-setup
-
-- name: Configure git user name
-  community.general.git_config:
-    name: user.name
-    value: "{{ vault_github_user }}"
-    scope: global
-  become: true
-  become_user: "{{ main_user }}"  
