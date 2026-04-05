@@ -8,9 +8,10 @@
   vars_files:
     - vault.yml
   roles:
-    - 9_github
-    - 10_appearance
-    - 11_power
-    - 12_gnome-settings
-    - 13_touchpad
-    - 14_audio
+    # - 9_github
+    # - 10_appearance
+    # - 11_power
+    # - 12_gnome-settings
+    # - 13_touchpad
+    # - 14_audio
+    - 15_package-config

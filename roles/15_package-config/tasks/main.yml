@@ -1,0 +1,50 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/15_package-config
+# ============================================================
+# roles/15_package-config/tasks/main.yml
+# Firefox — remove default bookmarks, disable Fedora
+# override pages, keep Firefox default homepage.
+# Uses policies.json (enterprise policy, no profile needed)
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Deploy Firefox policies.json
+# Applies system-wide, no profile path needed
+# -----------------------------------------------
+- name: Ensure Firefox policies directory exists
+  ansible.builtin.file:
+    path: /etc/firefox/policies
+    state: directory
+    mode: '0755'
+
+- name: Deploy Firefox policies.json
+  ansible.builtin.copy:
+    dest: /etc/firefox/policies/policies.json
+    mode: '0644'
+    content: |
+      {
+        "policies": {
+          "NoDefaultBookmarks": true,
+          "DisplayBookmarksToolbar": "never",
+          "OverrideFirstRunPage": "",
+          "OverridePostUpdatePage": "",
+          "StartDownloadsInTempDirectory": false,
+          "FirefoxHome": {
+            "TopSites": true,
+            "Highlights": false,
+            "Pocket": false,
+            "Snippets": false,
+            "Locked": false
+          },
+          "UserMessaging": {
+            "WhatsNew": false,
+            "ExtensionRecommendations": false,
+            "FeatureRecommendations": false,
+            "UrlbarInterventions": false,
+            "SkipOnboarding": true,
+            "MoreFromMozilla": false,
+            "Locked": false
+          }
+        }
+      }
