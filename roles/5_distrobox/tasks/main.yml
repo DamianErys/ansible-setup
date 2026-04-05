@@ -5,7 +5,6 @@
 # roles/distrobox/tasks/main.yml
 # Installs Podman + Distrobox and creates ubuntu-box on both machines
 # ============================================================
----
 # tasks file for roles/5_distrobox
 
 - name: Install Podman and Distrobox on Fedora host

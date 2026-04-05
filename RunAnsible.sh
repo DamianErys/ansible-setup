@@ -155,8 +155,26 @@ if [[ -f "$SCRIPT_RPM" ]] && [[ ! -f "$REPO_RPM" ]]; then
 elif [[ -f "$REPO_RPM" ]]; then
   pass "DisplayLink.rpm already in place"
 else
-  warn "DisplayLink.rpm not found on USB or in repo — ZenScreen role will fail if run"
+  warn "DisplayLink.rpm not found on Home or in repo — ZenScreen role will fail if run"
   warn "Copy DisplayLink.rpm next to RunAnsible.sh and re-run"
+fi
+
+# Reqview deb
+echo "Checking for Reqview. deb..."
+SCRIPT_RPM="$SCRIPT_DIR/ReqView.deb"
+REPO_RPM="$INSTALLERS_DIR/ReqView.deb"
+
+mkdir -p "$INSTALLERS_DIR"
+
+if [[ -f "$SCRIPT_RPM" ]] && [[ ! -f "$REPO_RPM" ]]; then
+  info "Moving ReqView.deb from Home to repo installers folder..."
+  mv "$SCRIPT_RPM" "$REPO_RPM"
+  pass "ReqView.deb moved to $INSTALLERS_DIR"
+elif [[ -f "$REPO_RPM" ]]; then
+  pass "ReqView.deb already in place"
+else
+  warn "ReqView.deb not found on USB or in repo — ZenScreen role will fail if run"
+  warn "Copy ReqView.deb next to RunAnsible.sh and re-run"
 fi
 
 # Required files
