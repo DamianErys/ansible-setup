@@ -19,12 +19,12 @@ fi
 echo "Installing kernel headers and build tools..."
 dnf install -y \
     "kernel-devel-$(uname -r)" \
-    "kernel-headers" \
+    "kernel-headers-$(uname -r)" \
     gcc make dkms
 
 # ── 3. Install the DisplayLink RPM (triggers DKMS build automatically) ───────
 echo "Installing DisplayLink RPM: ${RPM_PATH}..."
-rpm -Uvh "${RPM_PATH}"
+rpm -Uvh "${RPM_PATH}" --nodeps
 
 # ── 4. Verify DKMS module built successfully ─────────────────────────────────
 echo "Verifying DKMS build..."

@@ -75,5 +75,4 @@
   ansible.builtin.debug:
     var: gh_status.stdout_lines
 
-
     
