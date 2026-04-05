@@ -26,12 +26,12 @@
       {
         "policies": {
           "Homepage": {
-          "URL": "about:home",
-          "Locked": false,
-          "StartPage": "homepage"
-        },
+            "URL": "about:home",
+            "Locked": false,
+            "StartPage": "homepage"
+          },
           "NoDefaultBookmarks": true,
-          "DisplayBookmarksToolbar": "never",
+          "Bookmarks": [],
           "OverrideFirstRunPage": "",
           "OverridePostUpdatePage": "",
           "StartDownloadsInTempDirectory": false,
