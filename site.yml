@@ -5,7 +5,7 @@
 # ============================================================
 
 - import_playbook: build-base.yml
-- import_playbook: build-vms.yml
+# - import_playbook: build-vms.yml
 - import_playbook: configure.yml
 - import_playbook: desktop.yml
 # - import_playbook: connectivity.yml

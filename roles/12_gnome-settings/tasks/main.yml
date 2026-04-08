@@ -138,33 +138,23 @@
     name: gnome-extensions-app
     state: present
 
-- name: Download and install Workspace Switcher Manager (includes wraparound)
+- name: Download and install Workspace Switcher WrapAround (circular workspaces)
   become: true
   become_user: "{{ main_user }}"
   block:
-    - name: Download latest Workspace Switcher Manager
+    - name: Download Workspace Switcher WrapAround
       ansible.builtin.get_url:
-        url: https://github.com/G-dH/workspace-switcher-manager/releases/latest/download/workspace-switcher-manager@G-dH.github.com.zip
-        dest: /tmp/workspace-switcher-manager@G-dH.github.com.zip
+        url: https://github.com/war1025/WorkspaceSwitcherWrapAround/releases/latest/download/workspace-switcher-wraparound@war1025.zip
+        dest: /tmp/workspace-switcher-wraparound@war1025.zip
         mode: '0644'
 
-    - name: Install Workspace Switcher Manager extension
+    - name: Install the extension
       ansible.builtin.shell: |
-        gnome-extensions install --force /tmp/workspace-switcher-manager@G-dH.github.com.zip
+        gnome-extensions install --force /tmp/workspace-switcher-wraparound@war1025.zip
       args:
-        creates: "{{ ansible_env.HOME }}/.local/share/gnome-shell/extensions/workspace-switcher-manager@G-dH.github.com"
-      register: install_result
-      changed_when: install_result.rc == 0
+        creates: "{{ ansible_env.HOME }}/.local/share/gnome-shell/extensions/workspace-switcher-wraparound@war1025"
 
-    - name: Clean up temporary zip file
+    - name: Clean up temporary file
       ansible.builtin.file:
-        path: /tmp/workspace-switcher-manager@G-dH.github.com.zip
+        path: /tmp/workspace-switcher-wraparound@war1025.zip
         state: absent
-
-- name: Enable Workspace Switcher Manager
-  community.general.dconf:
-    key: /org/gnome/shell/enabled-extensions
-    value: >-
-      ['workspace-switcher-manager@G-dH.github.com']
-  become: true
-  become_user: "{{ main_user }}"
