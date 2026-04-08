@@ -133,11 +133,9 @@
 # -----------------------------------------------
 # Step 7 — GNOME Shell extensions
 # -----------------------------------------------
-- name: Install gnome-extensions-app and tool
+- name: Install GNOME Extensions app (GUI)
   ansible.builtin.dnf:
-    name:
-      - gnome-extensions-app
-      - gnome-shell-extension-tool  # provides gnome-extensions CLI
+    name: gnome-extensions-app
     state: present
 
 - name: Install workspace-switch-wraparound extension (circular workspaces)
@@ -148,8 +146,10 @@
       https://extensions.gnome.org/extension-data/workspace-switch-wraparound@theychx.org.v11.shell-extension.zip
   args:
     creates: "{{ ansible_env.HOME }}/.local/share/gnome-shell/extensions/workspace-switch-wraparound@theychx.org"
+  register: install_result
+  changed_when: install_result.rc == 0
 
-- name: Enable workspace-switch-wraparound
+- name: Enable workspace-switch-wraparound extension
   community.general.dconf:
     key: /org/gnome/shell/enabled-extensions
     value: >-
