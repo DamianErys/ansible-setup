@@ -112,3 +112,47 @@
     value: "true"
   become: true
   become_user: "{{ main_user }}"
+
+  # -----------------------------------------------
+# Step 6 — Multi-tasking / Workspace behaviour
+# -----------------------------------------------
+- name: Show workspaces on all displays
+  community.general.dconf:
+    key: /org/gnome/mutter/workspaces-only-on-primary
+    value: "false"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: Scope app switcher to current workspace only
+  community.general.dconf:
+    key: /org/gnome/shell/app-switcher/current-workspace-only
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 7 — GNOME Shell extensions
+# -----------------------------------------------
+- name: Install gnome-extensions-app and tool
+  ansible.builtin.dnf:
+    name:
+      - gnome-extensions-app
+      - gnome-shell-extension-tool  # provides gnome-extensions CLI
+    state: present
+
+- name: Install workspace-switch-wraparound extension (circular workspaces)
+  become: true
+  become_user: "{{ main_user }}"
+  ansible.builtin.shell: |
+    gnome-extensions install --force \
+      https://extensions.gnome.org/extension-data/workspace-switch-wraparound@theychx.org.v11.shell-extension.zip
+  args:
+    creates: "{{ ansible_env.HOME }}/.local/share/gnome-shell/extensions/workspace-switch-wraparound@theychx.org"
+
+- name: Enable workspace-switch-wraparound
+  community.general.dconf:
+    key: /org/gnome/shell/enabled-extensions
+    value: >-
+      ['workspace-switch-wraparound@theychx.org']
+  become: true
+  become_user: "{{ main_user }}"

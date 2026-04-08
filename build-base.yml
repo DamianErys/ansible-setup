@@ -10,5 +10,5 @@
   roles:
     - 1_remove-packages      # remove bloat first
     - 2_update-system        # then update what remains
-    - 3_flatpak-packages     # then install flatpaks
+    - 3_all-packages     # then install flatpaks
     - 4_asus-zenscreen       # then drivers
