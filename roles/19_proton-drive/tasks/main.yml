@@ -1,11 +1,11 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for 19_proton-drive
-- name: Check if rclone is installed (via Flatpak)
-  ansible.builtin.command: 
-    cmd: "flatpak run --command=rclone io.github.zarestia_dev.rclone-manager --version"
-  register: rclone_check
-  changed_when: false
+# - name: Check if rclone is installed (via Flatpak)
+#   ansible.builtin.command: 
+#     cmd: "flatpak run --command=rclone io.github.zarestia_dev.rclone-manager --version"
+#   register: rclone_check
+#   changed_when: false
 
 - name: Generate obscured password for Proton Drive
   ansible.builtin.shell: 
