@@ -1,15 +1,17 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for 19_proton-drive
-- name: Check if rclone is installed
-  ansible.builtin.command: rclone --version
+- name: Check if rclone is installed (via Flatpak)
+  ansible.builtin.command: 
+    cmd: "flatpak run --command=rclone io.github.zarestia_dev.rclone-manager --version"
   register: rclone_check
   changed_when: false
 
 - name: Generate obscured password for Proton Drive
-  ansible.builtin.shell: "rclone obscure {{ proton_pass }}"
+  ansible.builtin.shell: 
+    cmd: "flatpak run --command=rclone io.github.zarestia_dev.rclone-manager obscure {{ proton_pass }}"
   register: obscured_pass_output
-  no_log: true  # Prevents the password from appearing in Ansible logs
+  no_log: true
   changed_when: false
 
 - name: Set obscured password fact
@@ -19,14 +21,14 @@
 
 - name: Ensure rclone config directory exists
   ansible.builtin.file:
-    path: "~/.config/rclone"
+    path: "{{ ansible_env.HOME }}/.config/rclone"
     state: directory
     mode: '0700'
-  become: false # Run as your user, not root
+  become: false
 
 - name: Deploy rclone configuration
   ansible.builtin.template:
     src: rclone.conf.j2
-    dest: "~/.config/rclone/rclone.conf"
+    dest: "{{ ansible_env.HOME }}/.config/rclone/rclone.conf"
     mode: '0600'
   become: false
