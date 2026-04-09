@@ -1,6 +1,0 @@
-#SPDX-License-Identifier: MIT-0
----
-# vars file for 19_proton-drive
-rclone_config_dir: "/home/{{ main_user }}/.config/rclone"
-rclone_config_file: "/home/{{ main_user }}/.config/rclone/rclone.conf"
-rclone_state_dir: "/home/{{ main_user }}/.local/share/rclone"

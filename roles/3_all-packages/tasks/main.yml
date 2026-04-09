@@ -41,7 +41,6 @@
     - com.discordapp.Discord
     - org.kicad.KiCad
     - org.raspberrypi.rpi-imager
-    - io.github.zarestia_dev.rclone-manage
     - com.github.flxzt.rnote 
 
 - name: Install PulseView via DNF
