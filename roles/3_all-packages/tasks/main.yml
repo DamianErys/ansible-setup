@@ -41,8 +41,8 @@
     - com.discordapp.Discord
     - org.kicad.KiCad
     - org.raspberrypi.rpi-imager
-    - org.rclone.Rclone
-    - com.github.flxzt.rnote
+    - io.github.zarestia_dev.rclone-manager  # The UI-based Rclone Manager
+    - com.github.flxzt.rnote                 # Rnote for handwriting/sketching
 
 - name: Install PulseView via DNF
   ansible.builtin.dnf:
