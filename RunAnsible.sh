@@ -175,20 +175,20 @@ else
   warn "Copy ReqView.deb next to RunAnsible.sh and re-run"
 fi
 
-# XPPen.rpm deb
-echo "Checking for XPPen.rpm..."
-SCRIPT_RPM="$SCRIPT_DIR/XPPen.rpm"
-REPO_RPM="$INSTALLERS_DIR/XPPen.rpm"
+# XPPen.tar.gz deb
+echo "Checking for XPPen.tar.gz..."
+SCRIPT_RPM="$SCRIPT_DIR/XPPen.tar.gz"
+REPO_RPM="$INSTALLERS_DIR/XPPen.tar.gz"
 
 if [[ -f "$SCRIPT_RPM" ]] && [[ ! -f "$REPO_RPM" ]]; then
-  info "Moving XPPen.rpm from Home to repo installers folder..."
+  info "Moving XPPen.tar.gz from Home to repo installers folder..."
   mv "$SCRIPT_RPM" "$REPO_RPM"
-  pass "XPPen.rpm moved to $INSTALLERS_DIR"
+  pass "XPPen.tar.gz moved to $INSTALLERS_DIR"
 elif [[ -f "$REPO_RPM" ]]; then
-  pass "XPPen.rpm already in place"
+  pass "XPPen.tar.gz already in place"
 else
-  warn "ReqView.debXPPen.rpm not found on USB or in repo — ZenScreen role will fail if run"
-  warn "Copy XPPen.rpm next to RunAnsible.sh and re-run"
+  warn "ReqView.debXPPen.tar.gz not found on USB or in repo — ZenScreen role will fail if run"
+  warn "Copy XPPen.tar.gz next to RunAnsible.sh and re-run"
 fi
 
 # Required files

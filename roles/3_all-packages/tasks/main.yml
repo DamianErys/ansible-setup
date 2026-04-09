@@ -49,11 +49,25 @@
     name: pulseview
     state: present
 
-- name: Install XPPen driver from local RPM
-  ansible.builtin.dnf:
-    name: "{{ playbook_dir }}/installers/XPPen.rpm"
-    state: present
-    disable_gpg_check: true
+- name: Extract XPPen Driver
+  ansible.builtin.unarchive:
+    src: "{{ playbook_dir }}/installers/XPPen.tar.gz"
+    dest: /opt/
+    remote_src: false
+  become: true
+
+- name: Create Desktop Entry for XPPen
+  ansible.builtin.copy:
+    dest: /usr/share/applications/xppen.desktop
+    content: |
+      [Desktop Entry]
+      Name=XP-Pen Tablet
+      Exec=/opt/pentablet/pentablet
+      Icon=/opt/pentablet/pentablet.png
+      Type=Application
+      Categories=Settings;
+    mode: '0644'
+  become: true
 
 # # -----------------------------------------------
 # # Apps — laptop only
