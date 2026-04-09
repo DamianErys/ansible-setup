@@ -41,11 +41,19 @@
     - com.discordapp.Discord
     - org.kicad.KiCad
     - org.raspberrypi.rpi-imager
+    - org.rclone.Rclone
+    - com.github.flxzt.rnote
 
 - name: Install PulseView via DNF
   ansible.builtin.dnf:
     name: pulseview
     state: present
+
+- name: Install XPPen driver from local RPM
+  ansible.builtin.dnf:
+    name: "{{ playbook_dir }}/installers/XPPen.rpm"
+    state: present
+    disable_gpg_check: true
 
 # # -----------------------------------------------
 # # Apps — laptop only
