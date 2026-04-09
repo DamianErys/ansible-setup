@@ -17,7 +17,21 @@
           → Windows Binaries → spice-guest-tools
         Clipboard sharing activates automatically once installed.
 
-      STEP 4 — Office
-        Drop installer into /var/lib/libvirt/vm-share from host,
-        then install inside the VM.
       ============================================================
+
+      \To get OneDrive working, you usually need to flip a specific "switch" in the Windows Registry that Tiny11 turns off to save background cycles.
+The Registry Fix
+
+    In your Tiny11 VM, press Win + R, type regedit, and hit Enter.
+
+    Navigate to the following path:
+
+        HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\OneDrive
+
+    Look for a value named DisableFileSyncNGSC.
+
+    Double-click it and change the Value data from 1 to 0.
+
+        Note: If you don't see this key or the OneDrive folder at all, you may need to download the OneDrive standalone installer from Microsoft first.
+
+    Restart the VM.
