@@ -1,0 +1,5 @@
+#!/bin/bash
+# ports - Show listening ports with process names
+
+echo "Listening ports:"
+sudo ss -tulpn | grep LISTEN

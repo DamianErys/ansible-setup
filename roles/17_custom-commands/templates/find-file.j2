@@ -1,0 +1,11 @@
+#!/bin/bash
+# find-file - Smart file search
+# Usage: find-file <pattern>
+
+if [[ -z "$1" ]]; then
+    echo "Usage: find-file <pattern>"
+    exit 1
+fi
+
+echo "Searching for: $1"
+find ~ -type f -iname "*$1*" 2>/dev/null | head -20

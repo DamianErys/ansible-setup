@@ -1,0 +1,10 @@
+#!/bin/bash
+# update-system - Update Fedora host and all distroboxes
+
+echo "Updating Fedora host..."
+sudo dnf update -y
+
+echo "Updating ubuntu-box container..."
+distrobox enter ubuntu-box -- sudo apt update && sudo apt upgrade -y
+
+echo "Update complete!"
