@@ -34,21 +34,6 @@
 - name: Remove bloat packages
   ansible.builtin.dnf:
     name:
-      - libreoffice-core
-      - libreoffice-common
-      - libreoffice-data
-      - libreoffice-calc
-      - libreoffice-writer
-      - libreoffice-impress
-      - libreoffice-draw
-      - libreoffice-base
-      - libreoffice-filters
-      - libreoffice-graphicfilter
-      - libreoffice-gtk3
-      - libreoffice-help-en
-      - libreoffice-langpack-en
-      - libreoffice-pyuno
-      - libreoffice-emailmerge
       - rhythmbox
       - totem
       - gnome-maps
@@ -77,7 +62,7 @@
   ansible.builtin.lineinfile:
     path: /etc/dnf/dnf.conf
     regexp: '^excludepkgs='
-    line: "excludepkgs=libreoffice*,abrt*,malcontent*,rhythmbox,totem,gnome-maps,\
+    line: "excludepkgs=abrt*,malcontent*,rhythmbox,totem,gnome-maps,\
            gnome-weather,gnome-contacts,gnome-calendar,gnome-boxes,gnome-connections,\
            gnome-tour,gnome-font-viewer,gnome-characters,simple-scan,cheese,unoconv"
 
@@ -89,11 +74,6 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - /usr/share/applications/libreoffice-calc.desktop
-    - /usr/share/applications/libreoffice-impress.desktop
-    - /usr/share/applications/libreoffice-startcenter.desktop
-    - /usr/share/applications/libreoffice-writer.desktop
-    - /usr/share/applications/libreoffice-xsltfilter.desktop
     - /usr/share/applications/org.freedesktop.GnomeAbrt.desktop
     - /usr/share/applications/org.freedesktop.problems.applet.desktop
     - /usr/share/applications/org.gnome.Boxes.desktop
@@ -117,7 +97,6 @@
     - org.gnome.Contacts
     - org.gnome.Maps
     - org.gnome.Weather
-    - org.libreoffice.LibreOffice
     - org.gnome.SimpleScan
     - org.gnome.Cheese
   changed_when: false
