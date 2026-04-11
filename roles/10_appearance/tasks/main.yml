@@ -142,6 +142,20 @@
   become_user: "{{ main_user }}"
   changed_when: false
 
+- name: Configure GDM lock screen background
+  ansible.builtin.copy:
+    dest: /etc/dconf/db/gdm.d/01-background
+    content: |
+      [org/gnome/desktop/background]
+      picture-uri='file:///home/{{ main_user }}/.local/share/backgrounds/Lockscreen.png'
+      picture-options='zoom'
+  become: true
+  when: lockscreen_stat.stat.exists
+
+- name: Update dconf
+  ansible.builtin.command: dconf update
+  become: true
+  when: lockscreen_stat.stat.exists
 # -----------------------------------------------
 # Step 5 — User avatar
 # -----------------------------------------------
