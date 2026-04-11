@@ -27,13 +27,29 @@
   changed_when: false
 
 # -----------------------------------------------
-# Step 2 — Screen dim and suspend (both machines)
-# AC: dim after 5 min, never suspend
+# Prerequisites
 # -----------------------------------------------
-- name: "AC: dim screen after 5 minutes"
+- name: Ensure system dependencies for dconf are present
+  ansible.builtin.dnf:
+    name: python3-psutil
+    state: present
+  become: true
+
+# -----------------------------------------------
+# Step 2 — Screen dim and suspend (both machines)
+# -----------------------------------------------
+
+- name: "Both: enable screen dimming when idle"
   community.general.dconf:
-    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout
-    value: "300"
+    key: /org/gnome/settings-daemon/plugins/power/idle-dim
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: "Both: screen blank after 5 minutes"
+  community.general.dconf:
+    key: /org/gnome/desktop/session/idle-delay
+    value: "uint32 300"
   become: true
   become_user: "{{ main_user }}"
 
@@ -44,31 +60,19 @@
   become: true
   become_user: "{{ main_user }}"
 
-- name: "AC: never suspend"
+- name: "AC: never suspend (set timeout to 0)"
   community.general.dconf:
     key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout
     value: "0"
   become: true
   become_user: "{{ main_user }}"
 
-- name: "Both: enable screen dimming when idle"
-  community.general.dconf:
-    key: /org/gnome/settings-daemon/plugins/power/idle-dim
-    value: "true"
-  become: true
-  become_user: "{{ main_user }}"
-
-- name: "Both: screen blank after 5 minutes (screensaver)"
-  community.general.dconf:
-    key: /org/gnome/desktop/session/idle-delay
-    value: "uint32 300"
-  become: true
-  become_user: "{{ main_user }}"
-
 # -----------------------------------------------
 # Step 3 — Laptop battery rules
 # -----------------------------------------------
-- name: "Battery: dim screen after 2 minutes"
+
+# NOTE: This overrides the 'Both: screen blank' setting above if on a laptop
+- name: "Battery: blank screen faster (2 mins) if on laptop"
   community.general.dconf:
     key: /org/gnome/desktop/session/idle-delay
     value: "uint32 120"
@@ -92,32 +96,20 @@
   become_user: "{{ main_user }}"
   when: machine_type == 'laptop'
 
-- name: "Laptop: lid close on battery — suspend"
+- name: "Laptop: lid/button actions"
   community.general.dconf:
-    key: /org/gnome/settings-daemon/plugins/power/lid-close-battery-action
+    key: "/org/gnome/settings-daemon/plugins/power/{{ item.key }}"
     value: "'suspend'"
-  become: true
-  become_user: "{{ main_user }}"
-  when: machine_type == 'laptop'
-
-- name: "Laptop: lid close on AC — suspend"
-  community.general.dconf:
-    key: /org/gnome/settings-daemon/plugins/power/lid-close-ac-action
-    value: "'suspend'"
-  become: true
-  become_user: "{{ main_user }}"
-  when: machine_type == 'laptop'
-
-- name: "Laptop: power button action — suspend"
-  community.general.dconf:
-    key: /org/gnome/settings-daemon/plugins/power/power-button-action
-    value: "'suspend'"
+  loop:
+    - { key: 'lid-close-battery-action' }
+    - { key: 'lid-close-ac-action' }
+    - { key: 'power-button-action' }
   become: true
   become_user: "{{ main_user }}"
   when: machine_type == 'laptop'
 
 # -----------------------------------------------
-# Step 4 — Disable hot corners (both machines)
+# Step 4 — Disable hot corners
 # -----------------------------------------------
 - name: Disable hot corners
   community.general.dconf:
