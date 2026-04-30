@@ -116,7 +116,30 @@
 # -----------------------------------------------
 # Step 4 — Lock screen wallpaper
 # -----------------------------------------------
-- name: Copy lock screen wallpaper to backgrounds folder
+# There are two separate layers here that both need to be correct:
+#
+#   A) User lock screen shield (Super+L / idle timeout while logged in)
+#      → org.gnome.desktop.screensaver.picture-uri in the USER's dconf
+#      → set via community.general.dconf module (needs become_user, no live session required)
+#
+#   B) GDM login screen background (before login)
+#      → also org.gnome.desktop.screensaver.picture-uri, but in GDM's own dconf profile
+#      → requires /etc/dconf/profile/gdm to exist and point at the system-db
+#      → image must be readable by the gdm system user (put in /usr/share/backgrounds/)
+#
+# The image is copied to BOTH locations so each layer can read it.
+# -----------------------------------------------
+
+- name: Ensure user backgrounds directory exists
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.local/share/backgrounds"
+    state: directory
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0755'
+  when: lockscreen_stat.stat.exists
+
+- name: Copy lock screen wallpaper to user backgrounds folder
   ansible.builtin.copy:
     src: "{{ playbook_dir }}/Media/Lockscreen.png"
     dest: "/home/{{ main_user }}/.local/share/backgrounds/Lockscreen.png"
@@ -126,36 +149,93 @@
     remote_src: true
   when: lockscreen_stat.stat.exists
 
-- name: Set lock screen wallpaper via gsettings
-  ansible.builtin.shell: |
-    gsettings set org.gnome.desktop.screensaver picture-uri \
-      'file:///home/{{ main_user }}/.local/share/backgrounds/Lockscreen.png'
-  become: true
-  become_user: "{{ main_user }}"
-  changed_when: false
-  when: lockscreen_stat.stat.exists
-
-- name: Set lock screen scaling mode
-  ansible.builtin.shell: |
-    gsettings set org.gnome.desktop.screensaver picture-options 'zoom'
-  become: true
-  become_user: "{{ main_user }}"
-  changed_when: false
-
-- name: Configure GDM lock screen background
+# GDM runs as the gdm system user and cannot read files in /home/
+# The image must live somewhere world-readable
+- name: Copy lock screen wallpaper to system backgrounds folder (for GDM)
   ansible.builtin.copy:
-    dest: /etc/dconf/db/gdm.d/01-background
-    content: |
-      [org/gnome/desktop/background]
-      picture-uri='file:///home/{{ main_user }}/.local/share/backgrounds/Lockscreen.png'
-      picture-options='zoom'
+    src: "{{ playbook_dir }}/Media/Lockscreen.png"
+    dest: "/usr/share/backgrounds/Lockscreen.png"
+    owner: root
+    group: root
+    mode: '0644'
+    remote_src: true
   become: true
   when: lockscreen_stat.stat.exists
 
-- name: Update dconf
+# ── A) User lock screen shield ────────────────────────────────────────────────
+- name: Set user lock screen wallpaper via dconf
+  community.general.dconf:
+    key: /org/gnome/desktop/screensaver/picture-uri
+    value: "'file:///home/{{ main_user }}/.local/share/backgrounds/Lockscreen.png'"
+    state: present
+  become: true
+  become_user: "{{ main_user }}"
+  when: lockscreen_stat.stat.exists
+
+- name: Set user lock screen scaling mode via dconf
+  community.general.dconf:
+    key: /org/gnome/desktop/screensaver/picture-options
+    value: "'zoom'"
+    state: present
+  become: true
+  become_user: "{{ main_user }}"
+
+# ── B) GDM login screen ───────────────────────────────────────────────────────
+# Step 1: Create the GDM dconf profile so GDM actually reads the system-db.
+# Without this file, nothing in /etc/dconf/db/gdm.d/ is ever applied.
+- name: Ensure /etc/dconf/profile directory exists
+  ansible.builtin.file:
+    path: /etc/dconf/profile
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: Create GDM dconf profile
+  ansible.builtin.copy:
+    dest: /etc/dconf/profile/gdm
+    content: |
+      user-db:user
+      system-db:gdm
+      file-db:/usr/share/gdm/greeter-dconf-defaults
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+# Step 2: Ensure the gdm.d directory exists
+- name: Ensure /etc/dconf/db/gdm.d directory exists
+  ansible.builtin.file:
+    path: /etc/dconf/db/gdm.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+# Step 3: Write the screensaver key (NOT the background key) to the GDM db.
+# The lock screen shield reads screensaver, not background — this was the
+# original bug causing the grey screen.
+- name: Configure GDM lock screen background via dconf db
+  ansible.builtin.copy:
+    dest: /etc/dconf/db/gdm.d/01-lockscreen-background
+    content: |
+      [org/gnome/desktop/screensaver]
+      picture-uri='file:///usr/share/backgrounds/Lockscreen.png'
+      picture-options='zoom'
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  when: lockscreen_stat.stat.exists
+
+# Step 4: Compile the dconf database so the changes actually take effect
+- name: Update dconf database
   ansible.builtin.command: dconf update
   become: true
   when: lockscreen_stat.stat.exists
+  
 # -----------------------------------------------
 # Step 5 — User avatar
 # -----------------------------------------------
