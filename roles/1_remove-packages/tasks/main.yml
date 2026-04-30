@@ -5,7 +5,6 @@
 # roles/remove-packages/tasks/main.yml
 # Remove Fedora bloat and permanently exclude it from DNF
 # ============================================================
-
 # -----------------------------------------------
 # Step 1 — Remove dependants first
 # -----------------------------------------------
@@ -26,10 +25,11 @@
       - python3-abrt-addon
     state: absent
     autoremove: false
-  ignore_errors: true
+    ignore_errors: true
 
 # -----------------------------------------------
 # Step 2 — Remove main bloat packages
+# Note: LibreOffice intentionally kept
 # -----------------------------------------------
 - name: Remove bloat packages
   ansible.builtin.dnf:
@@ -51,7 +51,7 @@
       - abrt
     state: absent
     autoremove: true
-  ignore_errors: true
+    ignore_errors: true
 
 # -----------------------------------------------
 # Step 3 — Permanently exclude from DNF
@@ -86,7 +86,9 @@
 # -----------------------------------------------
 # Step 5 — Hide from GNOME Software via Flatpak
 # Masks the Flathub listing so it won't appear
-# as a suggested install in GNOME Software
+# as a suggested install in GNOME Software.
+# Also masks the stock Extensions app — replaced
+# by Extension Manager (installed in a later task)
 # -----------------------------------------------
 - name: Mask bloat apps from GNOME Software (Flatpak)
   ansible.builtin.command: >
@@ -99,6 +101,7 @@
     - org.gnome.Weather
     - org.gnome.SimpleScan
     - org.gnome.Cheese
+    - org.gnome.Extensions
   changed_when: false
   ignore_errors: true
   register: mask_result
