@@ -5,6 +5,10 @@
 # roles/asus-zenscreen/tasks/main.yml
 # Runs install_displaylink.sh to install DisplayLink/ZenScreen
 # RPM expected at: {{ playbook_dir }}/installers/DisplayLink.rpm
+#
+# RPM source: https://github.com/displaylink-rpm/displaylink-rpm/releases
+# Current tested version: fedora-44-displaylink-1.14.15-1.github_evdi.x86_64.rpm
+# Rename to DisplayLink.rpm before placing on USB
 # ============================================================
 
 - name: Check that DisplayLink RPM exists in installers folder
@@ -16,7 +20,9 @@
   ansible.builtin.fail:
     msg: >
       DisplayLink.rpm not found at {{ playbook_dir }}/installers/DisplayLink.rpm.
-      Copy it from your USB drive and re-run.
+      Download fedora-44-displaylink-1.14.15-1.github_evdi.x86_64.rpm from
+      https://github.com/displaylink-rpm/displaylink-rpm/releases,
+      rename it to DisplayLink.rpm, and place it next to RunAnsible.sh.
   when: not displaylink_rpm.stat.exists
 
 - name: Run DisplayLink install script
