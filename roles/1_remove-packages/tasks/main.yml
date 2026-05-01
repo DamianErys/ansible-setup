@@ -25,7 +25,7 @@
       - python3-abrt-addon
     state: absent
     autoremove: false
-    ignore_errors: true
+  ignore_errors: true
 
 # -----------------------------------------------
 # Step 2 — Remove main bloat packages
@@ -51,7 +51,7 @@
       - abrt
     state: absent
     autoremove: true
-    ignore_errors: true
+  ignore_errors: true
 
 # -----------------------------------------------
 # Step 3 — Permanently exclude from DNF
