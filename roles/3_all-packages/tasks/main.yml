@@ -75,10 +75,6 @@
     mode: '0644'
   become: true
 
-- name: Install VS Code from Microsoft repo (laptop + workstation)
-  ansible.builtin.dnf:
-    name: code
-    state: present
 
 # -----------------------------------------------
 # Apps — laptop + workstation
@@ -89,7 +85,6 @@
   ansible.builtin.dnf:
     name: texlive-scheme-full
     state: present
-  when: machine_type in ['laptop', 'workstation']
 
 # -----------------------------------------------
 # Apps — PC only

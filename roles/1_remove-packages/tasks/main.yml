@@ -29,7 +29,6 @@
 
 # -----------------------------------------------
 # Step 2 — Remove main bloat packages
-# Note: LibreOffice intentionally kept
 # -----------------------------------------------
 - name: Remove bloat packages
   ansible.builtin.dnf:
