@@ -4,6 +4,11 @@
 # ============================================================
 # roles/flatpak-packages/tasks/main.yml
 # Install Flatpak, add Flathub, and install apps by machine type
+#
+# Machine behaviour:
+#   laptop      — shared apps + VS Code (Microsoft repo) + TexLive full
+#   workstation — shared apps + VS Code (Microsoft repo) + TexLive full
+#   pc          — shared apps (Flatpak VS Code) + Steam + Heroic + GameConqueror
 # ============================================================
 
 # -----------------------------------------------
@@ -18,9 +23,10 @@
   ansible.builtin.command: >
     flatpak remote-add --if-not-exists flathub
     https://dl.flathub.org/repo/flathub.flatpakrepo
+  changed_when: false
 
 # -----------------------------------------------
-# Apps — both machines
+# Apps — all machines
 # -----------------------------------------------
 - name: Install shared Flatpak apps
   community.general.flatpak:
@@ -28,9 +34,7 @@
     state: present
     remote: flathub
   loop:
-    - com.visualstudio.code
     - com.spotify.Client
-    - org.texstudio.TeXstudio
     - com.anydesk.Anydesk
     - com.protonvpn.www
     - me.proton.Mail
@@ -41,21 +45,24 @@
     - com.discordapp.Discord
     - org.kicad.KiCad
     - org.raspberrypi.rpi-imager
-    - com.github.flxzt.rnote 
+    - com.github.flxzt.rnote
+    - com.mattjakeman.ExtensionManager
+    - org.gnome.Evolution
+    - org.qbittorrent.qBittorrent
 
 - name: Install PulseView via DNF
   ansible.builtin.dnf:
     name: pulseview
     state: present
 
-- name: Extract XPPen Driver
+- name: Extract XPPen driver
   ansible.builtin.unarchive:
     src: "{{ playbook_dir }}/installers/XPPen.tar.gz"
     dest: /opt/
     remote_src: false
   become: true
 
-- name: Create Desktop Entry for XPPen
+- name: Create desktop entry for XPPen
   ansible.builtin.copy:
     dest: /usr/share/applications/xppen.desktop
     content: |
@@ -68,17 +75,21 @@
     mode: '0644'
   become: true
 
-# # -----------------------------------------------
-# # Apps — laptop only
-# # -----------------------------------------------
-# - name: Install laptop Flatpak apps
-#   community.general.flatpak:
-#     name: "{{ item }}"
-#     state: present
-#     remote: flathub
-#   loop:
-#     - []                                    # placeholder — add laptop-only apps here
-#   when: machine_type == 'laptop'
+- name: Install VS Code from Microsoft repo (laptop + workstation)
+  ansible.builtin.dnf:
+    name: code
+    state: present
+
+# -----------------------------------------------
+# Apps — laptop + workstation
+# Required for LaTeX extension support
+# -----------------------------------------------
+
+- name: Install TexLive full scheme for LaTeX in VS Code (laptop + workstation)
+  ansible.builtin.dnf:
+    name: texlive-scheme-full
+    state: present
+  when: machine_type in ['laptop', 'workstation']
 
 # -----------------------------------------------
 # Apps — PC only

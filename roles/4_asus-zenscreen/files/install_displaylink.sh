@@ -1,7 +1,7 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT-0
 # install_displaylink.sh
-# Installs DisplayLink (EVDI + DisplayLinkManager) on Fedora 43
+# Installs DisplayLink (EVDI + DisplayLinkManager) on Fedora 44
 # Usage: install_displaylink.sh <path-to-DisplayLink.rpm>
 # Called by roles/asus-zenscreen/tasks/main.yml
 
@@ -16,13 +16,12 @@ if rpm -q displaylink &>/dev/null; then
 fi
 
 # ── 2. Install build dependencies ────────────────────────────────────────────
+# No kernel excludes needed — kernel lock has been removed
 echo "Installing kernel headers and build tools..."
 dnf install -y \
     "kernel-devel-$(uname -r)" \
     kernel-headers \
-    gcc make dkms \
-    --exclude="kernel-core*" \
-    --exclude="kernel-modules*"
+    gcc make dkms
 
 # ── 3. Install the DisplayLink RPM (triggers DKMS build automatically) ───────
 echo "Installing DisplayLink RPM: ${RPM_PATH}..."

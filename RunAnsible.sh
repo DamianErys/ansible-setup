@@ -25,7 +25,7 @@ info() { echo -e "${CYAN}  → $1${NC}"; }
 
 echo ""
 echo "======================================="
-echo " Machine Setup — Bootstrap & Preflight " 
+echo " Machine Setup — Bootstrap & Preflight "
 echo "======================================="
 echo ""
 
@@ -35,13 +35,15 @@ echo ""
 echo "Which machine is this?"
 echo "  1) Laptop"
 echo "  2) PC"
+echo "  3) Workstation"
 echo ""
-read -rp "  Enter 1 or 2: " MACHINE_CHOICE
+read -rp "  Enter 1, 2 or 3: " MACHINE_CHOICE
 
 case "$MACHINE_CHOICE" in
   1) MACHINE_TYPE="laptop" ;;
   2) MACHINE_TYPE="pc" ;;
-  *) fail "Invalid choice — enter 1 for laptop or 2 for PC" ;;
+  3) MACHINE_TYPE="workstation" ;;
+  *) fail "Invalid choice — enter 1 for Laptop, 2 for PC, or 3 for Workstation" ;;
 esac
 
 echo ""
@@ -141,63 +143,34 @@ if [[ "$MACHINE_TYPE" == "laptop" ]]; then
   fi
 fi
 
-# DisplayLink RPM
-echo "Checking for DisplayLink.rpm..."
-SCRIPT_RPM="$SCRIPT_DIR/DisplayLink.rpm"
-REPO_RPM="$INSTALLERS_DIR/DisplayLink.rpm"
+# Helper: move installer file into repo if found next to the script
+move_installer() {
+  local label="$1" src="$SCRIPT_DIR/$2" dest="$INSTALLERS_DIR/$2"
+  echo "Checking for $label..."
+  if [[ -f "$src" ]] && [[ ! -f "$dest" ]]; then
+    info "Moving $label from script directory to repo installers folder..."
+    mv "$src" "$dest"
+    pass "$label moved to $INSTALLERS_DIR"
+  elif [[ -f "$dest" ]]; then
+    pass "$label already in place"
+  else
+    warn "$label not found — dependent role will fail if run"
+    warn "Copy $2 next to RunAnsible.sh and re-run"
+  fi
+}
 
 mkdir -p "$INSTALLERS_DIR"
+move_installer "DisplayLink.rpm" "DisplayLink.rpm"
+move_installer "ReqView.deb"     "ReqView.deb"
+move_installer "XPPen.tar.gz"    "XPPen.tar.gz"
 
-if [[ -f "$SCRIPT_RPM" ]] && [[ ! -f "$REPO_RPM" ]]; then
-  info "Moving DisplayLink.rpm from USB to repo installers folder..."
-  mv "$SCRIPT_RPM" "$REPO_RPM"
-  pass "DisplayLink.rpm moved to $INSTALLERS_DIR"
-elif [[ -f "$REPO_RPM" ]]; then
-  pass "DisplayLink.rpm already in place"
-else
-  warn "DisplayLink.rpm not found on Home or in repo — ZenScreen role will fail if run"
-  warn "Copy DisplayLink.rpm next to RunAnsible.sh and re-run"
-fi
-
-# Reqview deb
-echo "Checking for Reqview. deb..."
-SCRIPT_RPM="$SCRIPT_DIR/ReqView.deb"
-REPO_RPM="$INSTALLERS_DIR/ReqView.deb"
-
-if [[ -f "$SCRIPT_RPM" ]] && [[ ! -f "$REPO_RPM" ]]; then
-  info "Moving ReqView.deb from Home to repo installers folder..."
-  mv "$SCRIPT_RPM" "$REPO_RPM"
-  pass "ReqView.deb moved to $INSTALLERS_DIR"
-elif [[ -f "$REPO_RPM" ]]; then
-  pass "ReqView.deb already in place"
-else
-  warn "ReqView.deb not found on USB or in repo — ZenScreen role will fail if run"
-  warn "Copy ReqView.deb next to RunAnsible.sh and re-run"
-fi
-
-# XPPen.tar.gz deb
-echo "Checking for XPPen.tar.gz..."
-SCRIPT_RPM="$SCRIPT_DIR/XPPen.tar.gz"
-REPO_RPM="$INSTALLERS_DIR/XPPen.tar.gz"
-
-if [[ -f "$SCRIPT_RPM" ]] && [[ ! -f "$REPO_RPM" ]]; then
-  info "Moving XPPen.tar.gz from Home to repo installers folder..."
-  mv "$SCRIPT_RPM" "$REPO_RPM"
-  pass "XPPen.tar.gz moved to $INSTALLERS_DIR"
-elif [[ -f "$REPO_RPM" ]]; then
-  pass "XPPen.tar.gz already in place"
-else
-  warn "ReqView.debXPPen.tar.gz not found on USB or in repo — ZenScreen role will fail if run"
-  warn "Copy XPPen.tar.gz next to RunAnsible.sh and re-run"
-fi
-
-# Required files
+# Required repo files
 echo "Checking required files..."
-[[ -f "$VAULT_FILE" ]]  || fail "vault.yml not found in repo"
+[[ -f "$VAULT_FILE" ]] || fail "vault.yml not found in repo"
 pass "vault.yml found"
-[[ -f "$INVENTORY" ]]   || fail "inventory.ini not found in repo"
+[[ -f "$INVENTORY" ]]  || fail "inventory.ini not found in repo"
 pass "inventory.ini found"
-[[ -f "$PLAYBOOK" ]]    || fail "site.yml not found in repo"
+[[ -f "$PLAYBOOK" ]]   || fail "site.yml not found in repo"
 pass "site.yml found"
 
 # Vault decryption
@@ -223,22 +196,18 @@ echo "======================================="
 echo ""
 
 # -----------------------------------------------
-# STAGE 3.5 — Temporary System Tweaks
+# STAGE 3.5 — Temporary system tweaks
 # -----------------------------------------------
 echo "--- Stage 3.5: Inhibiting sleep & disabling IPv6 ---"
 echo ""
 
-# Prevent screen dimming and suspend (GNOME)
 if command -v gsettings &>/dev/null; then
   info "Disabling sleep and screen dimming..."
-  # Set sleep to 'never' on AC
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
-  # Set screen blank to 'never'
   gsettings set org.gnome.desktop.session idle-delay 0
   pass "Power management inhibited"
 fi
 
-# Disable IPv6
 info "Disabling IPv6..."
 if sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null && \
    sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null; then
@@ -246,11 +215,6 @@ if sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null && \
 else
   warn "Failed to disable IPv6 via sysctl"
 fi
-
-
-sudo dnf install [package] --exclude=kernel*
-sudo dnf install 'dnf-command(versionlock)'
-sudo dnf versionlock add kernel-core-6.17.1-300.fc43
 
 echo ""
 
