@@ -53,31 +53,38 @@
           }
         }
       }
-
 #SPDX-License-Identifier: MIT-0
 # tasks file for roles/proton-drive
 # ============================================================
 # roles/proton-drive/tasks/main.yml
-# Installs rclone, deploys Proton Drive config, and mounts
-# via a user-level systemd service with VFS directory caching
+# Installs rclone, creates mount point, deploys systemd unit.
 #
-# Required vault variables:
-#   vault_proton_user     — your Proton login email
-#   vault_proton_pass     — your plaintext Proton password
-#                          (Ansible will obscure it for the config)
+# Auth and first mount are done MANUALLY after Ansible runs:
+#
+#   1. Run:  rclone config
+#            → New remote → name: proton → type: protondrive
+#            → enter your Proton email and password
+#            → 2FA if applicable
+#
+#   2. Test: rclone lsd proton:
+#            (should list your Drive root folders)
+#
+#   3. Enable the mount:
+#            systemctl --user daemon-reload
+#            systemctl --user enable --now rclone-proton.service
+#
+# The systemd unit is already deployed by this role — step 3
+# is all that's needed after auth is confirmed working.
 #
 # Cache behaviour:
-#   --dir-cache-time 60m  — folder listings cached for 1 hour,
-#                           so subdirectory traversal is instant
-#                           after the first visit
-#   --vfs-cache-mode full — files only download when opened,
-#                           not on folder browse
+#   On every mount start, a background job warms the directory
+#   cache via rclone rc vfs/refresh so folder traversal is
+#   instant by the time you sit down to use the machine.
+#   Files are NOT downloaded — only folder listings are cached.
 # ============================================================
 
 # -----------------------------------------------
-# Step 1 — Install rclone and fuse
-# Fedora DNF rclone may be behind upstream.
-# fuse3 is required for rclone mount.
+# Step 1 — Install rclone and fuse3
 # -----------------------------------------------
 - name: Install rclone and fuse3
   ansible.builtin.dnf:
@@ -87,48 +94,7 @@
     state: present
 
 # -----------------------------------------------
-# Step 2 — Obscure the Proton password
-# rclone obscure is NOT encryption — it just
-# prevents the password being plaintext in the
-# config file. The vault holds the real password.
-# -----------------------------------------------
-- name: Obscure Proton password for rclone config
-  ansible.builtin.command:
-    cmd: rclone obscure {{ vault_proton_pass }}
-  register: rclone_obscured_pass
-  changed_when: false
-  no_log: true
-
-# -----------------------------------------------
-# Step 3 — Deploy rclone config
-# Writes ~/.config/rclone/rclone.conf with the
-# protondrive remote. If you already have other
-# remotes configured manually, move them into
-# this template or use a separate config file.
-# -----------------------------------------------
-- name: Ensure rclone config directory exists
-  ansible.builtin.file:
-    path: "/home/{{ main_user }}/.config/rclone"
-    state: directory
-    owner: "{{ main_user }}"
-    group: "{{ main_user }}"
-    mode: '0700'
-
-- name: Deploy rclone config with Proton Drive remote
-  ansible.builtin.copy:
-    dest: "/home/{{ main_user }}/.config/rclone/rclone.conf"
-    owner: "{{ main_user }}"
-    group: "{{ main_user }}"
-    mode: '0600'
-    content: |
-      [proton]
-      type = protondrive
-      user = {{ vault_proton_user }}
-      pass = {{ rclone_obscured_pass.stdout | trim }}
-  no_log: true
-
-# -----------------------------------------------
-# Step 4 — Create mount point
+# Step 2 — Create mount point
 # -----------------------------------------------
 - name: Create Proton Drive mount point
   ansible.builtin.file:
@@ -139,18 +105,7 @@
     mode: '0755'
 
 # -----------------------------------------------
-# Step 5 — Deploy user systemd service
-# Runs as the user (not root) so the mount
-# appears under the user's session correctly.
-#
-# Key mount flags explained:
-#   --vfs-cache-mode full     only download files when opened
-#   --dir-cache-time 60m      cache folder listings for 1hr —
-#                             this is what fixes slow browsing
-#   --vfs-cache-max-size 2G   cap local cache disk usage
-#   --vfs-read-ahead 128M     buffer ahead when reading files
-#   --poll-interval 15m       check remote for changes every 15m
-#   --transfers 4             parallel transfer limit
+# Step 3 — Ensure user systemd directory exists
 # -----------------------------------------------
 - name: Ensure user systemd directory exists
   ansible.builtin.file:
@@ -160,6 +115,55 @@
     group: "{{ main_user }}"
     mode: '0755'
 
+# -----------------------------------------------
+# Step 4 — Deploy cache warm script
+# Runs in the background after mount starts.
+# Waits for the RC server to be ready, then
+# triggers a recursive directory refresh.
+# --fast-list batches API calls to reduce
+# the number of round trips to Proton.
+# -----------------------------------------------
+- name: Deploy rclone cache warm script
+  ansible.builtin.copy:
+    dest: "/home/{{ main_user }}/.local/bin/rclone-warm-cache.sh"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0755'
+    content: |
+      #!/bin/bash
+      # Warms the rclone VFS directory cache after mount starts.
+      # Called by rclone-proton.service via ExecStartPost.
+      # Runs in background so it doesn't block the service start.
+
+      # Wait for the RC server to be ready
+      for i in $(seq 1 30); do
+        rclone rc vfs/list 2>/dev/null && break
+        sleep 1
+      done
+
+      # Trigger recursive directory cache refresh (no file downloads)
+      rclone rc vfs/refresh recursive=true _async=true 2>/dev/null \
+        && echo "rclone dir cache warm started" \
+        || echo "rclone dir cache warm failed — RC server not responding"
+
+- name: Ensure ~/.local/bin exists
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.local/bin"
+    state: directory
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0755'
+
+# -----------------------------------------------
+# Step 5 — Deploy systemd user service unit
+# Does NOT enable or start — do that manually
+# after confirming rclone auth works.
+#
+# --rc enables the remote control server so
+# ExecStartPost can call vfs/refresh against it.
+# --rc-no-auth skips token auth since this is
+# local-only on a single user machine.
+# -----------------------------------------------
 - name: Deploy rclone Proton Drive systemd user service
   ansible.builtin.copy:
     dest: "/home/{{ main_user }}/.config/systemd/user/rclone-proton.service"
@@ -178,36 +182,16 @@
         --vfs-cache-mode full \
         --vfs-cache-max-size 2G \
         --vfs-read-ahead 128M \
-        --dir-cache-time 60m \
+        --dir-cache-time 720h \
         --poll-interval 15m \
         --transfers 4 \
-        --log-level INFO
+        --log-level INFO \
+        --rc \
+        --rc-no-auth
+      ExecStartPost=/bin/bash %h/.local/bin/rclone-warm-cache.sh
       ExecStop=/bin/fusermount3 -u %h/ProtonDrive
       Restart=on-failure
       RestartSec=30
 
       [Install]
       WantedBy=default.target
-
-# -----------------------------------------------
-# Step 6 — Enable and start the service
-# -----------------------------------------------
-- name: Enable and start rclone Proton Drive service
-  ansible.builtin.systemd:
-    name: rclone-proton.service
-    enabled: true
-    state: started
-    scope: user
-  become: true
-  become_user: "{{ main_user }}"
-  environment:
-    XDG_RUNTIME_DIR: "/run/user/{{ main_user_uid }}"
-
-- name: Verify mount is active
-  ansible.builtin.command:
-    cmd: mountpoint -q /home/{{ main_user }}/ProtonDrive
-  register: mount_check
-  changed_when: false
-  failed_when: mount_check.rc != 0
-  become: true
-  become_user: "{{ main_user }}"
