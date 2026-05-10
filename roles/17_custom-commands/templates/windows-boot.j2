@@ -1,22 +1,15 @@
 #!/bin/bash
-# windows-boot - Set next boot to Windows and reboot
+# windows-boot - One-time boot to Windows, default stays Fedora
 
-# The exact string from your GRUB menu
+# 1. Force the EFI NextBoot variable (Most reliable for bypassing GRUB quirks)
+echo "Setting EFI BootNext to 0000 (Windows)..."
+sudo efibootmgr -n 0000 > /dev/null
+
+# 2. Tell GRUB the next boot is Windows, but don't touch the permanent default
+# We use the index 0 here if Windows is the first item after Fedora, 
+# but using the name is safer.
 WINDOWS_TITLE="Windows Boot Manager (on /dev/nvme1n1p1)"
-# The exact EFI index from your efibootmgr output
-WINDOWS_EFI_ID="0000"
+sudo grub2-reboot "$WINDOWS_TITLE"
 
-echo "Attempting to set next boot to Windows..."
-
-# Method 1: GRUB (Best for integrated management)
-if sudo grub2-reboot "$WINDOWS_TITLE"; then
-    echo "Success: GRUB next-boot set to $WINDOWS_TITLE."
-    sudo reboot
-# Method 2: EFI (Fallthrough if GRUB fails)
-elif sudo efibootmgr -n "$WINDOWS_EFI_ID"; then
-    echo "Success: EFI NextBoot set to $WINDOWS_EFI_ID."
-    sudo reboot
-else
-    echo "Error: Could not trigger Windows reboot."
-    exit 1
-fi
+echo "Rebooting into Windows. Fedora remains your permanent default."
+sudo reboot
