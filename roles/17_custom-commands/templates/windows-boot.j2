@@ -1,19 +1,22 @@
 #!/bin/bash
 # windows-boot - Set next boot to Windows and reboot
 
-# Method 1: Try grub2-reboot with the menu entry name
-if grub2-reboot "Windows Boot Manager (on /dev/nvme0n1p1)" 2>/dev/null; then
-    echo "Setting next boot to Windows (via grub2-reboot)..."
-    echo "Rebooting now..."
+# The exact string from your GRUB menu
+WINDOWS_TITLE="Windows Boot Manager (on /dev/nvme1n1p1)"
+# The exact EFI index from your efibootmgr output
+WINDOWS_EFI_ID="0000"
+
+echo "Attempting to set next boot to Windows..."
+
+# Method 1: GRUB (Best for integrated management)
+if sudo grub2-reboot "$WINDOWS_TITLE"; then
+    echo "Success: GRUB next-boot set to $WINDOWS_TITLE."
     sudo reboot
-# Method 2: Try using efibootmgr with boot number
-elif sudo efibootmgr -n 0000 2>/dev/null; then
-    echo "Setting next boot to Windows (Boot0000)..."
-    echo "Rebooting now..."
+# Method 2: EFI (Fallthrough if GRUB fails)
+elif sudo efibootmgr -n "$WINDOWS_EFI_ID"; then
+    echo "Success: EFI NextBoot set to $WINDOWS_EFI_ID."
     sudo reboot
 else
-    echo "Error: Could not find Windows boot entry"
-    echo "Available boot entries:"
-    sudo efibootmgr
+    echo "Error: Could not trigger Windows reboot."
     exit 1
 fi
