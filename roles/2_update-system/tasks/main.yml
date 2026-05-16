@@ -99,3 +99,34 @@
   register: fwupd_result
   changed_when: fwupd_result.rc == 0 and 'No updates' not in fwupd_result.stdout
   failed_when: fwupd_result.rc not in [0, 2]
+
+
+  # -----------------------------------------------
+# Step 5 — Workstation setup (workstation only)
+# RX 570 uses amdgpu (in-kernel) — no driver
+# package needed, but firmware blobs and Mesa
+# must be current.
+# CPU: Intel i5-10400F (no iGPU)
+# Board: ASUS ROG B460-H
+# -----------------------------------------------
+- name: Ensure linux-firmware is current (workstation)
+  ansible.builtin.dnf:
+    name: linux-firmware
+    state: latest
+  when: machine_type == "workstation"
+
+- name: Ensure Mesa is current for RX 570 support (workstation)
+  ansible.builtin.dnf:
+    name:
+      - mesa-dri-drivers
+      - mesa-vulkan-drivers
+      - mesa-libGL
+      - mesa-libEGL
+    state: latest
+  when: machine_type == "workstation"
+
+- name: Ensure Intel microcode is current (workstation)
+  ansible.builtin.dnf:
+    name: microcode_ctl
+    state: latest
+  when: machine_type == "workstation"
