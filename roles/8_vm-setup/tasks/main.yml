@@ -7,84 +7,59 @@
 # ============================================================
 
 # -----------------------------------------------
-# LAPTOP — Windows VM
+# Windows VM — tiny11 (all machines)
+# ISO assumed present at /var/lib/libvirt/images/tiny11.iso
+# VM is defined but NOT started — boot manually
+# via virt-manager or: virsh start tiny11
 # -----------------------------------------------
-- name: Set VM variables
+- name: Set tiny11 VM variables
   ansible.builtin.set_fact:
     vm_name: "tiny11"
     vm_ram_mb: 4096
     vm_vcpus: 4
     vm_disk_path: "/var/lib/libvirt/images/tiny11.qcow2"
-    iso_src_path: "{{ playbook_dir }}/isos/tiny11.iso"
     iso_path: "/var/lib/libvirt/images/tiny11.iso"
-    shared_folder_host: "/var/lib/libvirt/vm-share"
-    shared_folder_tag: "vmshare"
-  when: machine_type == 'laptop'
 
 - name: Check tiny11.iso exists
   ansible.builtin.stat:
-    path: "{{ iso_src_path }}"
+    path: "{{ iso_path }}"
   register: iso_stat
-  when: machine_type == 'laptop'
 
 - name: Fail if ISO is missing
   ansible.builtin.fail:
-    msg: >
-      tiny11.iso not found at {{ iso_src_path }}.
-      Copy it next to RunAnsible.sh on the USB.
-  when: machine_type == 'laptop' and not iso_stat.stat.exists
+    msg: "tiny11.iso not found at {{ iso_path }}. Copy it there manually before running."
+  when: not iso_stat.stat.exists
 
 - name: Check if stale VM exists
   ansible.builtin.command: virsh dominfo {{ vm_name }}
   register: stale_vm_check
   failed_when: false
   changed_when: false
-  when: machine_type == 'laptop'
 
-- name: Destroy stale VM if exists
+- name: Destroy stale VM if running
   ansible.builtin.command: virsh destroy {{ vm_name }}
   failed_when: false
   changed_when: true
-  when: machine_type == 'laptop' and stale_vm_check.rc == 0
+  when: stale_vm_check.rc == 0
 
 - name: Undefine stale VM
   ansible.builtin.command: virsh undefine {{ vm_name }} --nvram
   failed_when: false
   changed_when: true
-  when: machine_type == 'laptop' and stale_vm_check.rc == 0
-
-- name: Copy tiny11.iso into libvirt images dir
-  ansible.builtin.copy:
-    src: "{{ iso_src_path }}"
-    dest: "{{ iso_path }}"
-    owner: qemu
-    group: qemu
-    mode: '0644'
-    remote_src: true
-  when: machine_type == 'laptop'
-
-- name: Create host-side shared folder
-  ansible.builtin.file:
-    path: "{{ shared_folder_host }}"
-    state: directory
-    mode: '0755'
-    owner: qemu
-    group: qemu
-  when: machine_type == 'laptop'
+  when: stale_vm_check.rc == 0
 
 - name: Remove stale disk if VM was cleaned up
   ansible.builtin.file:
     path: "{{ vm_disk_path }}"
     state: absent
-  when: machine_type == 'laptop' and stale_vm_check.rc == 0
+  when: stale_vm_check.rc == 0
 
 - name: Create qcow2 disk image
   ansible.builtin.command:
     cmd: qemu-img create -f qcow2 {{ vm_disk_path }} 60G
     creates: "{{ vm_disk_path }}"
-  when: machine_type == 'laptop'
 
-- name: Create tiny11 VM
+- name: Define tiny11 VM
   ansible.builtin.command: >
     virt-install
     --name {{ vm_name }}
@@ -95,24 +70,22 @@
     --disk path={{ vm_disk_path }},format=qcow2,bus=sata
     --cdrom {{ iso_path }}
     --network network=default,model=virtio
-    --graphics spice
-    --video qxl
-    --channel spicevmc
-    --filesystem {{ shared_folder_host }},{{ shared_folder_tag }},driver.type=path,accessmode=mapped
+    --graphics vnc,listen=127.0.0.1
+    --video vga
     --boot uefi
     --noautoconsole
-  when: machine_type == 'laptop'
+    --print-xml | virsh define /dev/stdin
+  args:
+    creates: "{{ vm_disk_path }}"
 
 - name: Confirm VM is defined
   ansible.builtin.command: virsh dominfo {{ vm_name }}
   register: vm_info
   changed_when: false
-  when: machine_type == 'laptop'
 
 - name: Show VM info
   ansible.builtin.debug:
     var: vm_info.stdout_lines
-  when: machine_type == 'laptop'
 
 # -----------------------------------------------
 # PC — Gaming emulators
