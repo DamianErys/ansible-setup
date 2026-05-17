@@ -116,7 +116,19 @@
     mode: '0755'
 
 # -----------------------------------------------
-# Step 4 — Deploy cache warm script
+# Step 4 — Ensure ~/.local/bin exists BEFORE
+# deploying the cache warm script into it
+# -----------------------------------------------
+- name: Ensure ~/.local/bin exists
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.local/bin"
+    state: directory
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0755'
+
+# -----------------------------------------------
+# Step 5 — Deploy cache warm script
 # Runs in the background after mount starts.
 # Waits for the RC server to be ready, then
 # triggers a recursive directory refresh.
@@ -146,16 +158,8 @@
         && echo "rclone dir cache warm started" \
         || echo "rclone dir cache warm failed — RC server not responding"
 
-- name: Ensure ~/.local/bin exists
-  ansible.builtin.file:
-    path: "/home/{{ main_user }}/.local/bin"
-    state: directory
-    owner: "{{ main_user }}"
-    group: "{{ main_user }}"
-    mode: '0755'
-
 # -----------------------------------------------
-# Step 5 — Deploy systemd user service unit
+# Step 6 — Deploy systemd user service unit
 # Does NOT enable or start — do that manually
 # after confirming rclone auth works.
 #
