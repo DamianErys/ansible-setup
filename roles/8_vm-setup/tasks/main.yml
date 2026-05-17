@@ -135,29 +135,3 @@
   ansible.builtin.debug:
     var: vm_info.stdout_lines
   when: tiny11_iso_available | bool
-
-# -----------------------------------------------
-# PC — Gaming emulators
-# -----------------------------------------------
-- name: Install RPCS3 and PCSX2 via Flatpak
-  community.general.flatpak:
-    name: "{{ item }}"
-    state: present
-    remote: flathub
-  loop:
-    - net.rpcs3.RPCS3
-    - net.pcsx2.PCSX2
-  when: machine_type == 'pc'
-
-# -----------------------------------------------
-# PC — Gaming emulators
-# -----------------------------------------------
-- name: Install RPCS3 and PCSX2 via Flatpak
-  community.general.flatpak:
-    name: "{{ item }}"
-    state: present
-    remote: flathub
-  loop:
-    - net.rpcs3.RPCS3
-    - net.pcsx2.PCSX2
-  when: machine_type == 'pc'
