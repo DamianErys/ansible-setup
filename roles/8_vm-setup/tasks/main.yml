@@ -108,26 +108,34 @@
     creates: "{{ vm_disk_path }}"
   when: tiny11_iso_available | bool
 
-# Uses shell (not command) because the pipe to virsh requires a real shell.
-# No `creates` guard here — the disk exists at this point so `creates` would
-# always skip. Instead we guard on stale_vm_check: only define if the VM
-# did not already exist (rc != 0 means virsh dominfo found nothing).
+# virt-install --print-xml emits multiple XML documents (one per device)
+# which causes virsh define to fail with "Extra content at the end of the
+# document". Fix: write to a temp file, extract only the first <domain>
+# block with python3, then pass the clean single-document XML to virsh.
 - name: Define tiny11 VM via virt-install
-  ansible.builtin.shell: >
-    virt-install
-    --name {{ vm_name }}
-    --ram {{ vm_ram_mb }}
-    --vcpus {{ vm_vcpus }}
-    --cpu host-model
-    --os-variant win11
-    --disk path={{ vm_disk_path }},format=qcow2,bus=sata
-    --cdrom {{ iso_path }}
-    --network network=default,model=virtio
-    --graphics vnc,listen=127.0.0.1
-    --video vga
-    --boot uefi
-    --noautoconsole
-    --print-xml | virsh define /dev/stdin
+  ansible.builtin.shell: |
+    virt-install \
+      --name {{ vm_name }} \
+      --ram {{ vm_ram_mb }} \
+      --vcpus {{ vm_vcpus }} \
+      --cpu host-model \
+      --os-variant win11 \
+      --disk path={{ vm_disk_path }},format=qcow2,bus=sata \
+      --cdrom {{ iso_path }} \
+      --network network=default,model=virtio \
+      --graphics vnc,listen=127.0.0.1 \
+      --video vga \
+      --boot uefi \
+      --noautoconsole \
+      --print-xml > /tmp/tiny11.xml
+    python3 -c "
+    xml = open('/tmp/tiny11.xml').read()
+    start = xml.index('<domain')
+    end = xml.index('</domain>') + len('</domain>')
+    print(xml[start:end])
+    " > /tmp/tiny11-clean.xml
+    virsh define /tmp/tiny11-clean.xml
+    rm -f /tmp/tiny11.xml /tmp/tiny11-clean.xml
   args:
     executable: /bin/bash
   when:
