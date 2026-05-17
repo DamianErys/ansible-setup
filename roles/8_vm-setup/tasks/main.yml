@@ -20,15 +20,38 @@
     vm_disk_path: "/var/lib/libvirt/images/tiny11.qcow2"
     iso_path: "/var/lib/libvirt/images/tiny11.iso"
 
-- name: Check tiny11.iso exists
+- name: Check tiny11.iso in libvirt images dir
   ansible.builtin.stat:
     path: "{{ iso_path }}"
-  register: iso_stat
+  register: iso_stat_libvirt
 
-- name: Fail if ISO is missing
-  ansible.builtin.fail:
-    msg: "tiny11.iso not found at {{ iso_path }}. Copy it there manually before running."
-  when: not iso_stat.stat.exists
+- name: Check tiny11.iso in repo isos folder (USB source)
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/isos/tiny11.iso"
+  register: iso_stat_repo
+  when: not iso_stat_libvirt.stat.exists
+
+- name: Copy tiny11.iso from repo isos into libvirt images dir
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/isos/tiny11.iso"
+    dest: "{{ iso_path }}"
+    owner: qemu
+    group: qemu
+    mode: '0644'
+    remote_src: true
+  when: not iso_stat_libvirt.stat.exists and iso_stat_repo.stat.exists
+
+- name: Warn and skip VM setup if ISO is missing entirely
+  ansible.builtin.debug:
+    msg: >
+      tiny11.iso not found in /var/lib/libvirt/images/ or {{ playbook_dir }}/isos/.
+      Copy it next to RunAnsible.sh and re-run to set up the VM. Skipping VM setup.
+  when: not iso_stat_libvirt.stat.exists and not iso_stat_repo.stat.exists
+
+- name: Set iso_available flag
+  ansible.builtin.set_fact:
+    tiny11_iso_available: >-
+      {{ iso_stat_libvirt.stat.exists or (iso_stat_repo.stat.exists | default(false)) }}
 
 - name: Check if stale VM exists
   ansible.builtin.command: virsh dominfo {{ vm_name }}
