@@ -11,6 +11,6 @@
     - vault.yml
   roles:
     # - 5_distrobox
-    # - 6_vmm
+    - 6_vmm
     # - 7_ubuntu-packages
     - 8_vm-setup
