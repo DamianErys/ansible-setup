@@ -1,15 +1,15 @@
+#SPDX-License-Identifier: MIT-0
 ---
 # tasks file for roles/8_vm-setup
 # ============================================================
 # roles/8_vm-setup/tasks/main.yml
-# Windows VM on laptop, gaming emulators on PC.
+# Windows VM — tiny11 (all machines)
+# VM is defined but NOT started — boot manually
+# via virt-manager or: virsh start tiny11
 # ============================================================
 
 # -----------------------------------------------
-# Windows VM — tiny11 (all machines)
-# ISO assumed present at /var/lib/libvirt/images/tiny11.iso
-# VM is defined but NOT started — boot manually
-# via virt-manager or: virsh start tiny11
+# Variable setup
 # -----------------------------------------------
 - name: Set tiny11 VM variables
   ansible.builtin.set_fact:
@@ -19,6 +19,9 @@
     vm_disk_path: "/var/lib/libvirt/images/tiny11.qcow2"
     iso_path: "/var/lib/libvirt/images/tiny11.iso"
 
+# -----------------------------------------------
+# ISO discovery — check both locations
+# -----------------------------------------------
 - name: Check tiny11.iso in libvirt images dir
   ansible.builtin.stat:
     path: "{{ iso_path }}"
@@ -30,8 +33,8 @@
   register: iso_stat_repo
   when: not iso_stat_libvirt.stat.exists
 
-# Fix: iso_stat_repo may be undefined if the above task was skipped,
-# so check with `is defined` before accessing .stat.exists
+# iso_stat_repo is undefined when the above task is skipped (ISO already in
+# libvirt dir), so guard with `is defined` before accessing .stat.exists
 - name: Set iso_available flag
   ansible.builtin.set_fact:
     tiny11_iso_available: >-
@@ -58,8 +61,10 @@
       Copy it next to RunAnsible.sh and re-run to set up the VM. Skipping VM setup.
   when: not tiny11_iso_available | bool
 
-# Guard stale cleanup behind ISO availability — don't destroy a running VM
-# if we can't rebuild it
+# -----------------------------------------------
+# Cleanup — only runs if ISO is available so we
+# don't destroy a VM we cannot rebuild
+# -----------------------------------------------
 - name: Check if stale VM exists
   ansible.builtin.command: virsh dominfo {{ vm_name }}
   register: stale_vm_check
@@ -85,7 +90,7 @@
     - stale_vm_check.rc is defined
     - stale_vm_check.rc == 0
 
-- name: Remove stale disk if VM was cleaned up
+- name: Remove stale disk image
   ansible.builtin.file:
     path: "{{ vm_disk_path }}"
     state: absent
@@ -94,15 +99,19 @@
     - stale_vm_check.rc is defined
     - stale_vm_check.rc == 0
 
+# -----------------------------------------------
+# VM creation
+# -----------------------------------------------
 - name: Create qcow2 disk image
   ansible.builtin.command:
     cmd: qemu-img create -f qcow2 {{ vm_disk_path }} 60G
     creates: "{{ vm_disk_path }}"
   when: tiny11_iso_available | bool
 
-# Fix: pipe requires shell=true — use ansible.builtin.shell, not command
-# Fix: don't use `creates` here — the disk already exists at this point,
-#      so `creates` would always skip this task. Guard with virsh dominfo instead.
+# Uses shell (not command) because the pipe to virsh requires a real shell.
+# No `creates` guard here — the disk exists at this point so `creates` would
+# always skip. Instead we guard on stale_vm_check: only define if the VM
+# did not already exist (rc != 0 means virsh dominfo found nothing).
 - name: Define tiny11 VM via virt-install
   ansible.builtin.shell: >
     virt-install
@@ -125,6 +134,9 @@
     - tiny11_iso_available | bool
     - stale_vm_check.rc is not defined or stale_vm_check.rc != 0
 
+# -----------------------------------------------
+# Verify
+# -----------------------------------------------
 - name: Confirm VM is defined
   ansible.builtin.command: virsh dominfo {{ vm_name }}
   register: vm_info
