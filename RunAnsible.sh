@@ -123,24 +123,22 @@ PASS_LEN=$(tr -d '\n\r' < "$VAULT_PASS_FILE" | wc -c)
 [[ "$PASS_LEN" -eq 50 ]] && pass "Password length OK (50 chars)" \
   || warn "Password is $PASS_LEN chars, expected 50 — continuing anyway"
 
-# ISO check — laptop only
-if [[ "$MACHINE_TYPE" == "laptop" ]]; then
-  echo "Checking for tiny11.iso..."
-  SCRIPT_ISO="$SCRIPT_DIR/tiny11.iso"
-  REPO_ISO="$ISO_DIR/tiny11.iso"
+# ISO check
+echo "Checking for tiny11.iso..."
+SCRIPT_ISO="$SCRIPT_DIR/tiny11.iso"
+REPO_ISO="$ISO_DIR/tiny11.iso"
 
-  mkdir -p "$ISO_DIR"
+mkdir -p "$ISO_DIR"
 
-  if [[ -f "$SCRIPT_ISO" ]] && [[ ! -f "$REPO_ISO" ]]; then
-    info "Moving tiny11.iso from USB to repo isos folder..."
-    mv "$SCRIPT_ISO" "$REPO_ISO"
-    pass "tiny11.iso moved to $ISO_DIR"
-  elif [[ -f "$REPO_ISO" ]]; then
-    pass "tiny11.iso already in place"
-  else
-    warn "tiny11.iso not found on USB or in repo — VM setup will be skipped"
-    warn "Copy tiny11.iso next to RunAnsible.sh and re-run to set up the VM"
-  fi
+if [[ -f "$SCRIPT_ISO" ]] && [[ ! -f "$REPO_ISO" ]]; then
+  info "Moving tiny11.iso from USB to repo isos folder..."
+  mv "$SCRIPT_ISO" "$REPO_ISO"
+  pass "tiny11.iso moved to $ISO_DIR"
+elif [[ -f "$REPO_ISO" ]]; then
+  pass "tiny11.iso already in place"
+else
+  warn "tiny11.iso not found on USB or in repo — VM setup will be skipped"
+  warn "Copy tiny11.iso next to RunAnsible.sh and re-run to set up the VM"
 fi
 
 # Helper: move installer file into repo if found next to the script
