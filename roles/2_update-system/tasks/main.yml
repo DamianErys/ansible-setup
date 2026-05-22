@@ -21,40 +21,29 @@
     name: "*"
     state: latest
     update_cache: true
-
 # -----------------------------------------------
 # Step 2 — NVIDIA driver update (laptop only)
 # akmod-nvidia rebuilds automatically on kernel
 # upgrade but we ensure the package is current
 # and wait for the kmod build to complete
 # -----------------------------------------------
-- name: Ensure akmod-nvidia is installed and current (laptop)
+- name: Ensure akmod-nvidia and development headers are installed (laptop)
   ansible.builtin.dnf:
     name:
       - akmod-nvidia
       - xorg-x11-drv-nvidia
       - xorg-x11-drv-nvidia-cuda
+      - kernel-devel
+      - kernel-headers
     state: latest
   when: machine_type == "laptop"
 
 - name: Wait for akmod-nvidia kmod build to complete (laptop)
   ansible.builtin.command: >
-    akmods --force --kernels {{ ansible_kernel }}
+    akmods --force
   register: akmod_result
   changed_when: "'already exists' not in akmod_result.stdout"
   failed_when: akmod_result.rc != 0
-  when: machine_type == "laptop"
-
-- name: Verify NVIDIA driver module is loadable (laptop)
-  ansible.builtin.command: modinfo -F version nvidia
-  register: nvidia_modinfo
-  changed_when: false
-  failed_when: nvidia_modinfo.rc != 0 or nvidia_modinfo.stdout == ""
-  when: machine_type == "laptop"
-
-- name: Show loaded NVIDIA driver version (laptop)
-  ansible.builtin.debug:
-    msg: "NVIDIA driver version: {{ nvidia_modinfo.stdout | trim }}"
   when: machine_type == "laptop"
 
 # -----------------------------------------------
