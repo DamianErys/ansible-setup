@@ -1,0 +1,217 @@
+#!/usr/bin/env bash
+# kiadd — Add an LCSC part directly into a KiCad project's local libs
+# Usage: run from inside a project's kicad/ folder (or any subfolder of it)
+# Usage: kiadd
+# Usage: kiadd C94355
+
+set -euo pipefail
+
+# ─── Colours ────────────────────────────────────────────────────────────────
+RED='\033[0;31m'
+GRN='\033[0;32m'
+YLW='\033[1;33m'
+CYN='\033[0;36m'
+BLD='\033[1m'
+RST='\033[0m'
+
+info()  { echo -e "${CYN}[kiadd]${RST} $*"; }
+ok()    { echo -e "${GRN}[kiadd]${RST} $*"; }
+warn()  { echo -e "${YLW}[kiadd]${RST} $*"; }
+die()   { echo -e "${RED}[kiadd] ERROR:${RST} $*" >&2; exit 1; }
+
+# ─── 1. Find the kicad/ folder (walk up from cwd) ───────────────────────────
+find_kicad_dir() {
+    local dir="$PWD"
+    while [[ "$dir" != "/" ]]; do
+        if [[ "$(basename "$dir")" == "kicad" ]] && ls "$dir"/*.kicad_pro &>/dev/null 2>&1; then
+            echo "$dir"
+            return 0
+        fi
+        # Also accept if we're already inside a kicad/ subtree
+        if ls "$dir"/../*.kicad_pro &>/dev/null 2>&1 && [[ "$(basename "$(dirname "$dir")")" == "kicad" ]]; then
+            echo "$(dirname "$dir")"
+            return 0
+        fi
+        dir="$(dirname "$dir")"
+    done
+    return 1
+}
+
+# Walk up looking for a folder named 'kicad' that contains a .kicad_pro file
+KICAD_DIR=""
+search="$PWD"
+while [[ "$search" != "/" ]]; do
+    if [[ "$(basename "$search")" == "kicad" ]] && compgen -G "$search/*.kicad_pro" > /dev/null 2>&1; then
+        KICAD_DIR="$search"
+        break
+    fi
+    # maybe we're IN kicad/ already but one level deeper
+    parent="$(dirname "$search")"
+    if [[ "$(basename "$parent")" == "kicad" ]] && compgen -G "$parent/*.kicad_pro" > /dev/null 2>&1; then
+        KICAD_DIR="$parent"
+        break
+    fi
+    search="$parent"
+done
+
+if [[ -z "$KICAD_DIR" ]]; then
+    die "Not inside a kicad/ project folder.\n       cd into your project's kicad/ directory first."
+fi
+
+# ─── 2. Derive project name from .kicad_pro filename ────────────────────────
+PRO_FILE="$(compgen -G "$KICAD_DIR/*.kicad_pro" | head -n1)"
+PROJECT="$(basename "$PRO_FILE" .kicad_pro)"
+LIBS_DIR="$KICAD_DIR/libs"
+
+info "Project  : ${BLD}${PROJECT}${RST}"
+info "Libs dir : ${BLD}${LIBS_DIR}${RST}"
+echo ""
+
+# ─── 3. Prompt for LCSC part number ─────────────────────────────────────────
+if [[ $# -ge 1 ]]; then
+    LCSC_ID="$1"
+else
+    read -rp "$(echo -e "${BLD}LCSC part number${RST} (e.g. C94355): ")" LCSC_ID
+fi
+LCSC_ID="${LCSC_ID^^}"          # uppercase C prefix just in case
+LCSC_ID="${LCSC_ID#C}"          # strip leading C if user included it
+LCSC_ID="C${LCSC_ID}"          # normalise to C######
+
+echo ""
+
+# ─── 4. Check easyeda2kicad is available ────────────────────────────────────
+command -v easyeda2kicad &>/dev/null || \
+    die "easyeda2kicad not found. Install it with:\n       pip install easyeda2kicad"
+
+# ─── 5. Ensure lib dirs exist ───────────────────────────────────────────────
+SYM_LIB="$LIBS_DIR/symbols/${PROJECT}.kicad_sym"
+FP_DIR="$LIBS_DIR/footprints/${PROJECT}.pretty"
+MODEL_DIR="$LIBS_DIR/3dmodels"
+mkdir -p "$(dirname "$SYM_LIB")" "$FP_DIR" "$MODEL_DIR"
+
+# easyeda2kicad --output expects a base path (no extension).
+# It will write:  base.kicad_sym  base.pretty/  base.3dshapes/
+# We point it at a temp base inside our libs dir so everything lands nearby.
+TMPBASE="$(mktemp -d)/e2k_import"
+
+info "Downloading ${BLD}${LCSC_ID}${RST} from LCSC/EasyEDA …"
+echo ""
+
+easyeda2kicad --full --lcsc_id="$LCSC_ID" --output="$TMPBASE" --overwrite
+
+echo ""
+
+# ─── 6. Merge symbol into project .kicad_sym ────────────────────────────────
+SRC_SYM="${TMPBASE}.kicad_sym"
+if [[ -f "$SRC_SYM" ]]; then
+    if [[ ! -f "$SYM_LIB" ]]; then
+        # First part — just copy the whole file
+        cp "$SRC_SYM" "$SYM_LIB"
+        ok "Symbol library created: ${SYM_LIB}"
+    else
+        # Subsequent parts — merge new symbol blocks into existing lib
+        # Extract the symbol block(s) from the new file and merge into existing lib.
+        MERGE_PY="$(mktemp /tmp/kiadd_merge_XXXXXX.py)"
+        cat > "$MERGE_PY" <<'PYEOF'
+import sys
+
+src_path, dst_path = sys.argv[1], sys.argv[2]
+
+with open(src_path) as f:
+    src = f.read()
+with open(dst_path) as f:
+    dst = f.read()
+
+# Walk src and pull out top-level (symbol …) blocks
+depth = 0
+blocks = []
+in_block = False
+block_start = 0
+i = 0
+while i < len(src):
+    if src[i] == '(':
+        if depth == 1 and src[i:].startswith('(symbol '):
+            in_block = True
+            block_start = i
+        depth += 1
+    elif src[i] == ')':
+        depth -= 1
+        if in_block and depth == 1:
+            blocks.append(src[block_start:i+1])
+            in_block = False
+    i += 1
+
+if not blocks:
+    print("NO_NEW_SYMBOLS")
+    sys.exit(0)
+
+new_content = '\n'.join('    ' + b for b in blocks)
+last_paren = dst.rfind(')')
+merged = dst[:last_paren] + '\n' + new_content + '\n' + dst[last_paren:]
+print(merged)
+PYEOF
+        NEW_SYMS="$(python3 "$MERGE_PY" "$SRC_SYM" "$SYM_LIB")"
+        rm -f "$MERGE_PY"
+
+        if [[ "$NEW_SYMS" == "NO_NEW_SYMBOLS" ]]; then
+            warn "No new symbols found to merge (part may already exist)."
+        else
+            echo "$NEW_SYMS" > "$SYM_LIB"
+            ok "Symbol merged into: ${SYM_LIB}"
+        fi
+    fi
+else
+    warn "No .kicad_sym found in easyeda2kicad output — skipping symbol."
+fi
+
+# ─── 7. Fix footprint library nickname in symbol file ───────────────────────
+# easyeda2kicad bakes the output base name as the lib nickname in the
+# Footprint property (e.g. "e2k_import:..." or "easyeda2kicad:...").
+# Normalise all non-project nicknames to the project name.
+if [[ -f "$SYM_LIB" ]]; then
+    TMPBASE_NAME="$(basename "$TMPBASE")"
+    sed -i \
+        -e "s/\"${TMPBASE_NAME}:/\"${PROJECT}:/g" \
+        -e 's/\"easyeda2kicad:/\"'"${PROJECT}"':/g' \
+        -e 's/\"e2k_import:/\"'"${PROJECT}"':/g' \
+        "$SYM_LIB"
+    ok "Footprint nicknames normalised to: ${PROJECT}"
+fi
+
+# ─── 8. Copy footprint(s) ────────────────────────────────────────────────────
+SRC_FP_DIR="${TMPBASE}.pretty"
+if [[ -d "$SRC_FP_DIR" ]]; then
+    FP_COUNT=0
+    for mod in "$SRC_FP_DIR"/*.kicad_mod; do
+        [[ -f "$mod" ]] || continue
+        cp "$mod" "$FP_DIR/"
+        ok "Footprint copied: $(basename "$mod")"
+        FP_COUNT=$((FP_COUNT+1))
+    done
+    [[ $FP_COUNT -eq 0 ]] && warn "No .kicad_mod files found in output."
+else
+    warn "No .pretty dir found — skipping footprints."
+fi
+
+# ─── 9. Copy 3D models ───────────────────────────────────────────────────────
+SRC_3D="${TMPBASE}.3dshapes"
+if [[ -d "$SRC_3D" ]]; then
+    for model in "$SRC_3D"/*; do
+        [[ -f "$model" ]] || continue
+        cp "$model" "$MODEL_DIR/"
+        ok "3D model copied: $(basename "$model")"
+    done
+else
+    warn "No .3dshapes dir found — skipping 3D models."
+fi
+
+# ─── 10. Cleanup temp dir ────────────────────────────────────────────────────
+rm -rf "$(dirname "$TMPBASE")"
+
+# ─── 11. Summary ─────────────────────────────────────────────────────────────
+echo ""
+ok "Done! ${BLD}${LCSC_ID}${RST} added to ${BLD}${PROJECT}${RST}."
+echo ""
+info "Reload the KiCad project (or restart KiCad) to see the new part."
+info "Symbol lib : \${KIPRJMOD}/libs/symbols/${PROJECT}.kicad_sym"
+info "Footprint  : \${KIPRJMOD}/libs/footprints/${PROJECT}.pretty"
