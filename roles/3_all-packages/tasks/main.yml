@@ -43,12 +43,18 @@
     - org.inkscape.Inkscape
     - com.rtosta.zapzap
     - com.discordapp.Discord
-    - org.kicad.KiCad
     - org.raspberrypi.rpi-imager
     - com.github.flxzt.rnote
     - com.mattjakeman.ExtensionManager
     - org.gnome.Evolution
     - org.qbittorrent.qBittorrent
+
+- name: Install KiCad via DNF (native Fedora package)
+  ansible.builtin.dnf:
+    name:
+      - kicad
+      - kicad-packages3D
+    state: present
 
 - name: Install PulseView via DNF
   ansible.builtin.dnf:
