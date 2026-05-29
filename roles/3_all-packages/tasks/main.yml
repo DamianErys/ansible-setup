@@ -81,9 +81,9 @@
 # Required for LaTeX extension support
 # -----------------------------------------------
 
-- name: Install TexLive full scheme for LaTeX in VS Code (laptop + workstation)
+- name: Install TexLive medium scheme for LaTeX in VS Code (laptop + workstation)
   ansible.builtin.dnf:
-    name: texlive-scheme-full
+    name: texlive-scheme-medium
     state: present
 
 # -----------------------------------------------
