@@ -56,6 +56,45 @@
       - kicad-packages3D
     state: present
 
+- name: Ensure KiCad config directories exist
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/kicad/10.0/{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - ""
+    - colors
+    - toolbars
+    - 3d
+
+- name: Deploy KiCad 10 config files
+  ansible.builtin.copy:
+    src: "files/kicad/10.0/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.config/kicad/10.0/{{ item }}"
+    mode: '0644'
+  loop:
+    - kicad.json
+    - kicad_common.json
+    - eeschema.json
+    - pcbnew.json
+    - cvpcb.json
+    - fpedit.json
+    - gerbview.json
+    - pl_editor.json
+    - symbol_editor.json
+    - 3d_viewer.json
+    - installed_packages.json
+    - fp-lib-table
+    - sym-lib-table
+    - design-block-lib-table
+    - colors/user.json
+    - toolbars/kicad-toolbars.json
+    - toolbars/eeschema-toolbars.json
+    - toolbars/pcbnew-toolbars.json
+    - toolbars/cvpcb-toolbars.json
+    - toolbars/fpviewer-toolbars.json
+    - toolbars/3d_viewer-toolbars.json
+
 - name: Install PulseView via DNF
   ansible.builtin.dnf:
     name: pulseview
