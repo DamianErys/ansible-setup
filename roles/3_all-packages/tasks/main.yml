@@ -53,7 +53,7 @@
   ansible.builtin.dnf:
     name:
       - kicad
-      - kicad-packages3D
+      - kicad-packages3d
     state: present
 
 - name: Ensure KiCad config directories exist
