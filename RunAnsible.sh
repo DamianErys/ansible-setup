@@ -77,11 +77,13 @@ echo ""
 
 if [[ -d "$REPO_DIR/.git" ]]; then
   info "Repo already exists — pulling latest..."
-  git -C "$REPO_DIR" pull || warn "Git pull failed — continuing with existing files"
+  # Added --depth=1 to keep the local history shallow during updates
+  git -C "$REPO_DIR" pull --depth=1 || warn "Git pull failed — continuing with existing files"
   pass "Repo up to date"
 else
-  info "Cloning $REPO_URL..."
-  git clone "$REPO_URL" "$REPO_DIR" || fail "Could not clone repo — check network connection"
+  info "Cloning $REPO_URL (shallow)..."
+  # Added --depth 1 to only clone the latest commit snapshot
+  git clone --depth 1 "$REPO_URL" "$REPO_DIR" || fail "Could not clone repo — check network connection"
   pass "Repo cloned to $REPO_DIR"
 fi
 
