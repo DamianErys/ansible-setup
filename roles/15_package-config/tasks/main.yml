@@ -201,7 +201,17 @@
       WantedBy=default.target
 
 
+- name: Create plugdev group
+  ansible.builtin.group:
+    name: plugdev
+    state: present
 
+- name: Add user to plugdev group
+  ansible.builtin.user:
+    name: "{{ ansible_facts['user_id'] }}"
+    groups: plugdev
+    append: yes
+    
 - name: Install dfu-util
   ansible.builtin.dnf:
     name: dfu-util
