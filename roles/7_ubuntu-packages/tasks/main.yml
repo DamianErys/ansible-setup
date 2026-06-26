@@ -20,12 +20,14 @@
     distrobox enter ubuntu-box -- git config --global user.name "{{ vault_github_user }}"
   become: false
   changed_when: false
+  when: not (skip_personal | default(false))
 
-- name: Configure git email inside ubuntu-box  
+- name: Configure git email inside ubuntu-box
   ansible.builtin.command: >
     distrobox enter ubuntu-box -- git config --global user.email "{{ vault_github_email }}"
   become: false
   changed_when: false
+  when: not (skip_personal | default(false))
 
 - name: Ensure installer directory exists in home
   ansible.builtin.file:
