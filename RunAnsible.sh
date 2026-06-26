@@ -8,6 +8,7 @@ VAULT_PASS_FILE="$REPO_DIR/vault-pass.txt"
 VAULT_FILE="$REPO_DIR/vault.yml"
 INVENTORY="$REPO_DIR/inventory.ini"
 PLAYBOOK="$REPO_DIR/site.yml"
+GENERIC_PLAYBOOK="$REPO_DIR/generic.yml"
 ISO_DIR="$REPO_DIR/isos"
 INSTALLERS_DIR="$REPO_DIR/installers"
 
@@ -36,14 +37,16 @@ echo "Which machine is this?"
 echo "  1) Laptop"
 echo "  2) PC"
 echo "  3) Workstation"
+echo "  4) Generic  (no personal identity, no Proton apps, no vault required)"
 echo ""
-read -rp "  Enter 1, 2 or 3: " MACHINE_CHOICE
+read -rp "  Enter 1, 2, 3 or 4: " MACHINE_CHOICE
 
 case "$MACHINE_CHOICE" in
   1) MACHINE_TYPE="laptop" ;;
   2) MACHINE_TYPE="pc" ;;
   3) MACHINE_TYPE="workstation" ;;
-  *) fail "Invalid choice — enter 1 for Laptop, 2 for PC, or 3 for Workstation" ;;
+  4) MACHINE_TYPE="generic" ;;
+  *) fail "Invalid choice — enter 1 for Laptop, 2 for PC, 3 for Workstation, or 4 for Generic" ;;
 esac
 
 echo ""
@@ -96,34 +99,38 @@ echo ""
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Vault password file
-echo "Checking vault password file..."
-SCRIPT_VAULT_PASS="$SCRIPT_DIR/vault-pass.txt"
+# Vault password file (skipped for generic profile)
+if [[ "$MACHINE_TYPE" != "generic" ]]; then
+  echo "Checking vault password file..."
+  SCRIPT_VAULT_PASS="$SCRIPT_DIR/vault-pass.txt"
 
-if [[ -f "$SCRIPT_VAULT_PASS" ]] && [[ ! -f "$VAULT_PASS_FILE" ]]; then
-  info "Moving vault-pass.txt from script directory to repo..."
-  mv "$SCRIPT_VAULT_PASS" "$VAULT_PASS_FILE"
-  chmod 600 "$VAULT_PASS_FILE"
-  pass "vault-pass.txt moved to $REPO_DIR"
-elif [[ ! -f "$VAULT_PASS_FILE" ]]; then
-  echo ""
-  echo -e "${YELLOW}  vault-pass.txt not found anywhere${NC}"
-  echo -e "${YELLOW}  Open Proton Vault, copy your 50-char Ansible password,${NC}"
-  echo -e "${YELLOW}  then paste it below (input hidden):${NC}"
-  echo ""
-  read -rs -p "  Paste password: " VAULT_PASSWORD
-  echo ""
-  echo "$VAULT_PASSWORD" > "$VAULT_PASS_FILE"
-  chmod 600 "$VAULT_PASS_FILE"
-  pass "vault-pass.txt created"
+  if [[ -f "$SCRIPT_VAULT_PASS" ]] && [[ ! -f "$VAULT_PASS_FILE" ]]; then
+    info "Moving vault-pass.txt from script directory to repo..."
+    mv "$SCRIPT_VAULT_PASS" "$VAULT_PASS_FILE"
+    chmod 600 "$VAULT_PASS_FILE"
+    pass "vault-pass.txt moved to $REPO_DIR"
+  elif [[ ! -f "$VAULT_PASS_FILE" ]]; then
+    echo ""
+    echo -e "${YELLOW}  vault-pass.txt not found anywhere${NC}"
+    echo -e "${YELLOW}  Open Proton Vault, copy your 50-char Ansible password,${NC}"
+    echo -e "${YELLOW}  then paste it below (input hidden):${NC}"
+    echo ""
+    read -rs -p "  Paste password: " VAULT_PASSWORD
+    echo ""
+    echo "$VAULT_PASSWORD" > "$VAULT_PASS_FILE"
+    chmod 600 "$VAULT_PASS_FILE"
+    pass "vault-pass.txt created"
+  fi
+  [[ -s "$VAULT_PASS_FILE" ]] || fail "vault-pass.txt is empty"
+  pass "vault-pass.txt found"
+
+  # Password length
+  PASS_LEN=$(tr -d '\n\r' < "$VAULT_PASS_FILE" | wc -c)
+  [[ "$PASS_LEN" -eq 50 ]] && pass "Password length OK (50 chars)" \
+    || warn "Password is $PASS_LEN chars, expected 50 — continuing anyway"
+else
+  pass "Generic profile — vault not required"
 fi
-[[ -s "$VAULT_PASS_FILE" ]] || fail "vault-pass.txt is empty"
-pass "vault-pass.txt found"
-
-# Password length
-PASS_LEN=$(tr -d '\n\r' < "$VAULT_PASS_FILE" | wc -c)
-[[ "$PASS_LEN" -eq 50 ]] && pass "Password length OK (50 chars)" \
-  || warn "Password is $PASS_LEN chars, expected 50 — continuing anyway"
 
 # ISO check
 echo "Checking for tiny11.iso..."
@@ -166,18 +173,27 @@ move_installer "XPPen.tar.gz"    "XPPen.tar.gz"
 
 # Required repo files
 echo "Checking required files..."
-[[ -f "$VAULT_FILE" ]] || fail "vault.yml not found in repo"
-pass "vault.yml found"
+if [[ "$MACHINE_TYPE" != "generic" ]]; then
+  [[ -f "$VAULT_FILE" ]] || fail "vault.yml not found in repo"
+  pass "vault.yml found"
+fi
 [[ -f "$INVENTORY" ]]  || fail "inventory.ini not found in repo"
 pass "inventory.ini found"
-[[ -f "$PLAYBOOK" ]]   || fail "site.yml not found in repo"
-pass "site.yml found"
+if [[ "$MACHINE_TYPE" == "generic" ]]; then
+  [[ -f "$GENERIC_PLAYBOOK" ]] || fail "generic.yml not found in repo"
+  pass "generic.yml found"
+else
+  [[ -f "$PLAYBOOK" ]] || fail "site.yml not found in repo"
+  pass "site.yml found"
+fi
 
-# Vault decryption
-echo "Testing vault decryption..."
-ansible-vault view "$VAULT_FILE" --vault-password-file "$VAULT_PASS_FILE" &>/dev/null \
-  || fail "Could not decrypt vault — wrong password or corrupted vault file"
-pass "Vault decrypts successfully"
+# Vault decryption (skipped for generic profile)
+if [[ "$MACHINE_TYPE" != "generic" ]]; then
+  echo "Testing vault decryption..."
+  ansible-vault view "$VAULT_FILE" --vault-password-file "$VAULT_PASS_FILE" &>/dev/null \
+    || fail "Could not decrypt vault — wrong password or corrupted vault file"
+  pass "Vault decrypts successfully"
+fi
 
 # community.general collection
 echo "Checking Ansible collections..."
@@ -221,8 +237,15 @@ echo ""
 # -----------------------------------------------
 # STAGE 4 — Run Ansible
 # -----------------------------------------------
-ansible-playbook "$PLAYBOOK" \
-  -i "$INVENTORY" \
-  --vault-password-file "$VAULT_PASS_FILE" \
-  -e "machine_type=$MACHINE_TYPE" \
-  -e "ansible_become_password=$(ansible-vault view "$VAULT_FILE" --vault-password-file "$VAULT_PASS_FILE" | grep vault_ssh_password | awk '{print $2}')"
+if [[ "$MACHINE_TYPE" == "generic" ]]; then
+  ansible-playbook "$GENERIC_PLAYBOOK" \
+    -i "$INVENTORY" \
+    -e "machine_type=$MACHINE_TYPE" \
+    -K
+else
+  ansible-playbook "$PLAYBOOK" \
+    -i "$INVENTORY" \
+    --vault-password-file "$VAULT_PASS_FILE" \
+    -e "machine_type=$MACHINE_TYPE" \
+    -e "ansible_become_password=$(ansible-vault view "$VAULT_FILE" --vault-password-file "$VAULT_PASS_FILE" | grep vault_ssh_password | awk '{print $2}')"
+fi
