@@ -1,0 +1,1 @@
+{"nodes": [{"id": "7_ubuntu_packages_vars", "label": "Ubuntu Packages Role Vars", "file_type": "code", "source_file": "roles/7_ubuntu-packages/vars/main.yml", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

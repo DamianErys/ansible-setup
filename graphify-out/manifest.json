@@ -1,0 +1,797 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1782455935.019041,
+    "ast_hash": "e1073342e958ac9f00716938c8f165e3",
+    "semantic_hash": "e1073342e958ac9f00716938c8f165e3"
+  },
+  "OpenVault.sh": {
+    "mtime": 1782455354.6296744,
+    "ast_hash": "57a62519313a464b926c468b41174e90",
+    "semantic_hash": "57a62519313a464b926c468b41174e90"
+  },
+  "RunAnsible.sh": {
+    "mtime": 1782455354.6296744,
+    "ast_hash": "65a1f4f341a8228429fb9949f90a55ff",
+    "semantic_hash": "65a1f4f341a8228429fb9949f90a55ff"
+  },
+  "VaultExample.sh": {
+    "mtime": 1782455354.6296744,
+    "ast_hash": "6b8be3750b3212079fb5af11fe19dfb5",
+    "semantic_hash": "6b8be3750b3212079fb5af11fe19dfb5"
+  },
+  "files/kicad/10.0/3d_viewer.json": {
+    "mtime": 1782455354.630941,
+    "ast_hash": "62544b4a2966279473dc2a394f6daa22",
+    "semantic_hash": "62544b4a2966279473dc2a394f6daa22"
+  },
+  "files/kicad/10.0/colors/user.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "4e6088d860f3425c5679d3040f0203aa",
+    "semantic_hash": "4e6088d860f3425c5679d3040f0203aa"
+  },
+  "files/kicad/10.0/cvpcb.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "a243a433dc2c33f4e56cf6442bc4c574",
+    "semantic_hash": "a243a433dc2c33f4e56cf6442bc4c574"
+  },
+  "files/kicad/10.0/eeschema.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "c8f662a083cd225039f43cd58e75fa56",
+    "semantic_hash": "c8f662a083cd225039f43cd58e75fa56"
+  },
+  "files/kicad/10.0/fpedit.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "fdc8d6810007d48fbdda4f0ea2a7888c",
+    "semantic_hash": "fdc8d6810007d48fbdda4f0ea2a7888c"
+  },
+  "files/kicad/10.0/gerbview.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "345f15e588f97c6fcbd8d8e918e8c9d2",
+    "semantic_hash": "345f15e588f97c6fcbd8d8e918e8c9d2"
+  },
+  "files/kicad/10.0/installed_packages.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "a182b556538c80dca145ca0202563c50",
+    "semantic_hash": "a182b556538c80dca145ca0202563c50"
+  },
+  "files/kicad/10.0/kicad.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "072769827312227d2de5aa8643ec4105",
+    "semantic_hash": "072769827312227d2de5aa8643ec4105"
+  },
+  "files/kicad/10.0/kicad_common.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "24d77ec3feb92cb8f2e3956a932132c9",
+    "semantic_hash": "24d77ec3feb92cb8f2e3956a932132c9"
+  },
+  "files/kicad/10.0/pcbnew.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "15a49c2b4a7ca75f6f7d93e51749c6ba",
+    "semantic_hash": "15a49c2b4a7ca75f6f7d93e51749c6ba"
+  },
+  "files/kicad/10.0/pl_editor.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "b9be4a76ea8ee92004c2d99ab8991cd7",
+    "semantic_hash": "b9be4a76ea8ee92004c2d99ab8991cd7"
+  },
+  "files/kicad/10.0/symbol_editor.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "7570b9bcedfe67964528eb495fbb700f",
+    "semantic_hash": "7570b9bcedfe67964528eb495fbb700f"
+  },
+  "files/kicad/10.0/toolbars/3d_viewer-toolbars.json": {
+    "mtime": 1782455354.6310434,
+    "ast_hash": "fdf4f5b0e28913283a8c8efeb8fea785",
+    "semantic_hash": "fdf4f5b0e28913283a8c8efeb8fea785"
+  },
+  "files/kicad/10.0/toolbars/cvpcb-toolbars.json": {
+    "mtime": 1782455354.6316252,
+    "ast_hash": "fdf4f5b0e28913283a8c8efeb8fea785",
+    "semantic_hash": "fdf4f5b0e28913283a8c8efeb8fea785"
+  },
+  "files/kicad/10.0/toolbars/eeschema-toolbars.json": {
+    "mtime": 1782455354.6316252,
+    "ast_hash": "fdf4f5b0e28913283a8c8efeb8fea785",
+    "semantic_hash": "fdf4f5b0e28913283a8c8efeb8fea785"
+  },
+  "files/kicad/10.0/toolbars/fpviewer-toolbars.json": {
+    "mtime": 1782455354.6316252,
+    "ast_hash": "fdf4f5b0e28913283a8c8efeb8fea785",
+    "semantic_hash": "fdf4f5b0e28913283a8c8efeb8fea785"
+  },
+  "files/kicad/10.0/toolbars/kicad-toolbars.json": {
+    "mtime": 1782455354.6316252,
+    "ast_hash": "fdf4f5b0e28913283a8c8efeb8fea785",
+    "semantic_hash": "fdf4f5b0e28913283a8c8efeb8fea785"
+  },
+  "files/kicad/10.0/toolbars/pcbnew-toolbars.json": {
+    "mtime": 1782455354.6316252,
+    "ast_hash": "fdf4f5b0e28913283a8c8efeb8fea785",
+    "semantic_hash": "fdf4f5b0e28913283a8c8efeb8fea785"
+  },
+  "roles/4_asus-zenscreen/files/install_displaylink.sh": {
+    "mtime": 1782455354.636112,
+    "ast_hash": "597ea8bf55808b734c8458066e324c95",
+    "semantic_hash": "597ea8bf55808b734c8458066e324c95"
+  },
+  "CLAUDE.md": {
+    "mtime": 1782455502.4002085,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": "82efb97a359f5c7290bf2513d14686be"
+  },
+  "build-base.yml": {
+    "mtime": 1782455354.6296744,
+    "ast_hash": "838a23cc5ec443b4e606f00f06042118",
+    "semantic_hash": "838a23cc5ec443b4e606f00f06042118"
+  },
+  "build-vms.yml": {
+    "mtime": 1782455354.6296744,
+    "ast_hash": "7eec998fa43708346f6476d8da554120",
+    "semantic_hash": "7eec998fa43708346f6476d8da554120"
+  },
+  "configure.yml": {
+    "mtime": 1782455354.6296744,
+    "ast_hash": "647a364e542de3ff5440abfd137d325c",
+    "semantic_hash": "647a364e542de3ff5440abfd137d325c"
+  },
+  "connectivity.yml": {
+    "mtime": 1782455354.6296744,
+    "ast_hash": "76d27041d923cfe7f2c2b781104ef8f5",
+    "semantic_hash": "76d27041d923cfe7f2c2b781104ef8f5"
+  },
+  "desktop.yml": {
+    "mtime": 1782455354.6296744,
+    "ast_hash": "e0bdd98e11a8a91b6bb7386d23762a4a",
+    "semantic_hash": "e0bdd98e11a8a91b6bb7386d23762a4a"
+  },
+  "roles/10_appearance/README.md": {
+    "mtime": 1782455354.631853,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/10_appearance/defaults/main.yml": {
+    "mtime": 1782455354.6318986,
+    "ast_hash": "baf0b82c9a4e0813380fd3fbf23ea185",
+    "semantic_hash": "baf0b82c9a4e0813380fd3fbf23ea185"
+  },
+  "roles/10_appearance/handlers/main.yml": {
+    "mtime": 1782455354.6318986,
+    "ast_hash": "441b41764971023bcf3cd43854a5f431",
+    "semantic_hash": "441b41764971023bcf3cd43854a5f431"
+  },
+  "roles/10_appearance/meta/main.yml": {
+    "mtime": 1782455354.6318986,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/10_appearance/tasks/main.yml": {
+    "mtime": 1782455354.6318986,
+    "ast_hash": "26368dd9df064770d03a8f59c338c4b1",
+    "semantic_hash": "26368dd9df064770d03a8f59c338c4b1"
+  },
+  "roles/10_appearance/tests/test.yml": {
+    "mtime": 1782455354.632144,
+    "ast_hash": "1b225759fe07ac6d3ce6c8a17935c022",
+    "semantic_hash": "1b225759fe07ac6d3ce6c8a17935c022"
+  },
+  "roles/10_appearance/vars/main.yml": {
+    "mtime": 1782455354.632144,
+    "ast_hash": "f58721149d6db0e50d024a25d4ab3da5",
+    "semantic_hash": "f58721149d6db0e50d024a25d4ab3da5"
+  },
+  "roles/11_power/README.md": {
+    "mtime": 1782455354.632144,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/11_power/defaults/main.yml": {
+    "mtime": 1782455354.6322587,
+    "ast_hash": "e4b0d154b8ffe49fc64e9142e32a01ea",
+    "semantic_hash": "e4b0d154b8ffe49fc64e9142e32a01ea"
+  },
+  "roles/11_power/handlers/main.yml": {
+    "mtime": 1782455354.6322587,
+    "ast_hash": "cbebe17b24476e0ff8781dc5a5db5d70",
+    "semantic_hash": "cbebe17b24476e0ff8781dc5a5db5d70"
+  },
+  "roles/11_power/meta/main.yml": {
+    "mtime": 1782455354.6322587,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/11_power/tasks/main.yml": {
+    "mtime": 1782455354.6322587,
+    "ast_hash": "709198045bb63549da86b30f92a588e5",
+    "semantic_hash": "709198045bb63549da86b30f92a588e5"
+  },
+  "roles/11_power/tests/test.yml": {
+    "mtime": 1782455354.6324577,
+    "ast_hash": "2dd0ffc1f9449b3ac011f294dac013f4",
+    "semantic_hash": "2dd0ffc1f9449b3ac011f294dac013f4"
+  },
+  "roles/11_power/vars/main.yml": {
+    "mtime": 1782455354.6324577,
+    "ast_hash": "feef082705c0e030cb56c41a4a7ec093",
+    "semantic_hash": "feef082705c0e030cb56c41a4a7ec093"
+  },
+  "roles/12_gnome-settings/README.md": {
+    "mtime": 1782455354.6324577,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/12_gnome-settings/defaults/main.yml": {
+    "mtime": 1782455354.6325607,
+    "ast_hash": "948829ce670b847ad230de0652aa2800",
+    "semantic_hash": "948829ce670b847ad230de0652aa2800"
+  },
+  "roles/12_gnome-settings/handlers/main.yml": {
+    "mtime": 1782455354.6325607,
+    "ast_hash": "3fc3affb029018362f6d2b96fb9e2d50",
+    "semantic_hash": "3fc3affb029018362f6d2b96fb9e2d50"
+  },
+  "roles/12_gnome-settings/meta/main.yml": {
+    "mtime": 1782455354.6325607,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/12_gnome-settings/tasks/main.yml": {
+    "mtime": 1782455354.6325607,
+    "ast_hash": "49c0d6e2df0ae6057f9e37933743bfe4",
+    "semantic_hash": "49c0d6e2df0ae6057f9e37933743bfe4"
+  },
+  "roles/12_gnome-settings/tests/test.yml": {
+    "mtime": 1782455354.6327767,
+    "ast_hash": "cf79b67d2fcbc752478cc5c62e93d955",
+    "semantic_hash": "cf79b67d2fcbc752478cc5c62e93d955"
+  },
+  "roles/12_gnome-settings/vars/main.yml": {
+    "mtime": 1782455354.6327767,
+    "ast_hash": "3bfe173c26f28c09cf9e2902bfedd9db",
+    "semantic_hash": "3bfe173c26f28c09cf9e2902bfedd9db"
+  },
+  "roles/13_touchpad/README.md": {
+    "mtime": 1782455354.6327767,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/13_touchpad/defaults/main.yml": {
+    "mtime": 1782455354.6328986,
+    "ast_hash": "4ee61aadb2f135750632edcb1208507a",
+    "semantic_hash": "4ee61aadb2f135750632edcb1208507a"
+  },
+  "roles/13_touchpad/handlers/main.yml": {
+    "mtime": 1782455354.6328986,
+    "ast_hash": "5974b33e6195e07a6697c21a79b73595",
+    "semantic_hash": "5974b33e6195e07a6697c21a79b73595"
+  },
+  "roles/13_touchpad/meta/main.yml": {
+    "mtime": 1782455354.6328986,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/13_touchpad/tasks/main.yml": {
+    "mtime": 1782455354.6328986,
+    "ast_hash": "194509e7d0f264d797814c922ad1371f",
+    "semantic_hash": "194509e7d0f264d797814c922ad1371f"
+  },
+  "roles/13_touchpad/tests/test.yml": {
+    "mtime": 1782455354.6331098,
+    "ast_hash": "f2cecde88804b829e46711af6f963b81",
+    "semantic_hash": "f2cecde88804b829e46711af6f963b81"
+  },
+  "roles/13_touchpad/vars/main.yml": {
+    "mtime": 1782455354.6331098,
+    "ast_hash": "935216fe6815757030d5acbc4d2c25be",
+    "semantic_hash": "935216fe6815757030d5acbc4d2c25be"
+  },
+  "roles/14_audio/README.md": {
+    "mtime": 1782455354.6331098,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/14_audio/defaults/main.yml": {
+    "mtime": 1782455354.633208,
+    "ast_hash": "aab7afce43748365579a3cb308157cda",
+    "semantic_hash": "aab7afce43748365579a3cb308157cda"
+  },
+  "roles/14_audio/handlers/main.yml": {
+    "mtime": 1782455354.633208,
+    "ast_hash": "987704ce242b6370d475a29f03f6d1e6",
+    "semantic_hash": "987704ce242b6370d475a29f03f6d1e6"
+  },
+  "roles/14_audio/meta/main.yml": {
+    "mtime": 1782455354.633208,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/14_audio/tasks/main.yml": {
+    "mtime": 1782455354.633208,
+    "ast_hash": "7797af51e062b4a9fb7c0db5ece0fffc",
+    "semantic_hash": "7797af51e062b4a9fb7c0db5ece0fffc"
+  },
+  "roles/14_audio/tests/test.yml": {
+    "mtime": 1782455354.6334014,
+    "ast_hash": "4ab0118ee9b7a97f8490af8197829621",
+    "semantic_hash": "4ab0118ee9b7a97f8490af8197829621"
+  },
+  "roles/14_audio/vars/main.yml": {
+    "mtime": 1782455354.6334014,
+    "ast_hash": "60639d37332096f669f3b083e8f17714",
+    "semantic_hash": "60639d37332096f669f3b083e8f17714"
+  },
+  "roles/15_package-config/README.md": {
+    "mtime": 1782455354.6334014,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/15_package-config/defaults/main.yml": {
+    "mtime": 1782455354.6334987,
+    "ast_hash": "f8ed376455a509275327bb08a76cc1aa",
+    "semantic_hash": "f8ed376455a509275327bb08a76cc1aa"
+  },
+  "roles/15_package-config/handlers/main.yml": {
+    "mtime": 1782455354.6334987,
+    "ast_hash": "c72deb35c2710e3843505c6b7f822bf0",
+    "semantic_hash": "c72deb35c2710e3843505c6b7f822bf0"
+  },
+  "roles/15_package-config/meta/main.yml": {
+    "mtime": 1782455354.6334987,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/15_package-config/tasks/main.yml": {
+    "mtime": 1782455354.6334987,
+    "ast_hash": "fa0c10b9f4b03dea73bbccffc0a18933",
+    "semantic_hash": "fa0c10b9f4b03dea73bbccffc0a18933"
+  },
+  "roles/15_package-config/tests/test.yml": {
+    "mtime": 1782455354.6337516,
+    "ast_hash": "1057c80789d319da80630ec140535fd3",
+    "semantic_hash": "1057c80789d319da80630ec140535fd3"
+  },
+  "roles/15_package-config/vars/main.yml": {
+    "mtime": 1782455354.6337516,
+    "ast_hash": "f0df830996abc46b850af1bea6ad48f1",
+    "semantic_hash": "f0df830996abc46b850af1bea6ad48f1"
+  },
+  "roles/16_custom-terminal/README.md": {
+    "mtime": 1782455354.6337516,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/16_custom-terminal/defaults/main.yml": {
+    "mtime": 1782455354.6338506,
+    "ast_hash": "22795312931e0657b7bc91dbeab0b23c",
+    "semantic_hash": "22795312931e0657b7bc91dbeab0b23c"
+  },
+  "roles/16_custom-terminal/handlers/main.yml": {
+    "mtime": 1782455354.6338506,
+    "ast_hash": "6d6a3216dcef98e9c73e33132c926e2f",
+    "semantic_hash": "6d6a3216dcef98e9c73e33132c926e2f"
+  },
+  "roles/16_custom-terminal/meta/main.yml": {
+    "mtime": 1782455354.6338506,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/16_custom-terminal/tasks/main.yml": {
+    "mtime": 1782455354.6338506,
+    "ast_hash": "bd56c92caa3b2afc5f1043080cae56e6",
+    "semantic_hash": "bd56c92caa3b2afc5f1043080cae56e6"
+  },
+  "roles/16_custom-terminal/tests/test.yml": {
+    "mtime": 1782455354.6341038,
+    "ast_hash": "06a868600078517a42f5a63f691f3062",
+    "semantic_hash": "06a868600078517a42f5a63f691f3062"
+  },
+  "roles/16_custom-terminal/vars/main.yml": {
+    "mtime": 1782455354.6341038,
+    "ast_hash": "e667d5e48be3bfcf3e25c77132f05b62",
+    "semantic_hash": "e667d5e48be3bfcf3e25c77132f05b62"
+  },
+  "roles/17_custom-commands/README.md": {
+    "mtime": 1782455354.6341038,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/17_custom-commands/defaults/main.yml": {
+    "mtime": 1782455354.6342044,
+    "ast_hash": "6d21623404fa79d1e1080ceeac1da773",
+    "semantic_hash": "6d21623404fa79d1e1080ceeac1da773"
+  },
+  "roles/17_custom-commands/handlers/main.yml": {
+    "mtime": 1782455354.6342044,
+    "ast_hash": "108d27ff469c36101200b851fe4bea1e",
+    "semantic_hash": "108d27ff469c36101200b851fe4bea1e"
+  },
+  "roles/17_custom-commands/meta/main.yml": {
+    "mtime": 1782455354.6342044,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/17_custom-commands/tasks/main.yml": {
+    "mtime": 1782455354.6342044,
+    "ast_hash": "4704ad41837525966454f6562e0e5b42",
+    "semantic_hash": "4704ad41837525966454f6562e0e5b42"
+  },
+  "roles/17_custom-commands/tests/test.yml": {
+    "mtime": 1782455354.634764,
+    "ast_hash": "559afad84e2114e48533b4ff86e03734",
+    "semantic_hash": "559afad84e2114e48533b4ff86e03734"
+  },
+  "roles/17_custom-commands/vars/main.yml": {
+    "mtime": 1782455354.634764,
+    "ast_hash": "bab522a7eb79559b9b1e45f955cab9ed",
+    "semantic_hash": "bab522a7eb79559b9b1e45f955cab9ed"
+  },
+  "roles/18_app-organise/README.md": {
+    "mtime": 1782455354.634764,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/18_app-organise/defaults/main.yml": {
+    "mtime": 1782455354.6348639,
+    "ast_hash": "4356a6026d06d859d6e2e6bc1fcb1096",
+    "semantic_hash": "4356a6026d06d859d6e2e6bc1fcb1096"
+  },
+  "roles/18_app-organise/handlers/main.yml": {
+    "mtime": 1782455354.6348639,
+    "ast_hash": "3b54937624a7149ba601cb8985c07fe4",
+    "semantic_hash": "3b54937624a7149ba601cb8985c07fe4"
+  },
+  "roles/18_app-organise/meta/main.yml": {
+    "mtime": 1782455354.6348639,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/18_app-organise/tasks/main.yml": {
+    "mtime": 1782455354.6348639,
+    "ast_hash": "383be7988a93fd329c60545d38788fd2",
+    "semantic_hash": "383be7988a93fd329c60545d38788fd2"
+  },
+  "roles/18_app-organise/tests/test.yml": {
+    "mtime": 1782455354.635066,
+    "ast_hash": "7ab14b263d099e58408807b32a3aa279",
+    "semantic_hash": "7ab14b263d099e58408807b32a3aa279"
+  },
+  "roles/18_app-organise/vars/main.yml": {
+    "mtime": 1782455354.635066,
+    "ast_hash": "d6301b02eac0adc73e32d4deaa90affd",
+    "semantic_hash": "d6301b02eac0adc73e32d4deaa90affd"
+  },
+  "roles/1_remove-packages/README.md": {
+    "mtime": 1782455354.635066,
+    "ast_hash": "8dfd586690044e939d270f53e8799a60",
+    "semantic_hash": "8dfd586690044e939d270f53e8799a60"
+  },
+  "roles/1_remove-packages/defaults/main.yml": {
+    "mtime": 1782455354.6351652,
+    "ast_hash": "e98970f76cc2768236a680f30453583e",
+    "semantic_hash": "e98970f76cc2768236a680f30453583e"
+  },
+  "roles/1_remove-packages/handlers/main.yml": {
+    "mtime": 1782455354.6351652,
+    "ast_hash": "88c79569ec8b9c99f29f2d38854b9c35",
+    "semantic_hash": "88c79569ec8b9c99f29f2d38854b9c35"
+  },
+  "roles/1_remove-packages/meta/main.yml": {
+    "mtime": 1782455354.6351652,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/1_remove-packages/tasks/main.yml": {
+    "mtime": 1782455354.6351652,
+    "ast_hash": "edb31da0f3b96d6acb1ca2b2e02e1562",
+    "semantic_hash": "edb31da0f3b96d6acb1ca2b2e02e1562"
+  },
+  "roles/1_remove-packages/tests/test.yml": {
+    "mtime": 1782455354.635395,
+    "ast_hash": "fb8fcfdf01a933b429718192170bd3c8",
+    "semantic_hash": "fb8fcfdf01a933b429718192170bd3c8"
+  },
+  "roles/1_remove-packages/vars/main.yml": {
+    "mtime": 1782455354.635395,
+    "ast_hash": "bbb236957a312480a53165f92a9dbf70",
+    "semantic_hash": "bbb236957a312480a53165f92a9dbf70"
+  },
+  "roles/2_update-system/README.md": {
+    "mtime": 1782455354.635395,
+    "ast_hash": "e6c94579f5004bbdbeda0ea7487cf67a",
+    "semantic_hash": "e6c94579f5004bbdbeda0ea7487cf67a"
+  },
+  "roles/2_update-system/defaults/main.yml": {
+    "mtime": 1782455354.635503,
+    "ast_hash": "1d3fec97a801dfb344ecd5b32eea3c1d",
+    "semantic_hash": "1d3fec97a801dfb344ecd5b32eea3c1d"
+  },
+  "roles/2_update-system/handlers/main.yml": {
+    "mtime": 1782455354.635503,
+    "ast_hash": "502ff03ec322f0e16c45a869429df988",
+    "semantic_hash": "502ff03ec322f0e16c45a869429df988"
+  },
+  "roles/2_update-system/meta/main.yml": {
+    "mtime": 1782455354.635503,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/2_update-system/tasks/main.yml": {
+    "mtime": 1782455354.635503,
+    "ast_hash": "6c6a3d51df3680bb959f09b47c2ad941",
+    "semantic_hash": "6c6a3d51df3680bb959f09b47c2ad941"
+  },
+  "roles/2_update-system/tests/test.yml": {
+    "mtime": 1782455354.6357036,
+    "ast_hash": "bca142ba35fce3182f346d9e89e1178d",
+    "semantic_hash": "bca142ba35fce3182f346d9e89e1178d"
+  },
+  "roles/2_update-system/vars/main.yml": {
+    "mtime": 1782455354.6357036,
+    "ast_hash": "9b1927646ad07df8543c536b2a78f3c5",
+    "semantic_hash": "9b1927646ad07df8543c536b2a78f3c5"
+  },
+  "roles/3_all-packages/README.md": {
+    "mtime": 1782455354.6357036,
+    "ast_hash": "bdeee58b9d4dc1514ed087f7de5a5534",
+    "semantic_hash": "bdeee58b9d4dc1514ed087f7de5a5534"
+  },
+  "roles/3_all-packages/defaults/main.yml": {
+    "mtime": 1782455354.6358008,
+    "ast_hash": "28fe460ca2e92d2b2990fa6fe961e633",
+    "semantic_hash": "28fe460ca2e92d2b2990fa6fe961e633"
+  },
+  "roles/3_all-packages/handlers/main.yml": {
+    "mtime": 1782455354.6358008,
+    "ast_hash": "112cb477239936624065b9f2b94cf5fa",
+    "semantic_hash": "112cb477239936624065b9f2b94cf5fa"
+  },
+  "roles/3_all-packages/meta/main.yml": {
+    "mtime": 1782455354.6358008,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/3_all-packages/tasks/main.yml": {
+    "mtime": 1782455354.6358008,
+    "ast_hash": "d0775c985ffdac0c5512df841b5ae491",
+    "semantic_hash": "d0775c985ffdac0c5512df841b5ae491"
+  },
+  "roles/3_all-packages/tests/test.yml": {
+    "mtime": 1782455354.6360157,
+    "ast_hash": "0adae7696fdca86448386ac7e7104292",
+    "semantic_hash": "0adae7696fdca86448386ac7e7104292"
+  },
+  "roles/3_all-packages/vars/main.yml": {
+    "mtime": 1782455354.6360157,
+    "ast_hash": "43d3e2eee9dd11c7cdbd225cdf45702b",
+    "semantic_hash": "43d3e2eee9dd11c7cdbd225cdf45702b"
+  },
+  "roles/4_asus-zenscreen/README.md": {
+    "mtime": 1782455354.6360157,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/4_asus-zenscreen/defaults/main.yml": {
+    "mtime": 1782455354.636112,
+    "ast_hash": "35bca44f70517fbe4261c74120fa564f",
+    "semantic_hash": "35bca44f70517fbe4261c74120fa564f"
+  },
+  "roles/4_asus-zenscreen/handlers/main.yml": {
+    "mtime": 1782455354.636112,
+    "ast_hash": "42a4662738f013e35913910faabdd23c",
+    "semantic_hash": "42a4662738f013e35913910faabdd23c"
+  },
+  "roles/4_asus-zenscreen/meta/main.yml": {
+    "mtime": 1782455354.636112,
+    "ast_hash": "d391f6dfbca715f590574f4a6a09baba",
+    "semantic_hash": "d391f6dfbca715f590574f4a6a09baba"
+  },
+  "roles/4_asus-zenscreen/tasks/main.yml": {
+    "mtime": 1782455354.636112,
+    "ast_hash": "ebe8c3fe7eb5a98555da3964e187b54c",
+    "semantic_hash": "ebe8c3fe7eb5a98555da3964e187b54c"
+  },
+  "roles/4_asus-zenscreen/tests/test.yml": {
+    "mtime": 1782455354.6363668,
+    "ast_hash": "c2562cc331d6de1fdfe25ef816c9c2d2",
+    "semantic_hash": "c2562cc331d6de1fdfe25ef816c9c2d2"
+  },
+  "roles/4_asus-zenscreen/vars/main.yml": {
+    "mtime": 1782455354.6363668,
+    "ast_hash": "d8d853d9662adab14abdf368a297975a",
+    "semantic_hash": "d8d853d9662adab14abdf368a297975a"
+  },
+  "roles/5_distrobox/README.md": {
+    "mtime": 1782455354.6363668,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/5_distrobox/defaults/main.yml": {
+    "mtime": 1782455354.636467,
+    "ast_hash": "85346ef3e91558498386d8749cd1642d",
+    "semantic_hash": "85346ef3e91558498386d8749cd1642d"
+  },
+  "roles/5_distrobox/handlers/main.yml": {
+    "mtime": 1782455354.636467,
+    "ast_hash": "8dbbf3ca753358a53bf4d9f7cf3be572",
+    "semantic_hash": "8dbbf3ca753358a53bf4d9f7cf3be572"
+  },
+  "roles/5_distrobox/meta/main.yml": {
+    "mtime": 1782455354.636467,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/5_distrobox/tasks/main.yml": {
+    "mtime": 1782455354.636467,
+    "ast_hash": "deb0c2a9bfbb07b01b073103a27c2975",
+    "semantic_hash": "deb0c2a9bfbb07b01b073103a27c2975"
+  },
+  "roles/5_distrobox/tests/test.yml": {
+    "mtime": 1782455354.636702,
+    "ast_hash": "b91ac98274e1a4af1cec3b13612da4a7",
+    "semantic_hash": "b91ac98274e1a4af1cec3b13612da4a7"
+  },
+  "roles/5_distrobox/vars/main.yml": {
+    "mtime": 1782455354.636702,
+    "ast_hash": "8544a20f31bfd89a5caa6e8e5c4e881b",
+    "semantic_hash": "8544a20f31bfd89a5caa6e8e5c4e881b"
+  },
+  "roles/6_vmm/README.md": {
+    "mtime": 1782455354.636702,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/6_vmm/defaults/main.yml": {
+    "mtime": 1782455354.6368024,
+    "ast_hash": "60441e9ad4418fdf796c864e7a8538ca",
+    "semantic_hash": "60441e9ad4418fdf796c864e7a8538ca"
+  },
+  "roles/6_vmm/handlers/main.yml": {
+    "mtime": 1782455354.6368024,
+    "ast_hash": "cec5e3a7a0a77c6e42d0f1c5196333ec",
+    "semantic_hash": "cec5e3a7a0a77c6e42d0f1c5196333ec"
+  },
+  "roles/6_vmm/meta/main.yml": {
+    "mtime": 1782455354.6368024,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/6_vmm/tasks/main.yml": {
+    "mtime": 1782455354.6368024,
+    "ast_hash": "b6a7f577fbd3d6053c410bdbbf2dc679",
+    "semantic_hash": "b6a7f577fbd3d6053c410bdbbf2dc679"
+  },
+  "roles/6_vmm/tests/test.yml": {
+    "mtime": 1782455354.6369965,
+    "ast_hash": "20ff1c03b97cf7ca13c2fb46b716bf65",
+    "semantic_hash": "20ff1c03b97cf7ca13c2fb46b716bf65"
+  },
+  "roles/6_vmm/vars/main.yml": {
+    "mtime": 1782455354.6369965,
+    "ast_hash": "8fd95577f04fa9285408c25f50d98b21",
+    "semantic_hash": "8fd95577f04fa9285408c25f50d98b21"
+  },
+  "roles/7_ubuntu-packages/README.md": {
+    "mtime": 1782455354.6369965,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/7_ubuntu-packages/defaults/main.yml": {
+    "mtime": 1782455354.637097,
+    "ast_hash": "09a25d0510488d8b1102a35b51f9c6a9",
+    "semantic_hash": "09a25d0510488d8b1102a35b51f9c6a9"
+  },
+  "roles/7_ubuntu-packages/handlers/main.yml": {
+    "mtime": 1782455354.637097,
+    "ast_hash": "8d3054a86622290120336584c1cc7a06",
+    "semantic_hash": "8d3054a86622290120336584c1cc7a06"
+  },
+  "roles/7_ubuntu-packages/meta/main.yml": {
+    "mtime": 1782455354.637097,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/7_ubuntu-packages/tasks/main.yml": {
+    "mtime": 1782455354.637097,
+    "ast_hash": "2015ecb5a7f1544688f50bcb8e9389a4",
+    "semantic_hash": "2015ecb5a7f1544688f50bcb8e9389a4"
+  },
+  "roles/7_ubuntu-packages/tests/test.yml": {
+    "mtime": 1782455354.6373198,
+    "ast_hash": "a55630f359009963cb53206add9c9d1b",
+    "semantic_hash": "a55630f359009963cb53206add9c9d1b"
+  },
+  "roles/7_ubuntu-packages/vars/main.yml": {
+    "mtime": 1782455354.6373198,
+    "ast_hash": "247d4c1e62e8746383fda201416d2e61",
+    "semantic_hash": "247d4c1e62e8746383fda201416d2e61"
+  },
+  "roles/8_vm-setup/README.md": {
+    "mtime": 1782455354.6373198,
+    "ast_hash": "1d9db76f995f2d8293431426f493dd0b",
+    "semantic_hash": "1d9db76f995f2d8293431426f493dd0b"
+  },
+  "roles/8_vm-setup/defaults/main.yml": {
+    "mtime": 1782455354.6374383,
+    "ast_hash": "2127ecf466b8d6e6845ebfca3a479f54",
+    "semantic_hash": "2127ecf466b8d6e6845ebfca3a479f54"
+  },
+  "roles/8_vm-setup/handlers/main.yml": {
+    "mtime": 1782455354.6374383,
+    "ast_hash": "248403c0fb1048c1ce9ed5d614fc31bb",
+    "semantic_hash": "248403c0fb1048c1ce9ed5d614fc31bb"
+  },
+  "roles/8_vm-setup/meta/main.yml": {
+    "mtime": 1782455354.6374383,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/8_vm-setup/tasks/main.yml": {
+    "mtime": 1782455354.6374383,
+    "ast_hash": "d529aa4f7d2845205ff3a753b38b973c",
+    "semantic_hash": "d529aa4f7d2845205ff3a753b38b973c"
+  },
+  "roles/8_vm-setup/tests/test.yml": {
+    "mtime": 1782455354.637674,
+    "ast_hash": "a2f10fece57ae12059e19d4029eabe05",
+    "semantic_hash": "a2f10fece57ae12059e19d4029eabe05"
+  },
+  "roles/8_vm-setup/vars/main.yml": {
+    "mtime": 1782455354.637674,
+    "ast_hash": "ce6fe92f49c5ce442457cc52e7c24874",
+    "semantic_hash": "ce6fe92f49c5ce442457cc52e7c24874"
+  },
+  "roles/9_github/README.md": {
+    "mtime": 1782455354.637674,
+    "ast_hash": "433d370732878937b5cf7bdbf13b76d6",
+    "semantic_hash": "433d370732878937b5cf7bdbf13b76d6"
+  },
+  "roles/9_github/defaults/main.yml": {
+    "mtime": 1782455354.6378174,
+    "ast_hash": "316e8c221952e49bda3a1a405f9e2979",
+    "semantic_hash": "316e8c221952e49bda3a1a405f9e2979"
+  },
+  "roles/9_github/handlers/main.yml": {
+    "mtime": 1782455354.6378174,
+    "ast_hash": "1d517cea839178806def4ba8ef11180b",
+    "semantic_hash": "1d517cea839178806def4ba8ef11180b"
+  },
+  "roles/9_github/meta/main.yml": {
+    "mtime": 1782455354.6378174,
+    "ast_hash": "ee2ca434d41857561c3bddf6c3353665",
+    "semantic_hash": "ee2ca434d41857561c3bddf6c3353665"
+  },
+  "roles/9_github/tasks/main.yml": {
+    "mtime": 1782455354.6378174,
+    "ast_hash": "3fd75d0fbb93d0f27e675b2d91c34e6c",
+    "semantic_hash": "3fd75d0fbb93d0f27e675b2d91c34e6c"
+  },
+  "roles/9_github/tests/test.yml": {
+    "mtime": 1782455354.6380157,
+    "ast_hash": "ec446b53666e46cfc3b9eed014c7e88b",
+    "semantic_hash": "ec446b53666e46cfc3b9eed014c7e88b"
+  },
+  "roles/9_github/vars/main.yml": {
+    "mtime": 1782455354.6380157,
+    "ast_hash": "c2ad137a502f6d46381181f35a83d5cb",
+    "semantic_hash": "c2ad137a502f6d46381181f35a83d5cb"
+  },
+  "site.yml": {
+    "mtime": 1782455354.6380157,
+    "ast_hash": "ccea44ae49d35366b1d6aff67662d3e9",
+    "semantic_hash": "ccea44ae49d35366b1d6aff67662d3e9"
+  },
+  "vault.yml": {
+    "mtime": 1782455354.6380157,
+    "ast_hash": "67a96e6fa143745dc924b56bacdfb415",
+    "semantic_hash": "67a96e6fa143745dc924b56bacdfb415"
+  },
+  "Media/Desktop.png": {
+    "mtime": 1782455354.6266747,
+    "ast_hash": "f6f42b3072133bd1a65fd3df05071c0b",
+    "semantic_hash": "f6f42b3072133bd1a65fd3df05071c0b"
+  },
+  "Media/Icon.png": {
+    "mtime": 1782455354.6286745,
+    "ast_hash": "67837c6f24db24c9eb9f081065578002",
+    "semantic_hash": "67837c6f24db24c9eb9f081065578002"
+  }
+}
