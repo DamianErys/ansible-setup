@@ -68,7 +68,7 @@
   changed_when: false
 
 # -----------------------------------------------
-# Step 3 — Desktop wallpaper
+# Step 3 — Desktop wallpaper (personal only)
 # -----------------------------------------------
 - name: Ensure backgrounds directory exists
   ansible.builtin.file:
@@ -77,6 +77,7 @@
     mode: '0755'
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
+  when: not (skip_personal | default(false))
 
 - name: Copy wallpaper to backgrounds folder
   ansible.builtin.copy:
@@ -86,7 +87,9 @@
     group: "{{ main_user }}"
     mode: '0644'
     remote_src: true
-  when: wallpaper_stat.stat.exists
+  when:
+    - not (skip_personal | default(false))
+    - wallpaper_stat.stat.exists
 
 - name: Set wallpaper via gsettings (light mode)
   ansible.builtin.shell: |
@@ -95,7 +98,9 @@
   become: true
   become_user: "{{ main_user }}"
   changed_when: false
-  when: wallpaper_stat.stat.exists
+  when:
+    - not (skip_personal | default(false))
+    - wallpaper_stat.stat.exists
 
 - name: Set wallpaper via gsettings (dark mode)
   ansible.builtin.shell: |
@@ -104,7 +109,9 @@
   become: true
   become_user: "{{ main_user }}"
   changed_when: false
-  when: wallpaper_stat.stat.exists
+  when:
+    - not (skip_personal | default(false))
+    - wallpaper_stat.stat.exists
 
 - name: Set wallpaper scaling mode
   ansible.builtin.shell: |
@@ -112,9 +119,10 @@
   become: true
   become_user: "{{ main_user }}"
   changed_when: false
+  when: not (skip_personal | default(false))
 
 # -----------------------------------------------
-# Step 5 — User avatar
+# Step 5 — User avatar (personal only)
 # -----------------------------------------------
 - name: Ensure icons directory exists
   ansible.builtin.file:
@@ -123,6 +131,7 @@
     mode: '0755'
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
+  when: not (skip_personal | default(false))
 
 - name: Copy avatar to icons folder
   ansible.builtin.copy:
@@ -132,7 +141,9 @@
     group: "{{ main_user }}"
     mode: '0644'
     remote_src: true
-  when: icon_stat.stat.exists
+  when:
+    - not (skip_personal | default(false))
+    - icon_stat.stat.exists
 
 - name: Copy avatar to AccountsService
   ansible.builtin.copy:
@@ -140,7 +151,9 @@
     dest: "/var/lib/AccountsService/icons/{{ main_user }}"
     mode: '0644'
     remote_src: true
-  when: icon_stat.stat.exists
+  when:
+    - not (skip_personal | default(false))
+    - icon_stat.stat.exists
 
 - name: Set avatar path in AccountsService user file
   ansible.builtin.lineinfile:
@@ -149,4 +162,6 @@
     line: "Icon=/var/lib/AccountsService/icons/{{ main_user }}"
     create: true
     mode: '0644'
-  when: icon_stat.stat.exists
+  when:
+    - not (skip_personal | default(false))
+    - icon_stat.stat.exists
