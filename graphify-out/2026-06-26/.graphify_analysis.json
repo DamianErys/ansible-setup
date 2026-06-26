@@ -1,0 +1,569 @@
+{
+  "communities": {
+    "0": [
+      "12_gnome_settings_readme",
+      "13_touchpad_readme",
+      "abrtd_service",
+      "dconf_gnome_settings",
+      "defaults_main_12_gnome_settings",
+      "defaults_main_13_touchpad",
+      "handlers_main_12_gnome_settings",
+      "machine_type_variable",
+      "main_user_variable",
+      "meta_main_12_gnome_settings",
+      "meta_main_13_touchpad",
+      "tasks_main_12_gnome_settings",
+      "tasks_main_13_touchpad",
+      "tests_test_12_gnome_settings",
+      "tests_test_13_touchpad",
+      "vars_main_12_gnome_settings",
+      "vars_main_13_touchpad"
+    ],
+    "1": [
+      "accounts_service_avatar",
+      "appearance_tasks_main_yml",
+      "appearance_tests_test_yml",
+      "build_base_yml",
+      "build_vms_yml",
+      "configure_yml",
+      "connectivity_yml",
+      "dconf_power_settings",
+      "desktop_yml",
+      "gnome_wallpaper_setup",
+      "gsettings_dark_mode",
+      "machine_type_conditional",
+      "power_tasks_main_yml",
+      "site_yml",
+      "tuned_ppd_power_profile",
+      "vault_yml"
+    ],
+    "2": [
+      "2_update-system_tasks_main",
+      "2_update-system_tests_test",
+      "3_all-packages_readme",
+      "3_all-packages_tasks_main",
+      "3_all-packages_tests_test",
+      "concept_akmod_nvidia",
+      "concept_amdgpu",
+      "concept_flathub",
+      "concept_flatpak",
+      "concept_fwupd",
+      "concept_kicad",
+      "concept_machine_type",
+      "concept_texlive",
+      "concept_xppen"
+    ],
+    "3": [
+      "5_distrobox_defaults",
+      "5_distrobox_handlers",
+      "5_distrobox_tasks",
+      "5_distrobox_test",
+      "7_ubuntu_packages_readme",
+      "7_ubuntu_packages_tasks",
+      "7_ubuntu_packages_test",
+      "concept_distrobox",
+      "concept_podman",
+      "concept_reqview",
+      "concept_ubuntu_box",
+      "concept_vault_github"
+    ],
+    "4": [
+      "1_remove-packages_readme",
+      "1_remove-packages_tasks_main",
+      "1_remove-packages_tests_test",
+      "1_remove-packages_vars_main",
+      "2_update-system_readme",
+      "concept_dnf_excludepkgs",
+      "concept_flatpak_mask",
+      "concept_remove_packages",
+      "concept_update_system"
+    ],
+    "5": [
+      "4_asus-zenscreen_handlers_main",
+      "4_asus-zenscreen_meta_main",
+      "4_asus-zenscreen_tasks_main",
+      "4_asus-zenscreen_tests_test",
+      "concept_displaylink",
+      "concept_displaylink_driver_service",
+      "concept_dkms"
+    ],
+    "6": [
+      "6_vmm_defaults",
+      "6_vmm_readme",
+      "6_vmm_tasks",
+      "6_vmm_test",
+      "concept_libvirtd",
+      "concept_main_user",
+      "concept_virt_manager"
+    ],
+    "7": [
+      "8_vm_setup_defaults_main",
+      "8_vm_setup_handlers_main",
+      "8_vm_setup_readme",
+      "8_vm_setup_tasks_main",
+      "8_vm_setup_tests_test",
+      "concept_libvirt_kvm",
+      "concept_tiny11_vm"
+    ],
+    "8": [
+      "bash_custom_prompt",
+      "distrobox_detection",
+      "firacode_nerd_font",
+      "inputrc_tab_completion",
+      "ptyxis_terminal",
+      "tasks_16_custom_terminal_tasks_main",
+      "tests_16_custom_terminal_tests_test"
+    ],
+    "9": [
+      "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
+      "runansible",
+      "runansible_fail",
+      "runansible_info",
+      "runansible_move_installer",
+      "runansible_pass",
+      "runansible_warn"
+    ],
+    "10": [
+      "17_custom-commands_tasks_main",
+      "17_custom-commands_tests_test",
+      "17_custom-commands_vars_main",
+      "concept_custom_commands",
+      "concept_local_bin",
+      "concept_picocom"
+    ],
+    "11": [
+      "9_github_defaults_main",
+      "9_github_handlers_main",
+      "9_github_tasks_main",
+      "9_github_tests_test",
+      "concept_gh_cli",
+      "concept_vault_github_pat"
+    ],
+    "12": [
+      "firefox_policies",
+      "rclone_cache_warm",
+      "rclone_proton_drive",
+      "stm32_dfu_udev",
+      "tasks_15_package_config_tasks_main",
+      "tests_15_package_config_tests_test"
+    ],
+    "13": [
+      "18_app-organise_tasks_main",
+      "18_app-organise_tests_test",
+      "18_app-organise_vars_main",
+      "concept_dconf",
+      "concept_gnome_app_folders"
+    ],
+    "14": [
+      "pipewire_audio",
+      "qpwgraph_tool",
+      "tasks_14_audio_tasks_main",
+      "tests_14_audio_tests_test"
+    ],
+    "15": [
+      "14_audio_readme",
+      "defaults_main_14_audio"
+    ],
+    "16": [
+      "claude",
+      "claude_graphify"
+    ],
+    "17": [
+      "files_install_displaylink",
+      "home_erys_workstation_repos_ansible_setup_roles_4_asus_zenscreen_files_install_displaylink_sh__entry"
+    ],
+    "18": [
+      "handlers_main_14_audio",
+      "meta_main_14_audio"
+    ],
+    "19": [
+      "home_erys_workstation_repos_ansible_setup_openvault_sh__entry",
+      "openvault"
+    ],
+    "20": [
+      "home_erys_workstation_repos_ansible_setup_vaultexample_sh__entry",
+      "vaultexample"
+    ],
+    "21": [
+      "tests_test_11power",
+      "vars_main_11power"
+    ],
+    "22": [
+      "17_custom-commands_meta_main"
+    ],
+    "23": [
+      "18_app-organise_defaults_main"
+    ],
+    "24": [
+      "18_app-organise_handlers_main"
+    ],
+    "25": [
+      "18_app-organise_meta_main"
+    ],
+    "26": [
+      "18_app-organise_readme"
+    ],
+    "27": [
+      "1_remove-packages_defaults_main"
+    ],
+    "28": [
+      "1_remove-packages_handlers_main"
+    ],
+    "29": [
+      "1_remove-packages_meta_main"
+    ],
+    "30": [
+      "2_update-system_defaults_main"
+    ],
+    "31": [
+      "2_update-system_handlers_main"
+    ],
+    "32": [
+      "2_update-system_meta_main"
+    ],
+    "33": [
+      "2_update-system_vars_main"
+    ],
+    "34": [
+      "3_all-packages_defaults_main"
+    ],
+    "35": [
+      "3_all-packages_handlers_main"
+    ],
+    "36": [
+      "3_all-packages_meta_main"
+    ],
+    "37": [
+      "3_all-packages_vars_main"
+    ],
+    "38": [
+      "4_asus-zenscreen_defaults_main"
+    ],
+    "39": [
+      "4_asus-zenscreen_readme"
+    ],
+    "40": [
+      "4_asus-zenscreen_vars_main"
+    ],
+    "41": [
+      "5_distrobox_meta"
+    ],
+    "42": [
+      "5_distrobox_readme"
+    ],
+    "43": [
+      "5_distrobox_vars"
+    ],
+    "44": [
+      "6_vmm_handlers"
+    ],
+    "45": [
+      "6_vmm_meta"
+    ],
+    "46": [
+      "6_vmm_vars"
+    ],
+    "47": [
+      "7_ubuntu_packages_defaults"
+    ],
+    "48": [
+      "7_ubuntu_packages_handlers"
+    ],
+    "49": [
+      "7_ubuntu_packages_meta"
+    ],
+    "50": [
+      "7_ubuntu_packages_vars"
+    ],
+    "51": [
+      "8_vm_setup_meta_main"
+    ],
+    "52": [
+      "8_vm_setup_vars_main"
+    ],
+    "53": [
+      "9_github_meta_main"
+    ],
+    "54": [
+      "9_github_readme"
+    ],
+    "55": [
+      "9_github_vars_main"
+    ],
+    "56": [
+      "appearance_defaults_main_yml"
+    ],
+    "57": [
+      "appearance_handlers_main_yml"
+    ],
+    "58": [
+      "appearance_meta_main_yml"
+    ],
+    "59": [
+      "appearance_readme"
+    ],
+    "60": [
+      "appearance_vars_main_yml"
+    ],
+    "61": [
+      "defaults_15_package_config_defaults_main"
+    ],
+    "62": [
+      "defaults_16_custom_terminal_defaults_main"
+    ],
+    "63": [
+      "defaults_17_custom_commands_defaults_main"
+    ],
+    "64": [
+      "handlers_15_package_config_handlers_main"
+    ],
+    "65": [
+      "handlers_16_custom_terminal_handlers_main"
+    ],
+    "66": [
+      "handlers_17_custom_commands_handlers_main"
+    ],
+    "67": [
+      "handlers_main_13_touchpad"
+    ],
+    "68": [
+      "media_desktop"
+    ],
+    "69": [
+      "media_icon"
+    ],
+    "70": [
+      "meta_15_package_config_meta_main"
+    ],
+    "71": [
+      "meta_16_custom_terminal_meta_main"
+    ],
+    "72": [
+      "power_defaults_main_yml"
+    ],
+    "73": [
+      "power_handlers_main_yml"
+    ],
+    "74": [
+      "power_meta_main_yml"
+    ],
+    "75": [
+      "power_readme"
+    ],
+    "76": [
+      "readme_15_package_config_readme"
+    ],
+    "77": [
+      "readme_16_custom_terminal_readme"
+    ],
+    "78": [
+      "readme_17_custom_commands_readme"
+    ],
+    "79": [
+      "vars_14_audio_vars_main"
+    ],
+    "80": [
+      "vars_15_package_config_vars_main"
+    ],
+    "81": [
+      "vars_16_custom_terminal_vars_main"
+    ]
+  },
+  "cohesion": {
+    "0": 0.1323529411764706,
+    "1": 0.175,
+    "2": 0.15384615384615385,
+    "3": 0.21212121212121213,
+    "4": 0.3055555555555556,
+    "5": 0.2857142857142857,
+    "6": 0.2857142857142857,
+    "7": 0.38095238095238093,
+    "8": 0.3333333333333333,
+    "9": 0.6666666666666666,
+    "10": 0.3333333333333333,
+    "11": 0.3333333333333333,
+    "12": 0.4,
+    "13": 0.5,
+    "14": 0.6666666666666666,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0
+  },
+  "gods": [
+    {
+      "id": "tasks_main_12_gnome_settings",
+      "label": "12_gnome-settings Role Tasks",
+      "degree": 10
+    },
+    {
+      "id": "tasks_main_13_touchpad",
+      "label": "13_touchpad Role Tasks",
+      "degree": 9
+    },
+    {
+      "id": "3_all-packages_tasks_main",
+      "label": "All Packages Tasks (Flatpak)",
+      "degree": 9
+    },
+    {
+      "id": "5_distrobox_tasks",
+      "label": "Distrobox Role Tasks",
+      "degree": 7
+    },
+    {
+      "id": "7_ubuntu_packages_tasks",
+      "label": "Ubuntu Packages Role Tasks",
+      "degree": 7
+    },
+    {
+      "id": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
+      "label": "RunAnsible.sh script",
+      "degree": 6
+    },
+    {
+      "id": "2_update-system_tasks_main",
+      "label": "Update System Tasks",
+      "degree": 6
+    },
+    {
+      "id": "6_vmm_tasks",
+      "label": "VMM Role Tasks",
+      "degree": 6
+    },
+    {
+      "id": "8_vm_setup_tasks_main",
+      "label": "8_vm-setup Tasks - tiny11 Windows VM Setup",
+      "degree": 6
+    },
+    {
+      "id": "runansible_move_installer",
+      "label": "move_installer()",
+      "degree": 5
+    }
+  ],
+  "surprises": [
+    {
+      "source": "site.yml Master Playbook",
+      "target": "build-base.yml Playbook",
+      "source_files": [
+        "site.yml",
+        "build-base.yml"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `build-base.yml Playbook` unexpectedly reaches hub `site.yml Master Playbook`"
+    },
+    {
+      "source": "site.yml Master Playbook",
+      "target": "build-vms.yml Playbook",
+      "source_files": [
+        "site.yml",
+        "build-vms.yml"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `build-vms.yml Playbook` unexpectedly reaches hub `site.yml Master Playbook`"
+    },
+    {
+      "source": "site.yml Master Playbook",
+      "target": "connectivity.yml Playbook",
+      "source_files": [
+        "site.yml",
+        "connectivity.yml"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `connectivity.yml Playbook` unexpectedly reaches hub `site.yml Master Playbook`"
+    },
+    {
+      "source": "site.yml Master Playbook",
+      "target": "desktop.yml Playbook",
+      "source_files": [
+        "site.yml",
+        "desktop.yml"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `desktop.yml Playbook` unexpectedly reaches hub `site.yml Master Playbook`"
+    },
+    {
+      "source": "build-base.yml Playbook",
+      "target": "vault.yml Ansible Vault (encrypted secrets)",
+      "source_files": [
+        "build-base.yml",
+        "vault.yml"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `build-base.yml Playbook` unexpectedly reaches hub `vault.yml Ansible Vault (encrypted secrets)`"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

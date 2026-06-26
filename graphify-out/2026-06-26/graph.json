@@ -1,368 +1,30 @@
 {
   "directed": false,
   "multigraph": false,
-  "graph": {
-    "hyperedges": [
-      {
-        "id": "playbooks_vault_shared_vars",
-        "label": "All Playbooks Share vault.yml for Encrypted Variables",
-        "nodes": [
-          "build_base_yml",
-          "build_vms_yml",
-          "configure_yml",
-          "connectivity_yml",
-          "desktop_yml",
-          "vault_yml"
-        ],
-        "relation": "participate_in",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "site.yml"
-      },
-      {
-        "id": "configure_role_chain",
-        "label": "configure.yml Role Execution Chain",
-        "nodes": [
-          "configure_yml",
-          "appearance_tasks_main_yml",
-          "power_tasks_main_yml"
-        ],
-        "relation": "implement",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "configure.yml"
-      },
-      {
-        "id": "gnome_appearance_concepts",
-        "label": "GNOME Appearance Configuration Concepts",
-        "nodes": [
-          "gsettings_dark_mode",
-          "gnome_wallpaper_setup",
-          "accounts_service_avatar"
-        ],
-        "relation": "form",
-        "confidence": "INFERRED",
-        "confidence_score": 0.85,
-        "source_file": "roles/10_appearance/tasks/main.yml"
-      },
-      {
-        "id": "dconf_roles_group",
-        "label": "GNOME dconf Configuration Roles",
-        "nodes": [
-          "tasks_main_12_gnome_settings",
-          "tasks_main_13_touchpad",
-          "dconf_gnome_settings"
-        ],
-        "relation": "implement",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/12_gnome-settings/tasks/main.yml"
-      },
-      {
-        "id": "main_user_consumers",
-        "label": "Roles Using main_user Variable",
-        "nodes": [
-          "tasks_main_12_gnome_settings",
-          "tasks_main_13_touchpad",
-          "main_user_variable"
-        ],
-        "relation": "participate_in",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/12_gnome-settings/tasks/main.yml"
-      },
-      {
-        "id": "role_12_structure",
-        "label": "12_gnome-settings Role Structure",
-        "nodes": [
-          "defaults_main_12_gnome_settings",
-          "handlers_main_12_gnome_settings",
-          "meta_main_12_gnome_settings",
-          "tasks_main_12_gnome_settings",
-          "tests_test_12_gnome_settings",
-          "vars_main_12_gnome_settings"
-        ],
-        "relation": "form",
-        "confidence": "INFERRED",
-        "confidence_score": 0.95,
-        "source_file": "roles/12_gnome-settings/tasks/main.yml"
-      },
-      {
-        "id": "role_13_structure",
-        "label": "13_touchpad Role Structure",
-        "nodes": [
-          "defaults_main_13_touchpad",
-          "handlers_main_13_touchpad",
-          "meta_main_13_touchpad",
-          "tasks_main_13_touchpad",
-          "tests_test_13_touchpad",
-          "vars_main_13_touchpad"
-        ],
-        "relation": "form",
-        "confidence": "INFERRED",
-        "confidence_score": 0.95,
-        "source_file": "roles/13_touchpad/tasks/main.yml"
-      },
-      {
-        "id": "role_14_structure",
-        "label": "14_audio Role Structure",
-        "nodes": [
-          "defaults_main_14_audio",
-          "handlers_main_14_audio",
-          "meta_main_14_audio"
-        ],
-        "relation": "form",
-        "confidence": "INFERRED",
-        "confidence_score": 0.95,
-        "source_file": "roles/14_audio/meta/main.yml"
-      },
-      {
-        "id": "role_14_audio_components",
-        "label": "Role 14 Audio Components",
-        "nodes": [
-          "tasks_14_audio_tasks_main",
-          "tests_14_audio_tests_test",
-          "vars_14_audio_vars_main"
-        ],
-        "relation": "implement",
-        "confidence": "INFERRED",
-        "confidence_score": 0.95,
-        "source_file": "roles/14_audio/tasks/main.yml"
-      },
-      {
-        "id": "role_15_package_config_components",
-        "label": "Role 15 Package Config Components",
-        "nodes": [
-          "tasks_15_package_config_tasks_main",
-          "defaults_15_package_config_defaults_main",
-          "handlers_15_package_config_handlers_main",
-          "meta_15_package_config_meta_main",
-          "tests_15_package_config_tests_test",
-          "vars_15_package_config_vars_main"
-        ],
-        "relation": "implement",
-        "confidence": "INFERRED",
-        "confidence_score": 0.95,
-        "source_file": "roles/15_package-config/tasks/main.yml"
-      },
-      {
-        "id": "role_16_custom_terminal_components",
-        "label": "Role 16 Custom Terminal Components",
-        "nodes": [
-          "tasks_16_custom_terminal_tasks_main",
-          "defaults_16_custom_terminal_defaults_main",
-          "handlers_16_custom_terminal_handlers_main",
-          "meta_16_custom_terminal_meta_main",
-          "tests_16_custom_terminal_tests_test",
-          "vars_16_custom_terminal_vars_main"
-        ],
-        "relation": "implement",
-        "confidence": "INFERRED",
-        "confidence_score": 0.95,
-        "source_file": "roles/16_custom-terminal/tasks/main.yml"
-      },
-      {
-        "id": "role_17_custom_commands",
-        "label": "Role 17 custom-commands Files",
-        "nodes": [
-          "17_custom-commands_meta_main",
-          "17_custom-commands_tasks_main",
-          "17_custom-commands_tests_test",
-          "17_custom-commands_vars_main"
-        ],
-        "relation": "form",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/17_custom-commands/tasks/main.yml"
-      },
-      {
-        "id": "role_18_app_organise",
-        "label": "Role 18 app-organise Files",
-        "nodes": [
-          "18_app-organise_readme",
-          "18_app-organise_defaults_main",
-          "18_app-organise_handlers_main",
-          "18_app-organise_meta_main",
-          "18_app-organise_tasks_main",
-          "18_app-organise_tests_test",
-          "18_app-organise_vars_main"
-        ],
-        "relation": "form",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/18_app-organise/tasks/main.yml"
-      },
-      {
-        "id": "role_1_remove_packages",
-        "label": "Role 1 remove-packages Files",
-        "nodes": [
-          "1_remove-packages_readme",
-          "1_remove-packages_defaults_main",
-          "1_remove-packages_handlers_main",
-          "1_remove-packages_meta_main",
-          "1_remove-packages_tasks_main",
-          "1_remove-packages_tests_test",
-          "1_remove-packages_vars_main"
-        ],
-        "relation": "form",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/1_remove-packages/tasks/main.yml"
-      },
-      {
-        "id": "update_system_role_files",
-        "label": "Update System Role Files",
-        "nodes": [
-          "2_update-system_handlers_main",
-          "2_update-system_meta_main",
-          "2_update-system_tasks_main",
-          "2_update-system_tests_test",
-          "2_update-system_vars_main"
-        ],
-        "relation": "implement",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/2_update-system/tasks/main.yml"
-      },
-      {
-        "id": "all_packages_role_files",
-        "label": "All Packages Role Files",
-        "nodes": [
-          "3_all-packages_defaults_main",
-          "3_all-packages_handlers_main",
-          "3_all-packages_meta_main",
-          "3_all-packages_tasks_main",
-          "3_all-packages_tests_test",
-          "3_all-packages_vars_main"
-        ],
-        "relation": "implement",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/3_all-packages/tasks/main.yml"
-      },
-      {
-        "id": "asus_zenscreen_role_files",
-        "label": "ASUS ZenScreen Role Files",
-        "nodes": [
-          "4_asus-zenscreen_defaults_main",
-          "4_asus-zenscreen_handlers_main",
-          "4_asus-zenscreen_meta_main",
-          "4_asus-zenscreen_tasks_main",
-          "4_asus-zenscreen_tests_test",
-          "4_asus-zenscreen_vars_main"
-        ],
-        "relation": "implement",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/4_asus-zenscreen/tasks/main.yml"
-      },
-      {
-        "id": "machine_type_consumers",
-        "label": "Roles Consuming machine_type",
-        "nodes": [
-          "2_update-system_tasks_main",
-          "3_all-packages_tasks_main",
-          "concept_machine_type"
-        ],
-        "relation": "participate_in",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/2_update-system/tasks/main.yml"
-      },
-      {
-        "id": "distrobox_role_components",
-        "label": "Distrobox Role Components",
-        "nodes": [
-          "5_distrobox_defaults",
-          "5_distrobox_handlers",
-          "5_distrobox_meta",
-          "5_distrobox_tasks",
-          "5_distrobox_vars"
-        ],
-        "relation": "implement",
-        "confidence": "INFERRED",
-        "confidence_score": 0.95,
-        "source_file": "roles/5_distrobox/tasks/main.yml"
-      },
-      {
-        "id": "vmm_role_components",
-        "label": "VMM Role Components",
-        "nodes": [
-          "6_vmm_defaults",
-          "6_vmm_handlers",
-          "6_vmm_meta",
-          "6_vmm_tasks",
-          "6_vmm_vars"
-        ],
-        "relation": "implement",
-        "confidence": "INFERRED",
-        "confidence_score": 0.95,
-        "source_file": "roles/6_vmm/tasks/main.yml"
-      },
-      {
-        "id": "ubuntu_packages_role_components",
-        "label": "Ubuntu Packages Role Components",
-        "nodes": [
-          "7_ubuntu_packages_defaults",
-          "7_ubuntu_packages_handlers",
-          "7_ubuntu_packages_meta",
-          "7_ubuntu_packages_tasks",
-          "7_ubuntu_packages_vars"
-        ],
-        "relation": "implement",
-        "confidence": "INFERRED",
-        "confidence_score": 0.95,
-        "source_file": "roles/7_ubuntu-packages/tasks/main.yml"
-      },
-      {
-        "id": "ubuntu_box_consumer_roles",
-        "label": "Roles Using ubuntu-box Container",
-        "nodes": [
-          "5_distrobox_tasks",
-          "7_ubuntu_packages_tasks"
-        ],
-        "relation": "participate_in",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/7_ubuntu-packages/tasks/main.yml"
-      },
-      {
-        "id": "role_8_vm_setup",
-        "label": "Role: 8_vm-setup (tiny11 Windows VM)",
-        "nodes": [
-          "8_vm_setup_tasks_main",
-          "8_vm_setup_defaults_main",
-          "8_vm_setup_handlers_main",
-          "8_vm_setup_meta_main",
-          "8_vm_setup_vars_main",
-          "8_vm_setup_readme",
-          "8_vm_setup_tests_test"
-        ],
-        "relation": "implement",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/8_vm-setup/tasks/main.yml"
-      },
-      {
-        "id": "role_9_github",
-        "label": "Role: 9_github (Git and gh CLI Setup)",
-        "nodes": [
-          "9_github_tasks_main",
-          "9_github_defaults_main",
-          "9_github_handlers_main",
-          "9_github_meta_main",
-          "9_github_vars_main",
-          "9_github_readme",
-          "9_github_tests_test"
-        ],
-        "relation": "implement",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "roles/9_github/tasks/main.yml"
-      }
-    ]
-  },
+  "graph": {},
   "nodes": [
+    {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 16,
+      "norm_label": "claude.md",
+      "community_name": "DisplayLink Install Script",
+      "id": "claude"
+    },
+    {
+      "label": "graphify",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 16,
+      "norm_label": "graphify",
+      "community_name": "DisplayLink Install Script",
+      "id": "claude_graphify"
+    },
     {
       "label": "OpenVault.sh",
       "file_type": "code",
@@ -373,9 +35,10 @@
         "kind": "file"
       },
       "_origin": "ast",
-      "id": "openvault",
-      "community": 18,
-      "norm_label": "openvault.sh"
+      "community": 19,
+      "norm_label": "openvault.sh",
+      "community_name": "Vault Example Script",
+      "id": "openvault"
     },
     {
       "label": "OpenVault.sh script",
@@ -387,9 +50,10 @@
         "kind": "bash_entrypoint"
       },
       "_origin": "ast",
-      "id": "home_erys_workstation_repos_ansible_setup_openvault_sh__entry",
-      "community": 18,
-      "norm_label": "openvault.sh script"
+      "community": 19,
+      "norm_label": "openvault.sh script",
+      "community_name": "Vault Example Script",
+      "id": "home_erys_workstation_repos_ansible_setup_openvault_sh__entry"
     },
     {
       "label": "RunAnsible.sh",
@@ -401,9 +65,10 @@
         "kind": "file"
       },
       "_origin": "ast",
-      "id": "runansible",
       "community": 9,
-      "norm_label": "runansible.sh"
+      "norm_label": "runansible.sh",
+      "community_name": "Ansible Runner Script",
+      "id": "runansible"
     },
     {
       "label": "RunAnsible.sh script",
@@ -415,9 +80,10 @@
         "kind": "bash_entrypoint"
       },
       "_origin": "ast",
-      "id": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
       "community": 9,
-      "norm_label": "runansible.sh script"
+      "norm_label": "runansible.sh script",
+      "community_name": "Ansible Runner Script",
+      "id": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry"
     },
     {
       "label": "pass()",
@@ -429,9 +95,10 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
-      "id": "runansible_pass",
       "community": 9,
-      "norm_label": "pass()"
+      "norm_label": "pass()",
+      "community_name": "Ansible Runner Script",
+      "id": "runansible_pass"
     },
     {
       "label": "fail()",
@@ -443,9 +110,10 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
-      "id": "runansible_fail",
       "community": 9,
-      "norm_label": "fail()"
+      "norm_label": "fail()",
+      "community_name": "Ansible Runner Script",
+      "id": "runansible_fail"
     },
     {
       "label": "warn()",
@@ -457,9 +125,10 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
-      "id": "runansible_warn",
       "community": 9,
-      "norm_label": "warn()"
+      "norm_label": "warn()",
+      "community_name": "Ansible Runner Script",
+      "id": "runansible_warn"
     },
     {
       "label": "info()",
@@ -471,9 +140,10 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
-      "id": "runansible_info",
       "community": 9,
-      "norm_label": "info()"
+      "norm_label": "info()",
+      "community_name": "Ansible Runner Script",
+      "id": "runansible_info"
     },
     {
       "label": "move_installer()",
@@ -485,9 +155,10 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
-      "id": "runansible_move_installer",
       "community": 9,
-      "norm_label": "move_installer()"
+      "norm_label": "move_installer()",
+      "community_name": "Ansible Runner Script",
+      "id": "runansible_move_installer"
     },
     {
       "label": "VaultExample.sh",
@@ -499,9 +170,10 @@
         "kind": "file"
       },
       "_origin": "ast",
-      "id": "vaultexample",
-      "community": 19,
-      "norm_label": "vaultexample.sh"
+      "community": 20,
+      "norm_label": "vaultexample.sh",
+      "community_name": "Power Role Stubs",
+      "id": "vaultexample"
     },
     {
       "label": "VaultExample.sh script",
@@ -513,9 +185,10 @@
         "kind": "bash_entrypoint"
       },
       "_origin": "ast",
-      "id": "home_erys_workstation_repos_ansible_setup_vaultexample_sh__entry",
-      "community": 19,
-      "norm_label": "vaultexample.sh script"
+      "community": 20,
+      "norm_label": "vaultexample.sh script",
+      "community_name": "Power Role Stubs",
+      "id": "home_erys_workstation_repos_ansible_setup_vaultexample_sh__entry"
     },
     {
       "label": "install_displaylink.sh",
@@ -527,9 +200,10 @@
         "kind": "file"
       },
       "_origin": "ast",
-      "id": "files_install_displaylink",
-      "community": 16,
-      "norm_label": "install_displaylink.sh"
+      "community": 17,
+      "norm_label": "install_displaylink.sh",
+      "community_name": "Audio Handlers",
+      "id": "files_install_displaylink"
     },
     {
       "label": "install_displaylink.sh script",
@@ -541,9 +215,10 @@
         "kind": "bash_entrypoint"
       },
       "_origin": "ast",
-      "id": "home_erys_workstation_repos_ansible_setup_roles_4_asus_zenscreen_files_install_displaylink_sh__entry",
-      "community": 16,
-      "norm_label": "install_displaylink.sh script"
+      "community": 17,
+      "norm_label": "install_displaylink.sh script",
+      "community_name": "Audio Handlers",
+      "id": "home_erys_workstation_repos_ansible_setup_roles_4_asus_zenscreen_files_install_displaylink_sh__entry"
     },
     {
       "label": "site.yml Master Playbook",
@@ -554,9 +229,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "site_yml",
       "community": 1,
-      "norm_label": "site.yml master playbook"
+      "norm_label": "site.yml master playbook",
+      "community_name": "Appearance and Playbook Core",
+      "id": "site_yml"
     },
     {
       "label": "build-base.yml Playbook",
@@ -567,9 +243,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "build_base_yml",
       "community": 1,
-      "norm_label": "build-base.yml playbook"
+      "norm_label": "build-base.yml playbook",
+      "community_name": "Appearance and Playbook Core",
+      "id": "build_base_yml"
     },
     {
       "label": "build-vms.yml Playbook",
@@ -580,9 +257,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "build_vms_yml",
       "community": 1,
-      "norm_label": "build-vms.yml playbook"
+      "norm_label": "build-vms.yml playbook",
+      "community_name": "Appearance and Playbook Core",
+      "id": "build_vms_yml"
     },
     {
       "label": "configure.yml Playbook",
@@ -593,9 +271,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "configure_yml",
       "community": 1,
-      "norm_label": "configure.yml playbook"
+      "norm_label": "configure.yml playbook",
+      "community_name": "Appearance and Playbook Core",
+      "id": "configure_yml"
     },
     {
       "label": "connectivity.yml Playbook",
@@ -606,9 +285,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "connectivity_yml",
       "community": 1,
-      "norm_label": "connectivity.yml playbook"
+      "norm_label": "connectivity.yml playbook",
+      "community_name": "Appearance and Playbook Core",
+      "id": "connectivity_yml"
     },
     {
       "label": "desktop.yml Playbook",
@@ -619,9 +299,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "desktop_yml",
       "community": 1,
-      "norm_label": "desktop.yml playbook"
+      "norm_label": "desktop.yml playbook",
+      "community_name": "Appearance and Playbook Core",
+      "id": "desktop_yml"
     },
     {
       "label": "vault.yml Ansible Vault (encrypted secrets)",
@@ -632,22 +313,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vault_yml",
       "community": 1,
-      "norm_label": "vault.yml ansible vault (encrypted secrets)"
-    },
-    {
-      "label": "10_appearance tasks/main.yml",
-      "file_type": "code",
-      "source_file": "roles/10_appearance/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "appearance_tasks_main_yml",
-      "community": 1,
-      "norm_label": "10_appearance tasks/main.yml"
+      "norm_label": "vault.yml ansible vault (encrypted secrets)",
+      "community_name": "Appearance and Playbook Core",
+      "id": "vault_yml"
     },
     {
       "label": "10_appearance defaults/main.yml",
@@ -658,9 +327,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "appearance_defaults_main_yml",
-      "community": 55,
-      "norm_label": "10_appearance defaults/main.yml"
+      "community": 56,
+      "norm_label": "10_appearance defaults/main.yml",
+      "community_name": "Appearance Handlers Main Yml",
+      "id": "appearance_defaults_main_yml"
     },
     {
       "label": "10_appearance handlers/main.yml",
@@ -671,9 +341,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "appearance_handlers_main_yml",
-      "community": 56,
-      "norm_label": "10_appearance handlers/main.yml"
+      "community": 57,
+      "norm_label": "10_appearance handlers/main.yml",
+      "community_name": "Appearance Meta Main Yml",
+      "id": "appearance_handlers_main_yml"
     },
     {
       "label": "10_appearance meta/main.yml",
@@ -684,9 +355,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "appearance_meta_main_yml",
-      "community": 57,
-      "norm_label": "10_appearance meta/main.yml"
+      "community": 58,
+      "norm_label": "10_appearance meta/main.yml",
+      "community_name": "Appearance Readme",
+      "id": "appearance_meta_main_yml"
     },
     {
       "label": "10_appearance vars/main.yml",
@@ -697,9 +369,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "appearance_vars_main_yml",
-      "community": 59,
-      "norm_label": "10_appearance vars/main.yml"
+      "community": 60,
+      "norm_label": "10_appearance vars/main.yml",
+      "community_name": "Defaults 15 Package Config Defaults Main",
+      "id": "appearance_vars_main_yml"
     },
     {
       "label": "10_appearance tests/test.yml",
@@ -710,9 +383,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "appearance_tests_test_yml",
-      "community": 1,
-      "norm_label": "10_appearance tests/test.yml"
+      "community": 83,
+      "norm_label": "10_appearance tests/test.yml",
+      "community_name": "Appearance and Playbook Core",
+      "id": "appearance_tests_test_yml"
     },
     {
       "label": "10_appearance README",
@@ -723,9 +397,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "appearance_readme",
-      "community": 58,
-      "norm_label": "10_appearance readme"
+      "community": 59,
+      "norm_label": "10_appearance readme",
+      "community_name": "Appearance Vars Main Yml",
+      "id": "appearance_readme"
     },
     {
       "label": "11_power tasks/main.yml",
@@ -736,9 +411,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "power_tasks_main_yml",
       "community": 1,
-      "norm_label": "11_power tasks/main.yml"
+      "norm_label": "11_power tasks/main.yml",
+      "community_name": "Appearance and Playbook Core",
+      "id": "power_tasks_main_yml"
     },
     {
       "label": "11_power defaults/main.yml",
@@ -749,9 +425,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "power_defaults_main_yml",
-      "community": 71,
-      "norm_label": "11_power defaults/main.yml"
+      "community": 72,
+      "norm_label": "11_power defaults/main.yml",
+      "community_name": "Power Handlers Main Yml",
+      "id": "power_defaults_main_yml"
     },
     {
       "label": "11_power handlers/main.yml",
@@ -762,9 +439,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "power_handlers_main_yml",
-      "community": 72,
-      "norm_label": "11_power handlers/main.yml"
+      "community": 73,
+      "norm_label": "11_power handlers/main.yml",
+      "community_name": "Power Meta Main Yml",
+      "id": "power_handlers_main_yml"
     },
     {
       "label": "11_power meta/main.yml",
@@ -775,9 +453,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "power_meta_main_yml",
-      "community": 73,
-      "norm_label": "11_power meta/main.yml"
+      "community": 74,
+      "norm_label": "11_power meta/main.yml",
+      "community_name": "Power Readme",
+      "id": "power_meta_main_yml"
     },
     {
       "label": "11_power README",
@@ -788,48 +467,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "power_readme",
-      "community": 74,
-      "norm_label": "11_power readme"
-    },
-    {
-      "label": "GNOME gsettings Dark Mode Configuration",
-      "file_type": "concept",
-      "source_file": "roles/10_appearance/tasks/main.yml",
-      "source_location": "line 56-68",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "gsettings_dark_mode",
-      "community": 1,
-      "norm_label": "gnome gsettings dark mode configuration"
-    },
-    {
-      "label": "GNOME Wallpaper Setup via gsettings",
-      "file_type": "concept",
-      "source_file": "roles/10_appearance/tasks/main.yml",
-      "source_location": "line 70-114",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "gnome_wallpaper_setup",
-      "community": 1,
-      "norm_label": "gnome wallpaper setup via gsettings"
-    },
-    {
-      "label": "AccountsService User Avatar Configuration",
-      "file_type": "concept",
-      "source_file": "roles/10_appearance/tasks/main.yml",
-      "source_location": "line 116-151",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "accounts_service_avatar",
-      "community": 1,
-      "norm_label": "accountsservice user avatar configuration"
+      "community": 75,
+      "norm_label": "11_power readme",
+      "community_name": "Readme 15 Package Config Readme",
+      "id": "power_readme"
     },
     {
       "label": "tuned-ppd Power Profile Management",
@@ -840,9 +481,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tuned_ppd_power_profile",
       "community": 1,
-      "norm_label": "tuned-ppd power profile management"
+      "norm_label": "tuned-ppd power profile management",
+      "community_name": "Appearance and Playbook Core",
+      "id": "tuned_ppd_power_profile"
     },
     {
       "label": "dconf GNOME Power Settings",
@@ -853,9 +495,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "dconf_power_settings",
       "community": 1,
-      "norm_label": "dconf gnome power settings"
+      "norm_label": "dconf gnome power settings",
+      "community_name": "Appearance and Playbook Core",
+      "id": "dconf_power_settings"
     },
     {
       "label": "machine_type Variable Conditional Logic",
@@ -867,9 +510,10 @@
       "author": null,
       "contributor": null,
       "rationale": "Laptop-specific power settings (battery suspend, lid close) are applied only when machine_type == laptop, enabling a single role to target both desktop and laptop machines without duplication",
-      "id": "machine_type_conditional",
       "community": 1,
-      "norm_label": "machine_type variable conditional logic"
+      "norm_label": "machine_type variable conditional logic",
+      "community_name": "Appearance and Playbook Core",
+      "id": "machine_type_conditional"
     },
     {
       "label": "11_power Role Test Playbook",
@@ -880,9 +524,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tests_test_11power",
-      "community": 20,
-      "norm_label": "11_power role test playbook"
+      "community": 21,
+      "norm_label": "11_power role test playbook",
+      "community_name": "17 Custom-Commands Meta Main",
+      "id": "tests_test_11power"
     },
     {
       "label": "11_power Role Vars",
@@ -893,9 +538,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vars_main_11power",
-      "community": 20,
-      "norm_label": "11_power role vars"
+      "community": 21,
+      "norm_label": "11_power role vars",
+      "community_name": "17 Custom-Commands Meta Main",
+      "id": "vars_main_11power"
     },
     {
       "label": "12_gnome-settings Role README",
@@ -906,9 +552,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "12_gnome_settings_readme",
       "community": 0,
-      "norm_label": "12_gnome-settings role readme"
+      "norm_label": "12_gnome-settings role readme",
+      "community_name": "GNOME dconf Settings",
+      "id": "12_gnome_settings_readme"
     },
     {
       "label": "12_gnome-settings Role Defaults",
@@ -919,9 +566,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "defaults_main_12_gnome_settings",
       "community": 0,
-      "norm_label": "12_gnome-settings role defaults"
+      "norm_label": "12_gnome-settings role defaults",
+      "community_name": "GNOME dconf Settings",
+      "id": "defaults_main_12_gnome_settings"
     },
     {
       "label": "12_gnome-settings Role Handlers",
@@ -932,9 +580,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "handlers_main_12_gnome_settings",
       "community": 0,
-      "norm_label": "12_gnome-settings role handlers"
+      "norm_label": "12_gnome-settings role handlers",
+      "community_name": "GNOME dconf Settings",
+      "id": "handlers_main_12_gnome_settings"
     },
     {
       "label": "12_gnome-settings Role Meta",
@@ -945,9 +594,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "meta_main_12_gnome_settings",
       "community": 0,
-      "norm_label": "12_gnome-settings role meta"
+      "norm_label": "12_gnome-settings role meta",
+      "community_name": "GNOME dconf Settings",
+      "id": "meta_main_12_gnome_settings"
     },
     {
       "label": "12_gnome-settings Role Tasks",
@@ -958,9 +608,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tasks_main_12_gnome_settings",
       "community": 0,
-      "norm_label": "12_gnome-settings role tasks"
+      "norm_label": "12_gnome-settings role tasks",
+      "community_name": "GNOME dconf Settings",
+      "id": "tasks_main_12_gnome_settings"
     },
     {
       "label": "12_gnome-settings Role Test Playbook",
@@ -971,9 +622,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tests_test_12_gnome_settings",
       "community": 0,
-      "norm_label": "12_gnome-settings role test playbook"
+      "norm_label": "12_gnome-settings role test playbook",
+      "community_name": "GNOME dconf Settings",
+      "id": "tests_test_12_gnome_settings"
     },
     {
       "label": "12_gnome-settings Role Vars",
@@ -984,9 +636,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vars_main_12_gnome_settings",
       "community": 0,
-      "norm_label": "12_gnome-settings role vars"
+      "norm_label": "12_gnome-settings role vars",
+      "community_name": "GNOME dconf Settings",
+      "id": "vars_main_12_gnome_settings"
     },
     {
       "label": "13_touchpad Role README",
@@ -997,9 +650,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "13_touchpad_readme",
       "community": 0,
-      "norm_label": "13_touchpad role readme"
+      "norm_label": "13_touchpad role readme",
+      "community_name": "GNOME dconf Settings",
+      "id": "13_touchpad_readme"
     },
     {
       "label": "13_touchpad Role Defaults",
@@ -1010,9 +664,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "defaults_main_13_touchpad",
       "community": 0,
-      "norm_label": "13_touchpad role defaults"
+      "norm_label": "13_touchpad role defaults",
+      "community_name": "GNOME dconf Settings",
+      "id": "defaults_main_13_touchpad"
     },
     {
       "label": "13_touchpad Role Handlers",
@@ -1023,9 +678,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "handlers_main_13_touchpad",
-      "community": 66,
-      "norm_label": "13_touchpad role handlers"
+      "community": 67,
+      "norm_label": "13_touchpad role handlers",
+      "community_name": "Media Desktop",
+      "id": "handlers_main_13_touchpad"
     },
     {
       "label": "13_touchpad Role Meta",
@@ -1036,9 +692,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "meta_main_13_touchpad",
       "community": 0,
-      "norm_label": "13_touchpad role meta"
+      "norm_label": "13_touchpad role meta",
+      "community_name": "GNOME dconf Settings",
+      "id": "meta_main_13_touchpad"
     },
     {
       "label": "13_touchpad Role Tasks",
@@ -1049,9 +706,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tasks_main_13_touchpad",
       "community": 0,
-      "norm_label": "13_touchpad role tasks"
+      "norm_label": "13_touchpad role tasks",
+      "community_name": "GNOME dconf Settings",
+      "id": "tasks_main_13_touchpad"
     },
     {
       "label": "13_touchpad Role Test Playbook",
@@ -1062,9 +720,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tests_test_13_touchpad",
       "community": 0,
-      "norm_label": "13_touchpad role test playbook"
+      "norm_label": "13_touchpad role test playbook",
+      "community_name": "GNOME dconf Settings",
+      "id": "tests_test_13_touchpad"
     },
     {
       "label": "13_touchpad Role Vars",
@@ -1075,9 +734,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vars_main_13_touchpad",
       "community": 0,
-      "norm_label": "13_touchpad role vars"
+      "norm_label": "13_touchpad role vars",
+      "community_name": "GNOME dconf Settings",
+      "id": "vars_main_13_touchpad"
     },
     {
       "label": "14_audio Role README",
@@ -1088,9 +748,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "14_audio_readme",
       "community": 15,
-      "norm_label": "14_audio role readme"
+      "norm_label": "14_audio role readme",
+      "community_name": "Audio Role Stubs",
+      "id": "14_audio_readme"
     },
     {
       "label": "14_audio Role Defaults",
@@ -1101,9 +762,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "defaults_main_14_audio",
       "community": 15,
-      "norm_label": "14_audio role defaults"
+      "norm_label": "14_audio role defaults",
+      "community_name": "Audio Role Stubs",
+      "id": "defaults_main_14_audio"
     },
     {
       "label": "14_audio Role Handlers",
@@ -1114,9 +776,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "handlers_main_14_audio",
-      "community": 17,
-      "norm_label": "14_audio role handlers"
+      "community": 18,
+      "norm_label": "14_audio role handlers",
+      "community_name": "Vault Management Scripts",
+      "id": "handlers_main_14_audio"
     },
     {
       "label": "14_audio Role Meta",
@@ -1127,9 +790,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "meta_main_14_audio",
-      "community": 17,
-      "norm_label": "14_audio role meta"
+      "community": 18,
+      "norm_label": "14_audio role meta",
+      "community_name": "Vault Management Scripts",
+      "id": "meta_main_14_audio"
     },
     {
       "label": "dconf GNOME Settings Configuration",
@@ -1140,9 +804,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "dconf_gnome_settings",
       "community": 0,
-      "norm_label": "dconf gnome settings configuration"
+      "norm_label": "dconf gnome settings configuration",
+      "community_name": "GNOME dconf Settings",
+      "id": "dconf_gnome_settings"
     },
     {
       "label": "main_user Variable",
@@ -1153,9 +818,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "main_user_variable",
       "community": 0,
-      "norm_label": "main_user variable"
+      "norm_label": "main_user variable",
+      "community_name": "GNOME dconf Settings",
+      "id": "main_user_variable"
     },
     {
       "label": "machine_type Variable",
@@ -1166,9 +832,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "machine_type_variable",
       "community": 0,
-      "norm_label": "machine_type variable"
+      "norm_label": "machine_type variable",
+      "community_name": "GNOME dconf Settings",
+      "id": "machine_type_variable"
     },
     {
       "label": "ABRT Daemon Service (abrtd)",
@@ -1179,9 +846,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "abrtd_service",
       "community": 0,
-      "norm_label": "abrt daemon service (abrtd)"
+      "norm_label": "abrt daemon service (abrtd)",
+      "community_name": "GNOME dconf Settings",
+      "id": "abrtd_service"
     },
     {
       "label": "Role 14 Audio Tasks",
@@ -1192,9 +860,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tasks_14_audio_tasks_main",
       "community": 14,
-      "norm_label": "role 14 audio tasks"
+      "norm_label": "role 14 audio tasks",
+      "community_name": "PipeWire Audio Setup",
+      "id": "tasks_14_audio_tasks_main"
     },
     {
       "label": "Role 14 Audio Test Playbook",
@@ -1205,9 +874,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tests_14_audio_tests_test",
       "community": 14,
-      "norm_label": "role 14 audio test playbook"
+      "norm_label": "role 14 audio test playbook",
+      "community_name": "PipeWire Audio Setup",
+      "id": "tests_14_audio_tests_test"
     },
     {
       "label": "Role 14 Audio Vars",
@@ -1218,9 +888,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vars_14_audio_vars_main",
-      "community": 78,
-      "norm_label": "role 14 audio vars"
+      "community": 79,
+      "norm_label": "role 14 audio vars",
+      "community_name": "Vars 15 Package Config Vars Main",
+      "id": "vars_14_audio_vars_main"
     },
     {
       "label": "qpwgraph PipeWire Graph Tool",
@@ -1231,9 +902,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "qpwgraph_tool",
       "community": 14,
-      "norm_label": "qpwgraph pipewire graph tool"
+      "norm_label": "qpwgraph pipewire graph tool",
+      "community_name": "PipeWire Audio Setup",
+      "id": "qpwgraph_tool"
     },
     {
       "label": "PipeWire Audio System",
@@ -1244,9 +916,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "pipewire_audio",
       "community": 14,
-      "norm_label": "pipewire audio system"
+      "norm_label": "pipewire audio system",
+      "community_name": "PipeWire Audio Setup",
+      "id": "pipewire_audio"
     },
     {
       "label": "Role 15 Package Config README",
@@ -1257,9 +930,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_15_package_config_readme",
-      "community": 75,
-      "norm_label": "role 15 package config readme"
+      "community": 76,
+      "norm_label": "role 15 package config readme",
+      "community_name": "Readme 16 Custom Terminal Readme",
+      "id": "readme_15_package_config_readme"
     },
     {
       "label": "Role 15 Package Config Defaults",
@@ -1270,9 +944,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "defaults_15_package_config_defaults_main",
-      "community": 60,
-      "norm_label": "role 15 package config defaults"
+      "community": 61,
+      "norm_label": "role 15 package config defaults",
+      "community_name": "Defaults 16 Custom Terminal Defaults Main",
+      "id": "defaults_15_package_config_defaults_main"
     },
     {
       "label": "Role 15 Package Config Handlers",
@@ -1283,9 +958,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "handlers_15_package_config_handlers_main",
-      "community": 63,
-      "norm_label": "role 15 package config handlers"
+      "community": 64,
+      "norm_label": "role 15 package config handlers",
+      "community_name": "Handlers 16 Custom Terminal Handlers Main",
+      "id": "handlers_15_package_config_handlers_main"
     },
     {
       "label": "Role 15 Package Config Meta",
@@ -1296,22 +972,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "meta_15_package_config_meta_main",
-      "community": 69,
-      "norm_label": "role 15 package config meta"
-    },
-    {
-      "label": "Role 15 Package Config Tasks",
-      "file_type": "code",
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "tasks_15_package_config_tasks_main",
-      "community": 12,
-      "norm_label": "role 15 package config tasks"
+      "community": 70,
+      "norm_label": "role 15 package config meta",
+      "community_name": "Meta 16 Custom Terminal Meta Main",
+      "id": "meta_15_package_config_meta_main"
     },
     {
       "label": "Role 15 Package Config Test Playbook",
@@ -1322,9 +986,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tests_15_package_config_tests_test",
       "community": 12,
-      "norm_label": "role 15 package config test playbook"
+      "norm_label": "role 15 package config test playbook",
+      "community_name": "Package Configuration",
+      "id": "tests_15_package_config_tests_test"
     },
     {
       "label": "Role 15 Package Config Vars",
@@ -1335,61 +1000,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vars_15_package_config_vars_main",
-      "community": 79,
-      "norm_label": "role 15 package config vars"
-    },
-    {
-      "label": "Firefox Enterprise Policies JSON",
-      "file_type": "concept",
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": "line 22",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "firefox_policies",
-      "community": 12,
-      "norm_label": "firefox enterprise policies json"
-    },
-    {
-      "label": "Rclone Proton Drive Mount",
-      "file_type": "concept",
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": "line 57",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "rclone_proton_drive",
-      "community": 12,
-      "norm_label": "rclone proton drive mount"
-    },
-    {
-      "label": "Rclone VFS Cache Warm Script",
-      "file_type": "concept",
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": "line 139",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "rclone_cache_warm",
-      "community": 12,
-      "norm_label": "rclone vfs cache warm script"
-    },
-    {
-      "label": "STM32 DFU Udev Rule",
-      "file_type": "concept",
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": "line 220",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "stm32_dfu_udev",
-      "community": 12,
-      "norm_label": "stm32 dfu udev rule"
+      "community": 80,
+      "norm_label": "role 15 package config vars",
+      "community_name": "Vars 16 Custom Terminal Vars Main",
+      "id": "vars_15_package_config_vars_main"
     },
     {
       "label": "Role 16 Custom Terminal README",
@@ -1400,9 +1014,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_16_custom_terminal_readme",
-      "community": 76,
-      "norm_label": "role 16 custom terminal readme"
+      "community": 77,
+      "norm_label": "role 16 custom terminal readme",
+      "community_name": "Readme 17 Custom Commands Readme",
+      "id": "readme_16_custom_terminal_readme"
     },
     {
       "label": "Role 16 Custom Terminal Defaults",
@@ -1413,9 +1028,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "defaults_16_custom_terminal_defaults_main",
-      "community": 61,
-      "norm_label": "role 16 custom terminal defaults"
+      "community": 62,
+      "norm_label": "role 16 custom terminal defaults",
+      "community_name": "Defaults 17 Custom Commands Defaults Main",
+      "id": "defaults_16_custom_terminal_defaults_main"
     },
     {
       "label": "Role 16 Custom Terminal Handlers",
@@ -1426,9 +1042,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "handlers_16_custom_terminal_handlers_main",
-      "community": 64,
-      "norm_label": "role 16 custom terminal handlers"
+      "community": 65,
+      "norm_label": "role 16 custom terminal handlers",
+      "community_name": "Handlers 17 Custom Commands Handlers Main",
+      "id": "handlers_16_custom_terminal_handlers_main"
     },
     {
       "label": "Role 16 Custom Terminal Meta",
@@ -1439,9 +1056,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "meta_16_custom_terminal_meta_main",
-      "community": 70,
-      "norm_label": "role 16 custom terminal meta"
+      "community": 71,
+      "norm_label": "role 16 custom terminal meta",
+      "community_name": "Power Defaults Main Yml",
+      "id": "meta_16_custom_terminal_meta_main"
     },
     {
       "label": "Role 16 Custom Terminal Tasks",
@@ -1452,9 +1070,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tasks_16_custom_terminal_tasks_main",
       "community": 8,
-      "norm_label": "role 16 custom terminal tasks"
+      "norm_label": "role 16 custom terminal tasks",
+      "community_name": "Terminal Customization",
+      "id": "tasks_16_custom_terminal_tasks_main"
     },
     {
       "label": "Role 16 Custom Terminal Test Playbook",
@@ -1465,9 +1084,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tests_16_custom_terminal_tests_test",
       "community": 8,
-      "norm_label": "role 16 custom terminal test playbook"
+      "norm_label": "role 16 custom terminal test playbook",
+      "community_name": "Terminal Customization",
+      "id": "tests_16_custom_terminal_tests_test"
     },
     {
       "label": "Role 16 Custom Terminal Vars",
@@ -1478,9 +1098,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vars_16_custom_terminal_vars_main",
-      "community": 80,
-      "norm_label": "role 16 custom terminal vars"
+      "community": 81,
+      "norm_label": "role 16 custom terminal vars",
+      "community_name": "Community 81",
+      "id": "vars_16_custom_terminal_vars_main"
     },
     {
       "label": "FiraCode Nerd Font",
@@ -1491,9 +1112,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "firacode_nerd_font",
       "community": 8,
-      "norm_label": "firacode nerd font"
+      "norm_label": "firacode nerd font",
+      "community_name": "Terminal Customization",
+      "id": "firacode_nerd_font"
     },
     {
       "label": "Ptyxis Terminal Emulator",
@@ -1504,9 +1126,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ptyxis_terminal",
       "community": 8,
-      "norm_label": "ptyxis terminal emulator"
+      "norm_label": "ptyxis terminal emulator",
+      "community_name": "Terminal Customization",
+      "id": "ptyxis_terminal"
     },
     {
       "label": "Custom Bash Prompt with Git Info",
@@ -1517,9 +1140,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "bash_custom_prompt",
       "community": 8,
-      "norm_label": "custom bash prompt with git info"
+      "norm_label": "custom bash prompt with git info",
+      "community_name": "Terminal Customization",
+      "id": "bash_custom_prompt"
     },
     {
       "label": "Distrobox Container Detection",
@@ -1530,9 +1154,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "distrobox_detection",
       "community": 8,
-      "norm_label": "distrobox container detection"
+      "norm_label": "distrobox container detection",
+      "community_name": "Terminal Customization",
+      "id": "distrobox_detection"
     },
     {
       "label": "Readline inputrc Tab Completion Config",
@@ -1543,9 +1168,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "inputrc_tab_completion",
       "community": 8,
-      "norm_label": "readline inputrc tab completion config"
+      "norm_label": "readline inputrc tab completion config",
+      "community_name": "Terminal Customization",
+      "id": "inputrc_tab_completion"
     },
     {
       "label": "Role 17 Custom Commands README",
@@ -1556,9 +1182,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_17_custom_commands_readme",
-      "community": 77,
-      "norm_label": "role 17 custom commands readme"
+      "community": 78,
+      "norm_label": "role 17 custom commands readme",
+      "community_name": "Vars 14 Audio Vars Main",
+      "id": "readme_17_custom_commands_readme"
     },
     {
       "label": "Role 17 Custom Commands Defaults",
@@ -1569,9 +1196,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "defaults_17_custom_commands_defaults_main",
-      "community": 62,
-      "norm_label": "role 17 custom commands defaults"
+      "community": 63,
+      "norm_label": "role 17 custom commands defaults",
+      "community_name": "Handlers 15 Package Config Handlers Main",
+      "id": "defaults_17_custom_commands_defaults_main"
     },
     {
       "label": "Role 17 Custom Commands Handlers",
@@ -1582,9 +1210,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "handlers_17_custom_commands_handlers_main",
-      "community": 65,
-      "norm_label": "role 17 custom commands handlers"
+      "community": 66,
+      "norm_label": "role 17 custom commands handlers",
+      "community_name": "Handlers Main 13 Touchpad",
+      "id": "handlers_17_custom_commands_handlers_main"
     },
     {
       "label": "Role 17 custom-commands Meta",
@@ -1595,22 +1224,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "17_custom-commands_meta_main",
-      "community": 21,
-      "norm_label": "role 17 custom-commands meta"
-    },
-    {
-      "label": "Role 17 custom-commands Tasks",
-      "file_type": "code",
-      "source_file": "roles/17_custom-commands/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "17_custom-commands_tasks_main",
-      "community": 10,
-      "norm_label": "role 17 custom-commands tasks"
+      "community": 22,
+      "norm_label": "role 17 custom-commands meta",
+      "community_name": "18 App-Organise Defaults Main",
+      "id": "17_custom-commands_meta_main"
     },
     {
       "label": "Role 17 custom-commands Test Playbook",
@@ -1621,9 +1238,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "17_custom-commands_tests_test",
       "community": 10,
-      "norm_label": "role 17 custom-commands test playbook"
+      "norm_label": "role 17 custom-commands test playbook",
+      "community_name": "Custom Shell Commands",
+      "id": "17_custom-commands_tests_test"
     },
     {
       "label": "Role 17 custom-commands Vars",
@@ -1634,9 +1252,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "17_custom-commands_vars_main",
-      "community": 10,
-      "norm_label": "role 17 custom-commands vars"
+      "community": 82,
+      "norm_label": "role 17 custom-commands vars",
+      "community_name": "Custom Shell Commands",
+      "id": "17_custom-commands_vars_main"
     },
     {
       "label": "Role 18 app-organise README",
@@ -1647,9 +1266,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "18_app-organise_readme",
-      "community": 25,
-      "norm_label": "role 18 app-organise readme"
+      "community": 26,
+      "norm_label": "role 18 app-organise readme",
+      "community_name": "1 Remove-Packages Defaults Main",
+      "id": "18_app-organise_readme"
     },
     {
       "label": "Role 18 app-organise Defaults",
@@ -1660,9 +1280,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "18_app-organise_defaults_main",
-      "community": 22,
-      "norm_label": "role 18 app-organise defaults"
+      "community": 23,
+      "norm_label": "role 18 app-organise defaults",
+      "community_name": "18 App-Organise Handlers Main",
+      "id": "18_app-organise_defaults_main"
     },
     {
       "label": "Role 18 app-organise Handlers",
@@ -1673,9 +1294,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "18_app-organise_handlers_main",
-      "community": 23,
-      "norm_label": "role 18 app-organise handlers"
+      "community": 24,
+      "norm_label": "role 18 app-organise handlers",
+      "community_name": "18 App-Organise Meta Main",
+      "id": "18_app-organise_handlers_main"
     },
     {
       "label": "Role 18 app-organise Meta",
@@ -1686,22 +1308,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "18_app-organise_meta_main",
-      "community": 24,
-      "norm_label": "role 18 app-organise meta"
-    },
-    {
-      "label": "Role 18 app-organise Tasks",
-      "file_type": "code",
-      "source_file": "roles/18_app-organise/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "18_app-organise_tasks_main",
-      "community": 13,
-      "norm_label": "role 18 app-organise tasks"
+      "community": 25,
+      "norm_label": "role 18 app-organise meta",
+      "community_name": "18 App-Organise Readme",
+      "id": "18_app-organise_meta_main"
     },
     {
       "label": "Role 18 app-organise Test Playbook",
@@ -1712,9 +1322,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "18_app-organise_tests_test",
       "community": 13,
-      "norm_label": "role 18 app-organise test playbook"
+      "norm_label": "role 18 app-organise test playbook",
+      "community_name": "GNOME App Organization",
+      "id": "18_app-organise_tests_test"
     },
     {
       "label": "Role 18 app-organise Vars",
@@ -1725,9 +1336,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "18_app-organise_vars_main",
-      "community": 13,
-      "norm_label": "role 18 app-organise vars"
+      "community": 88,
+      "norm_label": "role 18 app-organise vars",
+      "community_name": "GNOME App Organization",
+      "id": "18_app-organise_vars_main"
     },
     {
       "label": "Role 1 remove-packages README",
@@ -1738,9 +1350,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "1_remove-packages_readme",
       "community": 4,
-      "norm_label": "role 1 remove-packages readme"
+      "norm_label": "role 1 remove-packages readme",
+      "community_name": "Package Removal",
+      "id": "1_remove-packages_readme"
     },
     {
       "label": "Role 1 remove-packages Defaults",
@@ -1751,9 +1364,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "1_remove-packages_defaults_main",
-      "community": 26,
-      "norm_label": "role 1 remove-packages defaults"
+      "community": 27,
+      "norm_label": "role 1 remove-packages defaults",
+      "community_name": "1 Remove-Packages Handlers Main",
+      "id": "1_remove-packages_defaults_main"
     },
     {
       "label": "Role 1 remove-packages Handlers",
@@ -1764,9 +1378,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "1_remove-packages_handlers_main",
-      "community": 27,
-      "norm_label": "role 1 remove-packages handlers"
+      "community": 28,
+      "norm_label": "role 1 remove-packages handlers",
+      "community_name": "1 Remove-Packages Meta Main",
+      "id": "1_remove-packages_handlers_main"
     },
     {
       "label": "Role 1 remove-packages Meta",
@@ -1777,9 +1392,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "1_remove-packages_meta_main",
-      "community": 28,
-      "norm_label": "role 1 remove-packages meta"
+      "community": 29,
+      "norm_label": "role 1 remove-packages meta",
+      "community_name": "2 Update-System Defaults Main",
+      "id": "1_remove-packages_meta_main"
     },
     {
       "label": "Role 1 remove-packages Tasks",
@@ -1790,9 +1406,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "1_remove-packages_tasks_main",
       "community": 4,
-      "norm_label": "role 1 remove-packages tasks"
+      "norm_label": "role 1 remove-packages tasks",
+      "community_name": "Package Removal",
+      "id": "1_remove-packages_tasks_main"
     },
     {
       "label": "Role 1 remove-packages Test Playbook",
@@ -1803,9 +1420,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "1_remove-packages_tests_test",
       "community": 4,
-      "norm_label": "role 1 remove-packages test playbook"
+      "norm_label": "role 1 remove-packages test playbook",
+      "community_name": "Package Removal",
+      "id": "1_remove-packages_tests_test"
     },
     {
       "label": "Role 1 remove-packages Vars",
@@ -1816,9 +1434,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "1_remove-packages_vars_main",
       "community": 4,
-      "norm_label": "role 1 remove-packages vars"
+      "norm_label": "role 1 remove-packages vars",
+      "community_name": "Package Removal",
+      "id": "1_remove-packages_vars_main"
     },
     {
       "label": "Role 2 update-system README",
@@ -1829,9 +1448,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "2_update-system_readme",
       "community": 4,
-      "norm_label": "role 2 update-system readme"
+      "norm_label": "role 2 update-system readme",
+      "community_name": "Package Removal",
+      "id": "2_update-system_readme"
     },
     {
       "label": "Role 2 update-system Defaults",
@@ -1842,35 +1462,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "2_update-system_defaults_main",
-      "community": 29,
-      "norm_label": "role 2 update-system defaults"
-    },
-    {
-      "label": "Custom Commands Role",
-      "file_type": "concept",
-      "source_file": "roles/17_custom-commands/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_custom_commands",
-      "community": 10,
-      "norm_label": "custom commands role"
-    },
-    {
-      "label": "GNOME App Folders Organisation",
-      "file_type": "concept",
-      "source_file": "roles/18_app-organise/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_gnome_app_folders",
-      "community": 13,
-      "norm_label": "gnome app folders organisation"
+      "community": 30,
+      "norm_label": "role 2 update-system defaults",
+      "community_name": "2 Update-System Handlers Main",
+      "id": "2_update-system_defaults_main"
     },
     {
       "label": "Remove Fedora Bloat Packages",
@@ -1881,9 +1476,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_remove_packages",
       "community": 4,
-      "norm_label": "remove fedora bloat packages"
+      "norm_label": "remove fedora bloat packages",
+      "community_name": "Package Removal",
+      "id": "concept_remove_packages"
     },
     {
       "label": "System Update Role",
@@ -1894,9 +1490,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_update_system",
       "community": 4,
-      "norm_label": "system update role"
+      "norm_label": "system update role",
+      "community_name": "Package Removal",
+      "id": "concept_update_system"
     },
     {
       "label": "DNF excludepkgs Permanent Exclusion",
@@ -1907,9 +1504,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_dnf_excludepkgs",
       "community": 4,
-      "norm_label": "dnf excludepkgs permanent exclusion"
+      "norm_label": "dnf excludepkgs permanent exclusion",
+      "community_name": "Package Removal",
+      "id": "concept_dnf_excludepkgs"
     },
     {
       "label": "Flatpak Mask GNOME Software Bloat",
@@ -1920,48 +1518,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_flatpak_mask",
       "community": 4,
-      "norm_label": "flatpak mask gnome software bloat"
-    },
-    {
-      "label": "dconf GNOME Settings",
-      "file_type": "concept",
-      "source_file": "roles/18_app-organise/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_dconf",
-      "community": 13,
-      "norm_label": "dconf gnome settings"
-    },
-    {
-      "label": "picocom Serial Communication Tool",
-      "file_type": "concept",
-      "source_file": "roles/17_custom-commands/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_picocom",
-      "community": 10,
-      "norm_label": "picocom serial communication tool"
-    },
-    {
-      "label": "~/.local/bin User Scripts Directory",
-      "file_type": "concept",
-      "source_file": "roles/17_custom-commands/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_local_bin",
-      "community": 10,
-      "norm_label": "~/.local/bin user scripts directory"
+      "norm_label": "flatpak mask gnome software bloat",
+      "community_name": "Package Removal",
+      "id": "concept_flatpak_mask"
     },
     {
       "label": "Update System Handlers",
@@ -1972,9 +1532,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "2_update-system_handlers_main",
-      "community": 30,
-      "norm_label": "update system handlers"
+      "community": 31,
+      "norm_label": "update system handlers",
+      "community_name": "2 Update-System Meta Main",
+      "id": "2_update-system_handlers_main"
     },
     {
       "label": "Update System Role Meta",
@@ -1985,9 +1546,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "2_update-system_meta_main",
-      "community": 31,
-      "norm_label": "update system role meta"
+      "community": 32,
+      "norm_label": "update system role meta",
+      "community_name": "2 Update-System Vars Main",
+      "id": "2_update-system_meta_main"
     },
     {
       "label": "Update System Tasks",
@@ -1998,9 +1560,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "2_update-system_tasks_main",
       "community": 2,
-      "norm_label": "update system tasks"
+      "norm_label": "update system tasks",
+      "community_name": "Package and System Updates",
+      "id": "2_update-system_tasks_main"
     },
     {
       "label": "Update System Test Playbook",
@@ -2011,9 +1574,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "2_update-system_tests_test",
       "community": 2,
-      "norm_label": "update system test playbook"
+      "norm_label": "update system test playbook",
+      "community_name": "Package and System Updates",
+      "id": "2_update-system_tests_test"
     },
     {
       "label": "Update System Variables",
@@ -2024,9 +1588,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "2_update-system_vars_main",
-      "community": 32,
-      "norm_label": "update system variables"
+      "community": 33,
+      "norm_label": "update system variables",
+      "community_name": "3 All-Packages Defaults Main",
+      "id": "2_update-system_vars_main"
     },
     {
       "label": "All Packages Role README",
@@ -2037,9 +1602,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "3_all-packages_readme",
-      "community": 2,
-      "norm_label": "all packages role readme"
+      "community": 84,
+      "norm_label": "all packages role readme",
+      "community_name": "Package and System Updates",
+      "id": "3_all-packages_readme"
     },
     {
       "label": "All Packages Defaults",
@@ -2050,9 +1616,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "3_all-packages_defaults_main",
-      "community": 33,
-      "norm_label": "all packages defaults"
+      "community": 34,
+      "norm_label": "all packages defaults",
+      "community_name": "3 All-Packages Handlers Main",
+      "id": "3_all-packages_defaults_main"
     },
     {
       "label": "All Packages Handlers",
@@ -2063,9 +1630,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "3_all-packages_handlers_main",
-      "community": 34,
-      "norm_label": "all packages handlers"
+      "community": 35,
+      "norm_label": "all packages handlers",
+      "community_name": "3 All-Packages Meta Main",
+      "id": "3_all-packages_handlers_main"
     },
     {
       "label": "All Packages Role Meta",
@@ -2076,22 +1644,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "3_all-packages_meta_main",
-      "community": 35,
-      "norm_label": "all packages role meta"
-    },
-    {
-      "label": "All Packages Tasks (Flatpak)",
-      "file_type": "code",
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "3_all-packages_tasks_main",
-      "community": 2,
-      "norm_label": "all packages tasks (flatpak)"
+      "community": 36,
+      "norm_label": "all packages role meta",
+      "community_name": "3 All-Packages Vars Main",
+      "id": "3_all-packages_meta_main"
     },
     {
       "label": "All Packages Test Playbook",
@@ -2102,9 +1658,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "3_all-packages_tests_test",
-      "community": 2,
-      "norm_label": "all packages test playbook"
+      "community": 85,
+      "norm_label": "all packages test playbook",
+      "community_name": "Package and System Updates",
+      "id": "3_all-packages_tests_test"
     },
     {
       "label": "All Packages Variables",
@@ -2115,9 +1672,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "3_all-packages_vars_main",
-      "community": 36,
-      "norm_label": "all packages variables"
+      "community": 37,
+      "norm_label": "all packages variables",
+      "community_name": "4 Asus-Zenscreen Defaults Main",
+      "id": "3_all-packages_vars_main"
     },
     {
       "label": "ASUS ZenScreen Role README",
@@ -2128,9 +1686,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "4_asus-zenscreen_readme",
-      "community": 38,
-      "norm_label": "asus zenscreen role readme"
+      "community": 39,
+      "norm_label": "asus zenscreen role readme",
+      "community_name": "4 Asus-Zenscreen Vars Main",
+      "id": "4_asus-zenscreen_readme"
     },
     {
       "label": "ASUS ZenScreen Defaults",
@@ -2141,9 +1700,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "4_asus-zenscreen_defaults_main",
-      "community": 37,
-      "norm_label": "asus zenscreen defaults"
+      "community": 38,
+      "norm_label": "asus zenscreen defaults",
+      "community_name": "4 Asus-Zenscreen Readme",
+      "id": "4_asus-zenscreen_defaults_main"
     },
     {
       "label": "ASUS ZenScreen Handlers",
@@ -2154,9 +1714,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "4_asus-zenscreen_handlers_main",
       "community": 5,
-      "norm_label": "asus zenscreen handlers"
+      "norm_label": "asus zenscreen handlers",
+      "community_name": "ASUS ZenScreen DisplayLink",
+      "id": "4_asus-zenscreen_handlers_main"
     },
     {
       "label": "ASUS ZenScreen Role Meta",
@@ -2167,9 +1728,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "4_asus-zenscreen_meta_main",
       "community": 5,
-      "norm_label": "asus zenscreen role meta"
+      "norm_label": "asus zenscreen role meta",
+      "community_name": "ASUS ZenScreen DisplayLink",
+      "id": "4_asus-zenscreen_meta_main"
     },
     {
       "label": "ASUS ZenScreen Tasks",
@@ -2180,9 +1742,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "4_asus-zenscreen_tasks_main",
       "community": 5,
-      "norm_label": "asus zenscreen tasks"
+      "norm_label": "asus zenscreen tasks",
+      "community_name": "ASUS ZenScreen DisplayLink",
+      "id": "4_asus-zenscreen_tasks_main"
     },
     {
       "label": "ASUS ZenScreen Test Playbook",
@@ -2193,9 +1756,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "4_asus-zenscreen_tests_test",
       "community": 5,
-      "norm_label": "asus zenscreen test playbook"
+      "norm_label": "asus zenscreen test playbook",
+      "community_name": "ASUS ZenScreen DisplayLink",
+      "id": "4_asus-zenscreen_tests_test"
     },
     {
       "label": "ASUS ZenScreen Variables",
@@ -2206,9 +1770,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "4_asus-zenscreen_vars_main",
-      "community": 39,
-      "norm_label": "asus zenscreen variables"
+      "community": 40,
+      "norm_label": "asus zenscreen variables",
+      "community_name": "5 Distrobox Meta",
+      "id": "4_asus-zenscreen_vars_main"
     },
     {
       "label": "Distrobox Role README",
@@ -2219,9 +1784,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "5_distrobox_readme",
-      "community": 41,
-      "norm_label": "distrobox role readme"
+      "community": 42,
+      "norm_label": "distrobox role readme",
+      "community_name": "5 Distrobox Vars",
+      "id": "5_distrobox_readme"
     },
     {
       "label": "machine_type Variable",
@@ -2232,9 +1798,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_machine_type",
       "community": 2,
-      "norm_label": "machine_type variable"
+      "norm_label": "machine_type variable",
+      "community_name": "Package and System Updates",
+      "id": "concept_machine_type"
     },
     {
       "label": "akmod-nvidia NVIDIA Driver",
@@ -2245,9 +1812,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_akmod_nvidia",
       "community": 2,
-      "norm_label": "akmod-nvidia nvidia driver"
+      "norm_label": "akmod-nvidia nvidia driver",
+      "community_name": "Package and System Updates",
+      "id": "concept_akmod_nvidia"
     },
     {
       "label": "fwupd Firmware Updater",
@@ -2258,9 +1826,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_fwupd",
       "community": 2,
-      "norm_label": "fwupd firmware updater"
+      "norm_label": "fwupd firmware updater",
+      "community_name": "Package and System Updates",
+      "id": "concept_fwupd"
     },
     {
       "label": "amdgpu In-kernel GPU Driver",
@@ -2271,74 +1840,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_amdgpu",
       "community": 2,
-      "norm_label": "amdgpu in-kernel gpu driver"
-    },
-    {
-      "label": "Flatpak Package Manager",
-      "file_type": "concept",
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_flatpak",
-      "community": 2,
-      "norm_label": "flatpak package manager"
-    },
-    {
-      "label": "Flathub Remote Repository",
-      "file_type": "concept",
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_flathub",
-      "community": 2,
-      "norm_label": "flathub remote repository"
-    },
-    {
-      "label": "KiCad EDA Tool",
-      "file_type": "concept",
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_kicad",
-      "community": 2,
-      "norm_label": "kicad eda tool"
-    },
-    {
-      "label": "XPPen Tablet Driver",
-      "file_type": "concept",
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_xppen",
-      "community": 2,
-      "norm_label": "xppen tablet driver"
-    },
-    {
-      "label": "TexLive LaTeX Distribution",
-      "file_type": "concept",
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_texlive",
-      "community": 2,
-      "norm_label": "texlive latex distribution"
+      "norm_label": "amdgpu in-kernel gpu driver",
+      "community_name": "Package and System Updates",
+      "id": "concept_amdgpu"
     },
     {
       "label": "DisplayLink Driver",
@@ -2349,9 +1854,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_displaylink",
       "community": 5,
-      "norm_label": "displaylink driver"
+      "norm_label": "displaylink driver",
+      "community_name": "ASUS ZenScreen DisplayLink",
+      "id": "concept_displaylink"
     },
     {
       "label": "displaylink-driver.service systemd Unit",
@@ -2362,9 +1868,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_displaylink_driver_service",
       "community": 5,
-      "norm_label": "displaylink-driver.service systemd unit"
+      "norm_label": "displaylink-driver.service systemd unit",
+      "community_name": "ASUS ZenScreen DisplayLink",
+      "id": "concept_displaylink_driver_service"
     },
     {
       "label": "DKMS Kernel Module System",
@@ -2375,9 +1882,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_dkms",
       "community": 5,
-      "norm_label": "dkms kernel module system"
+      "norm_label": "dkms kernel module system",
+      "community_name": "ASUS ZenScreen DisplayLink",
+      "id": "concept_dkms"
     },
     {
       "label": "Distrobox Role Defaults",
@@ -2388,9 +1896,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "5_distrobox_defaults",
       "community": 3,
-      "norm_label": "distrobox role defaults"
+      "norm_label": "distrobox role defaults",
+      "community_name": "Distrobox Container Setup",
+      "id": "5_distrobox_defaults"
     },
     {
       "label": "Distrobox Role Handlers",
@@ -2401,9 +1910,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "5_distrobox_handlers",
       "community": 3,
-      "norm_label": "distrobox role handlers"
+      "norm_label": "distrobox role handlers",
+      "community_name": "Distrobox Container Setup",
+      "id": "5_distrobox_handlers"
     },
     {
       "label": "Distrobox Role Meta",
@@ -2414,9 +1924,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "5_distrobox_meta",
-      "community": 40,
-      "norm_label": "distrobox role meta"
+      "community": 41,
+      "norm_label": "distrobox role meta",
+      "community_name": "5 Distrobox Readme",
+      "id": "5_distrobox_meta"
     },
     {
       "label": "Distrobox Role Tasks",
@@ -2427,9 +1938,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "5_distrobox_tasks",
       "community": 3,
-      "norm_label": "distrobox role tasks"
+      "norm_label": "distrobox role tasks",
+      "community_name": "Distrobox Container Setup",
+      "id": "5_distrobox_tasks"
     },
     {
       "label": "Distrobox Role Test Playbook",
@@ -2440,9 +1952,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "5_distrobox_test",
       "community": 3,
-      "norm_label": "distrobox role test playbook"
+      "norm_label": "distrobox role test playbook",
+      "community_name": "Distrobox Container Setup",
+      "id": "5_distrobox_test"
     },
     {
       "label": "Distrobox Role Vars",
@@ -2453,9 +1966,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "5_distrobox_vars",
-      "community": 42,
-      "norm_label": "distrobox role vars"
+      "community": 43,
+      "norm_label": "distrobox role vars",
+      "community_name": "6 Vmm Handlers",
+      "id": "5_distrobox_vars"
     },
     {
       "label": "VMM Role README",
@@ -2466,9 +1980,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "6_vmm_readme",
       "community": 6,
-      "norm_label": "vmm role readme"
+      "norm_label": "vmm role readme",
+      "community_name": "KVM Virtual Machine Manager",
+      "id": "6_vmm_readme"
     },
     {
       "label": "VMM Role Defaults",
@@ -2479,9 +1994,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "6_vmm_defaults",
       "community": 6,
-      "norm_label": "vmm role defaults"
+      "norm_label": "vmm role defaults",
+      "community_name": "KVM Virtual Machine Manager",
+      "id": "6_vmm_defaults"
     },
     {
       "label": "VMM Role Handlers",
@@ -2492,9 +2008,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "6_vmm_handlers",
-      "community": 43,
-      "norm_label": "vmm role handlers"
+      "community": 44,
+      "norm_label": "vmm role handlers",
+      "community_name": "6 Vmm Meta",
+      "id": "6_vmm_handlers"
     },
     {
       "label": "VMM Role Meta",
@@ -2505,9 +2022,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "6_vmm_meta",
-      "community": 44,
-      "norm_label": "vmm role meta"
+      "community": 45,
+      "norm_label": "vmm role meta",
+      "community_name": "6 Vmm Vars",
+      "id": "6_vmm_meta"
     },
     {
       "label": "VMM Role Tasks",
@@ -2518,9 +2036,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "6_vmm_tasks",
       "community": 6,
-      "norm_label": "vmm role tasks"
+      "norm_label": "vmm role tasks",
+      "community_name": "KVM Virtual Machine Manager",
+      "id": "6_vmm_tasks"
     },
     {
       "label": "VMM Role Test Playbook",
@@ -2531,9 +2050,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "6_vmm_test",
       "community": 6,
-      "norm_label": "vmm role test playbook"
+      "norm_label": "vmm role test playbook",
+      "community_name": "KVM Virtual Machine Manager",
+      "id": "6_vmm_test"
     },
     {
       "label": "VMM Role Vars",
@@ -2544,9 +2064,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "6_vmm_vars",
-      "community": 45,
-      "norm_label": "vmm role vars"
+      "community": 46,
+      "norm_label": "vmm role vars",
+      "community_name": "7 Ubuntu Packages Defaults",
+      "id": "6_vmm_vars"
     },
     {
       "label": "Ubuntu Packages Role README",
@@ -2557,9 +2078,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "7_ubuntu_packages_readme",
-      "community": 3,
-      "norm_label": "ubuntu packages role readme"
+      "community": 86,
+      "norm_label": "ubuntu packages role readme",
+      "community_name": "Distrobox Container Setup",
+      "id": "7_ubuntu_packages_readme"
     },
     {
       "label": "Ubuntu Packages Role Defaults",
@@ -2570,9 +2092,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "7_ubuntu_packages_defaults",
-      "community": 46,
-      "norm_label": "ubuntu packages role defaults"
+      "community": 47,
+      "norm_label": "ubuntu packages role defaults",
+      "community_name": "7 Ubuntu Packages Handlers",
+      "id": "7_ubuntu_packages_defaults"
     },
     {
       "label": "Ubuntu Packages Role Handlers",
@@ -2583,9 +2106,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "7_ubuntu_packages_handlers",
-      "community": 47,
-      "norm_label": "ubuntu packages role handlers"
+      "community": 48,
+      "norm_label": "ubuntu packages role handlers",
+      "community_name": "7 Ubuntu Packages Meta",
+      "id": "7_ubuntu_packages_handlers"
     },
     {
       "label": "Ubuntu Packages Role Meta",
@@ -2596,22 +2120,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "7_ubuntu_packages_meta",
-      "community": 48,
-      "norm_label": "ubuntu packages role meta"
-    },
-    {
-      "label": "Ubuntu Packages Role Tasks",
-      "file_type": "code",
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "7_ubuntu_packages_tasks",
-      "community": 3,
-      "norm_label": "ubuntu packages role tasks"
+      "community": 49,
+      "norm_label": "ubuntu packages role meta",
+      "community_name": "7 Ubuntu Packages Vars",
+      "id": "7_ubuntu_packages_meta"
     },
     {
       "label": "Ubuntu Packages Role Test Playbook",
@@ -2622,9 +2134,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "7_ubuntu_packages_test",
-      "community": 3,
-      "norm_label": "ubuntu packages role test playbook"
+      "community": 87,
+      "norm_label": "ubuntu packages role test playbook",
+      "community_name": "Distrobox Container Setup",
+      "id": "7_ubuntu_packages_test"
     },
     {
       "label": "Ubuntu Packages Role Vars",
@@ -2635,9 +2148,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "7_ubuntu_packages_vars",
-      "community": 49,
-      "norm_label": "ubuntu packages role vars"
+      "community": 50,
+      "norm_label": "ubuntu packages role vars",
+      "community_name": "8 Vm Setup Meta Main",
+      "id": "7_ubuntu_packages_vars"
     },
     {
       "label": "Podman Container Runtime",
@@ -2648,9 +2162,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_podman",
       "community": 3,
-      "norm_label": "podman container runtime"
+      "norm_label": "podman container runtime",
+      "community_name": "Distrobox Container Setup",
+      "id": "concept_podman"
     },
     {
       "label": "Distrobox Container Tool",
@@ -2661,9 +2176,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_distrobox",
       "community": 3,
-      "norm_label": "distrobox container tool"
+      "norm_label": "distrobox container tool",
+      "community_name": "Distrobox Container Setup",
+      "id": "concept_distrobox"
     },
     {
       "label": "ubuntu-box Distrobox Container",
@@ -2674,9 +2190,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_ubuntu_box",
       "community": 3,
-      "norm_label": "ubuntu-box distrobox container"
+      "norm_label": "ubuntu-box distrobox container",
+      "community_name": "Distrobox Container Setup",
+      "id": "concept_ubuntu_box"
     },
     {
       "label": "virt-manager KVM Stack",
@@ -2687,9 +2204,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_virt_manager",
       "community": 6,
-      "norm_label": "virt-manager kvm stack"
+      "norm_label": "virt-manager kvm stack",
+      "community_name": "KVM Virtual Machine Manager",
+      "id": "concept_virt_manager"
     },
     {
       "label": "libvirtd Service",
@@ -2700,22 +2218,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_libvirtd",
       "community": 6,
-      "norm_label": "libvirtd service"
-    },
-    {
-      "label": "ReqView Requirements Management App",
-      "file_type": "concept",
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_reqview",
-      "community": 3,
-      "norm_label": "reqview requirements management app"
+      "norm_label": "libvirtd service",
+      "community_name": "KVM Virtual Machine Manager",
+      "id": "concept_libvirtd"
     },
     {
       "label": "main_user Variable",
@@ -2726,22 +2232,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_main_user",
       "community": 6,
-      "norm_label": "main_user variable"
-    },
-    {
-      "label": "vault_github_user and vault_github_email Vault Variables",
-      "file_type": "concept",
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_vault_github",
-      "community": 3,
-      "norm_label": "vault_github_user and vault_github_email vault variables"
+      "norm_label": "main_user variable",
+      "community_name": "KVM Virtual Machine Manager",
+      "id": "concept_main_user"
     },
     {
       "label": "8_vm-setup README - tiny11 VM Post-Setup Steps",
@@ -2752,9 +2246,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "8_vm_setup_readme",
       "community": 7,
-      "norm_label": "8_vm-setup readme - tiny11 vm post-setup steps"
+      "norm_label": "8_vm-setup readme - tiny11 vm post-setup steps",
+      "community_name": "Windows VM Provisioning",
+      "id": "8_vm_setup_readme"
     },
     {
       "label": "8_vm-setup Defaults",
@@ -2765,9 +2260,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "8_vm_setup_defaults_main",
       "community": 7,
-      "norm_label": "8_vm-setup defaults"
+      "norm_label": "8_vm-setup defaults",
+      "community_name": "Windows VM Provisioning",
+      "id": "8_vm_setup_defaults_main"
     },
     {
       "label": "8_vm-setup Handlers",
@@ -2778,9 +2274,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "8_vm_setup_handlers_main",
       "community": 7,
-      "norm_label": "8_vm-setup handlers"
+      "norm_label": "8_vm-setup handlers",
+      "community_name": "Windows VM Provisioning",
+      "id": "8_vm_setup_handlers_main"
     },
     {
       "label": "8_vm-setup Meta",
@@ -2791,9 +2288,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "8_vm_setup_meta_main",
-      "community": 50,
-      "norm_label": "8_vm-setup meta"
+      "community": 51,
+      "norm_label": "8_vm-setup meta",
+      "community_name": "8 Vm Setup Vars Main",
+      "id": "8_vm_setup_meta_main"
     },
     {
       "label": "8_vm-setup Tasks - tiny11 Windows VM Setup",
@@ -2804,9 +2302,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "8_vm_setup_tasks_main",
       "community": 7,
-      "norm_label": "8_vm-setup tasks - tiny11 windows vm setup"
+      "norm_label": "8_vm-setup tasks - tiny11 windows vm setup",
+      "community_name": "Windows VM Provisioning",
+      "id": "8_vm_setup_tasks_main"
     },
     {
       "label": "8_vm-setup Test Playbook",
@@ -2817,9 +2316,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "8_vm_setup_tests_test",
       "community": 7,
-      "norm_label": "8_vm-setup test playbook"
+      "norm_label": "8_vm-setup test playbook",
+      "community_name": "Windows VM Provisioning",
+      "id": "8_vm_setup_tests_test"
     },
     {
       "label": "8_vm-setup Vars",
@@ -2830,9 +2330,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "8_vm_setup_vars_main",
-      "community": 51,
-      "norm_label": "8_vm-setup vars"
+      "community": 52,
+      "norm_label": "8_vm-setup vars",
+      "community_name": "9 Github Meta Main",
+      "id": "8_vm_setup_vars_main"
     },
     {
       "label": "9_github README",
@@ -2843,9 +2344,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "9_github_readme",
-      "community": 53,
-      "norm_label": "9_github readme"
+      "community": 54,
+      "norm_label": "9_github readme",
+      "community_name": "9 Github Vars Main",
+      "id": "9_github_readme"
     },
     {
       "label": "9_github Defaults",
@@ -2856,9 +2358,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "9_github_defaults_main",
       "community": 11,
-      "norm_label": "9_github defaults"
+      "norm_label": "9_github defaults",
+      "community_name": "GitHub and Git Config",
+      "id": "9_github_defaults_main"
     },
     {
       "label": "9_github Handlers",
@@ -2869,9 +2372,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "9_github_handlers_main",
       "community": 11,
-      "norm_label": "9_github handlers"
+      "norm_label": "9_github handlers",
+      "community_name": "GitHub and Git Config",
+      "id": "9_github_handlers_main"
     },
     {
       "label": "9_github Meta",
@@ -2882,9 +2386,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "9_github_meta_main",
-      "community": 52,
-      "norm_label": "9_github meta"
+      "community": 53,
+      "norm_label": "9_github meta",
+      "community_name": "9 Github Readme",
+      "id": "9_github_meta_main"
     },
     {
       "label": "9_github Tasks - Git and gh CLI Setup",
@@ -2895,9 +2400,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "9_github_tasks_main",
       "community": 11,
-      "norm_label": "9_github tasks - git and gh cli setup"
+      "norm_label": "9_github tasks - git and gh cli setup",
+      "community_name": "GitHub and Git Config",
+      "id": "9_github_tasks_main"
     },
     {
       "label": "9_github Test Playbook",
@@ -2908,9 +2414,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "9_github_tests_test",
       "community": 11,
-      "norm_label": "9_github test playbook"
+      "norm_label": "9_github test playbook",
+      "community_name": "GitHub and Git Config",
+      "id": "9_github_tests_test"
     },
     {
       "label": "9_github Vars",
@@ -2921,9 +2428,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "9_github_vars_main",
-      "community": 54,
-      "norm_label": "9_github vars"
+      "community": 55,
+      "norm_label": "9_github vars",
+      "community_name": "Appearance Defaults Main Yml",
+      "id": "9_github_vars_main"
     },
     {
       "label": "tiny11 Windows VM",
@@ -2934,9 +2442,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_tiny11_vm",
       "community": 7,
-      "norm_label": "tiny11 windows vm"
+      "norm_label": "tiny11 windows vm",
+      "community_name": "Windows VM Provisioning",
+      "id": "concept_tiny11_vm"
     },
     {
       "label": "libvirt/KVM Virtualization",
@@ -2947,9 +2456,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_libvirt_kvm",
       "community": 7,
-      "norm_label": "libvirt/kvm virtualization"
+      "norm_label": "libvirt/kvm virtualization",
+      "community_name": "Windows VM Provisioning",
+      "id": "concept_libvirt_kvm"
     },
     {
       "label": "GitHub CLI (gh)",
@@ -2960,9 +2470,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_gh_cli",
       "community": 11,
-      "norm_label": "github cli (gh)"
+      "norm_label": "github cli (gh)",
+      "community_name": "GitHub and Git Config",
+      "id": "concept_gh_cli"
     },
     {
       "label": "Vault GitHub PAT Secret",
@@ -2973,9 +2484,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_vault_github_pat",
       "community": 11,
-      "norm_label": "vault github pat secret"
+      "norm_label": "vault github pat secret",
+      "community_name": "GitHub and Git Config",
+      "id": "concept_vault_github_pat"
     },
     {
       "label": "Desktop Wallpaper - Snowy Mountain Landscape",
@@ -2986,9 +2498,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "media_desktop",
-      "community": 67,
-      "norm_label": "desktop wallpaper - snowy mountain landscape"
+      "community": 68,
+      "norm_label": "desktop wallpaper - snowy mountain landscape",
+      "community_name": "Media Icon",
+      "id": "media_desktop"
     },
     {
       "label": "Project Icon - Fiery Armored Character Artwork",
@@ -2999,21 +2512,32 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "media_icon",
-      "community": 68,
-      "norm_label": "project icon - fiery armored character artwork"
+      "community": 69,
+      "norm_label": "project icon - fiery armored character artwork",
+      "community_name": "Meta 15 Package Config Meta Main",
+      "id": "media_icon"
     }
   ],
   "links": [
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "claude",
+      "target": "claude_graphify"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "OpenVault.sh",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "openvault",
-      "target": "home_erys_workstation_repos_ansible_setup_openvault_sh__entry",
-      "confidence_score": 1.0
+      "target": "home_erys_workstation_repos_ansible_setup_openvault_sh__entry"
     },
     {
       "relation": "contains",
@@ -3021,9 +2545,9 @@
       "source_file": "RunAnsible.sh",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "runansible",
-      "target": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
-      "confidence_score": 1.0
+      "target": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry"
     },
     {
       "relation": "defines",
@@ -3031,9 +2555,9 @@
       "source_file": "RunAnsible.sh",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "runansible",
-      "target": "runansible_fail",
-      "confidence_score": 1.0
+      "target": "runansible_fail"
     },
     {
       "relation": "defines",
@@ -3041,9 +2565,9 @@
       "source_file": "RunAnsible.sh",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "runansible",
-      "target": "runansible_info",
-      "confidence_score": 1.0
+      "target": "runansible_info"
     },
     {
       "relation": "defines",
@@ -3051,9 +2575,9 @@
       "source_file": "RunAnsible.sh",
       "source_location": "L147",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "runansible",
-      "target": "runansible_move_installer",
-      "confidence_score": 1.0
+      "target": "runansible_move_installer"
     },
     {
       "relation": "defines",
@@ -3061,9 +2585,9 @@
       "source_file": "RunAnsible.sh",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "runansible",
-      "target": "runansible_pass",
-      "confidence_score": 1.0
+      "target": "runansible_pass"
     },
     {
       "relation": "defines",
@@ -3071,9 +2595,9 @@
       "source_file": "RunAnsible.sh",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "runansible",
-      "target": "runansible_warn",
-      "confidence_score": 1.0
+      "target": "runansible_warn"
     },
     {
       "relation": "calls",
@@ -3082,9 +2606,9 @@
       "source_location": "L46",
       "weight": 1.0,
       "context": "call",
+      "confidence_score": 1.0,
       "source": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
-      "target": "runansible_fail",
-      "confidence_score": 1.0
+      "target": "runansible_fail"
     },
     {
       "relation": "calls",
@@ -3093,9 +2617,9 @@
       "source_location": "L60",
       "weight": 1.0,
       "context": "call",
+      "confidence_score": 1.0,
       "source": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
-      "target": "runansible_info",
-      "confidence_score": 1.0
+      "target": "runansible_info"
     },
     {
       "relation": "calls",
@@ -3104,9 +2628,9 @@
       "source_location": "L163",
       "weight": 1.0,
       "context": "call",
+      "confidence_score": 1.0,
       "source": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
-      "target": "runansible_move_installer",
-      "confidence_score": 1.0
+      "target": "runansible_move_installer"
     },
     {
       "relation": "calls",
@@ -3115,9 +2639,9 @@
       "source_location": "L50",
       "weight": 1.0,
       "context": "call",
+      "confidence_score": 1.0,
       "source": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
-      "target": "runansible_pass",
-      "confidence_score": 1.0
+      "target": "runansible_pass"
     },
     {
       "relation": "calls",
@@ -3126,9 +2650,9 @@
       "source_location": "L81",
       "weight": 1.0,
       "context": "call",
+      "confidence_score": 1.0,
       "source": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
-      "target": "runansible_warn",
-      "confidence_score": 1.0
+      "target": "runansible_warn"
     },
     {
       "relation": "calls",
@@ -3137,9 +2661,9 @@
       "source_location": "L153",
       "weight": 1.0,
       "context": "call",
+      "confidence_score": 1.0,
       "source": "runansible_move_installer",
-      "target": "runansible_pass",
-      "confidence_score": 1.0
+      "target": "runansible_pass"
     },
     {
       "relation": "calls",
@@ -3148,9 +2672,9 @@
       "source_location": "L157",
       "weight": 1.0,
       "context": "call",
+      "confidence_score": 1.0,
       "source": "runansible_move_installer",
-      "target": "runansible_warn",
-      "confidence_score": 1.0
+      "target": "runansible_warn"
     },
     {
       "relation": "calls",
@@ -3159,9 +2683,9 @@
       "source_location": "L151",
       "weight": 1.0,
       "context": "call",
+      "confidence_score": 1.0,
       "source": "runansible_move_installer",
-      "target": "runansible_info",
-      "confidence_score": 1.0
+      "target": "runansible_info"
     },
     {
       "relation": "contains",
@@ -3169,9 +2693,9 @@
       "source_file": "VaultExample.sh",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "vaultexample",
-      "target": "home_erys_workstation_repos_ansible_setup_vaultexample_sh__entry",
-      "confidence_score": 1.0
+      "target": "home_erys_workstation_repos_ansible_setup_vaultexample_sh__entry"
     },
     {
       "relation": "contains",
@@ -3179,9 +2703,9 @@
       "source_file": "roles/4_asus-zenscreen/files/install_displaylink.sh",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "files_install_displaylink",
-      "target": "home_erys_workstation_repos_ansible_setup_roles_4_asus_zenscreen_files_install_displaylink_sh__entry",
-      "confidence_score": 1.0
+      "target": "home_erys_workstation_repos_ansible_setup_roles_4_asus_zenscreen_files_install_displaylink_sh__entry"
     },
     {
       "relation": "references",
@@ -3258,16 +2782,6 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "configure.yml",
-      "source_location": "line 13",
-      "weight": 1.0,
-      "source": "configure_yml",
-      "target": "appearance_tasks_main_yml"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "configure.yml",
       "source_location": "line 14",
       "weight": 1.0,
       "source": "configure_yml",
@@ -3307,46 +2821,6 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "roles/10_appearance/tasks/main.yml",
-      "source_location": "line 116-151",
-      "weight": 1.0,
-      "source": "appearance_tasks_main_yml",
-      "target": "accounts_service_avatar"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/10_appearance/tasks/main.yml",
-      "source_location": "line 70-114",
-      "weight": 1.0,
-      "source": "appearance_tasks_main_yml",
-      "target": "gnome_wallpaper_setup"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/10_appearance/tasks/main.yml",
-      "source_location": "line 56-68",
-      "weight": 1.0,
-      "source": "appearance_tasks_main_yml",
-      "target": "gsettings_dark_mode"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/10_appearance/tests/test.yml",
-      "source_location": "line 5-6",
-      "weight": 1.0,
-      "source": "appearance_tests_test_yml",
-      "target": "appearance_tasks_main_yml"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
       "source_file": "roles/11_power/tasks/main.yml",
       "source_location": "line 42-118",
       "weight": 1.0,
@@ -3372,16 +2846,6 @@
       "weight": 1.0,
       "source": "power_tasks_main_yml",
       "target": "tuned_ppd_power_profile"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "roles/10_appearance/tasks/main.yml",
-      "source_location": null,
-      "weight": 0.8,
-      "source": "gsettings_dark_mode",
-      "target": "gnome_wallpaper_setup"
     },
     {
       "relation": "conceptually_related_to",
@@ -3647,66 +3111,6 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": "line 22",
-      "weight": 1.0,
-      "source": "tasks_15_package_config_tasks_main",
-      "target": "firefox_policies"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": "line 139",
-      "weight": 1.0,
-      "source": "tasks_15_package_config_tasks_main",
-      "target": "rclone_cache_warm"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": "line 57",
-      "weight": 1.0,
-      "source": "tasks_15_package_config_tasks_main",
-      "target": "rclone_proton_drive"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": "line 220",
-      "weight": 1.0,
-      "source": "tasks_15_package_config_tasks_main",
-      "target": "stm32_dfu_udev"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/15_package-config/tests/test.yml",
-      "source_location": "line 6",
-      "weight": 1.0,
-      "source": "tests_15_package_config_tests_test",
-      "target": "tasks_15_package_config_tasks_main"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/15_package-config/tasks/main.yml",
-      "source_location": "line 195",
-      "weight": 1.0,
-      "source": "rclone_cache_warm",
-      "target": "rclone_proton_drive"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
       "source_file": "roles/16_custom-terminal/tasks/main.yml",
       "source_location": "line 87",
       "weight": 1.0,
@@ -3772,96 +3176,6 @@
       "weight": 1.0,
       "source": "bash_custom_prompt",
       "target": "distrobox_detection"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "roles/17_custom-commands/tasks/main.yml",
-      "source_location": null,
-      "weight": 0.85,
-      "source": "17_custom-commands_tasks_main",
-      "target": "17_custom-commands_vars_main"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/17_custom-commands/tasks/main.yml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "17_custom-commands_tasks_main",
-      "target": "concept_custom_commands"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/17_custom-commands/tasks/main.yml",
-      "source_location": "line 10",
-      "weight": 1.0,
-      "source": "17_custom-commands_tasks_main",
-      "target": "concept_local_bin"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/17_custom-commands/tasks/main.yml",
-      "source_location": "line 99",
-      "weight": 1.0,
-      "source": "17_custom-commands_tasks_main",
-      "target": "concept_picocom"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/17_custom-commands/tests/test.yml",
-      "source_location": "line 6",
-      "weight": 1.0,
-      "source": "17_custom-commands_tests_test",
-      "target": "17_custom-commands_tasks_main"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "roles/18_app-organise/tasks/main.yml",
-      "source_location": null,
-      "weight": 0.85,
-      "source": "18_app-organise_tasks_main",
-      "target": "18_app-organise_vars_main"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/18_app-organise/tasks/main.yml",
-      "source_location": "line 11",
-      "weight": 1.0,
-      "source": "18_app-organise_tasks_main",
-      "target": "concept_dconf"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/18_app-organise/tasks/main.yml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "18_app-organise_tasks_main",
-      "target": "concept_gnome_app_folders"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/18_app-organise/tests/test.yml",
-      "source_location": "line 6",
-      "weight": 1.0,
-      "source": "18_app-organise_tests_test",
-      "target": "18_app-organise_tasks_main"
     },
     {
       "relation": "references",
@@ -3966,32 +3280,12 @@
     {
       "relation": "conceptually_related_to",
       "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/18_app-organise/tasks/main.yml",
-      "source_location": null,
-      "weight": 0.95,
-      "source": "concept_gnome_app_folders",
-      "target": "concept_dconf"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
       "confidence_score": 0.85,
       "source_file": "roles/1_remove-packages/README.md",
       "source_location": "line 27",
       "weight": 0.85,
       "source": "concept_remove_packages",
       "target": "concept_update_system"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "roles/2_update-system/tasks/main.yml",
-      "source_location": null,
-      "weight": 0.75,
-      "source": "2_update-system_tasks_main",
-      "target": "3_all-packages_tasks_main"
     },
     {
       "relation": "references",
@@ -4042,86 +3336,6 @@
       "weight": 1.0,
       "source": "2_update-system_tests_test",
       "target": "2_update-system_tasks_main"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/3_all-packages/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "3_all-packages_readme",
-      "target": "3_all-packages_tasks_main"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": "line 22",
-      "weight": 1.0,
-      "source": "3_all-packages_tasks_main",
-      "target": "concept_flathub"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": "line 17",
-      "weight": 1.0,
-      "source": "3_all-packages_tasks_main",
-      "target": "concept_flatpak"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": "line 52",
-      "weight": 1.0,
-      "source": "3_all-packages_tasks_main",
-      "target": "concept_kicad"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": null,
-      "weight": 0.95,
-      "source": "concept_machine_type",
-      "target": "3_all-packages_tasks_main"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": "line 129",
-      "weight": 1.0,
-      "source": "3_all-packages_tasks_main",
-      "target": "concept_texlive"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/3_all-packages/tasks/main.yml",
-      "source_location": "line 103",
-      "weight": 1.0,
-      "source": "3_all-packages_tasks_main",
-      "target": "concept_xppen"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/3_all-packages/tests/test.yml",
-      "source_location": "line 6",
-      "weight": 1.0,
-      "source": "3_all-packages_tests_test",
-      "target": "3_all-packages_tasks_main"
     },
     {
       "relation": "references",
@@ -4244,16 +3458,6 @@
       "target": "5_distrobox_tasks"
     },
     {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "7_ubuntu_packages_tasks",
-      "target": "5_distrobox_tasks"
-    },
-    {
       "relation": "references",
       "confidence": "INFERRED",
       "confidence_score": 0.75,
@@ -4312,76 +3516,6 @@
       "weight": 1.0,
       "source": "6_vmm_test",
       "target": "6_vmm_tasks"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "roles/7_ubuntu-packages/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "7_ubuntu_packages_readme",
-      "target": "7_ubuntu_packages_tasks"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml",
-      "source_location": "line 8-16",
-      "weight": 1.0,
-      "source": "7_ubuntu_packages_tasks",
-      "target": "concept_distrobox"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml",
-      "source_location": "line 44-87",
-      "weight": 1.0,
-      "source": "7_ubuntu_packages_tasks",
-      "target": "concept_reqview"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml",
-      "source_location": "line 8-16",
-      "weight": 1.0,
-      "source": "7_ubuntu_packages_tasks",
-      "target": "concept_ubuntu_box"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml",
-      "source_location": "line 19-28",
-      "weight": 1.0,
-      "source": "7_ubuntu_packages_tasks",
-      "target": "concept_vault_github"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/7_ubuntu-packages/tests/test.yml",
-      "source_location": "line 5-6",
-      "weight": 1.0,
-      "source": "7_ubuntu_packages_test",
-      "target": "7_ubuntu_packages_tasks"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml",
-      "source_location": "line 44-87",
-      "weight": 1.0,
-      "source": "concept_reqview",
-      "target": "concept_ubuntu_box"
     },
     {
       "relation": "references",
@@ -4514,364 +3648,6 @@
       "target": "concept_libvirt_kvm"
     }
   ],
-  "hyperedges": [
-    {
-      "id": "playbooks_vault_shared_vars",
-      "label": "All Playbooks Share vault.yml for Encrypted Variables",
-      "nodes": [
-        "build_base_yml",
-        "build_vms_yml",
-        "configure_yml",
-        "connectivity_yml",
-        "desktop_yml",
-        "vault_yml"
-      ],
-      "relation": "participate_in",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "site.yml"
-    },
-    {
-      "id": "configure_role_chain",
-      "label": "configure.yml Role Execution Chain",
-      "nodes": [
-        "configure_yml",
-        "appearance_tasks_main_yml",
-        "power_tasks_main_yml"
-      ],
-      "relation": "implement",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "configure.yml"
-    },
-    {
-      "id": "gnome_appearance_concepts",
-      "label": "GNOME Appearance Configuration Concepts",
-      "nodes": [
-        "gsettings_dark_mode",
-        "gnome_wallpaper_setup",
-        "accounts_service_avatar"
-      ],
-      "relation": "form",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "roles/10_appearance/tasks/main.yml"
-    },
-    {
-      "id": "dconf_roles_group",
-      "label": "GNOME dconf Configuration Roles",
-      "nodes": [
-        "tasks_main_12_gnome_settings",
-        "tasks_main_13_touchpad",
-        "dconf_gnome_settings"
-      ],
-      "relation": "implement",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/12_gnome-settings/tasks/main.yml"
-    },
-    {
-      "id": "main_user_consumers",
-      "label": "Roles Using main_user Variable",
-      "nodes": [
-        "tasks_main_12_gnome_settings",
-        "tasks_main_13_touchpad",
-        "main_user_variable"
-      ],
-      "relation": "participate_in",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/12_gnome-settings/tasks/main.yml"
-    },
-    {
-      "id": "role_12_structure",
-      "label": "12_gnome-settings Role Structure",
-      "nodes": [
-        "defaults_main_12_gnome_settings",
-        "handlers_main_12_gnome_settings",
-        "meta_main_12_gnome_settings",
-        "tasks_main_12_gnome_settings",
-        "tests_test_12_gnome_settings",
-        "vars_main_12_gnome_settings"
-      ],
-      "relation": "form",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/12_gnome-settings/tasks/main.yml"
-    },
-    {
-      "id": "role_13_structure",
-      "label": "13_touchpad Role Structure",
-      "nodes": [
-        "defaults_main_13_touchpad",
-        "handlers_main_13_touchpad",
-        "meta_main_13_touchpad",
-        "tasks_main_13_touchpad",
-        "tests_test_13_touchpad",
-        "vars_main_13_touchpad"
-      ],
-      "relation": "form",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/13_touchpad/tasks/main.yml"
-    },
-    {
-      "id": "role_14_structure",
-      "label": "14_audio Role Structure",
-      "nodes": [
-        "defaults_main_14_audio",
-        "handlers_main_14_audio",
-        "meta_main_14_audio"
-      ],
-      "relation": "form",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/14_audio/meta/main.yml"
-    },
-    {
-      "id": "role_14_audio_components",
-      "label": "Role 14 Audio Components",
-      "nodes": [
-        "tasks_14_audio_tasks_main",
-        "tests_14_audio_tests_test",
-        "vars_14_audio_vars_main"
-      ],
-      "relation": "implement",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/14_audio/tasks/main.yml"
-    },
-    {
-      "id": "role_15_package_config_components",
-      "label": "Role 15 Package Config Components",
-      "nodes": [
-        "tasks_15_package_config_tasks_main",
-        "defaults_15_package_config_defaults_main",
-        "handlers_15_package_config_handlers_main",
-        "meta_15_package_config_meta_main",
-        "tests_15_package_config_tests_test",
-        "vars_15_package_config_vars_main"
-      ],
-      "relation": "implement",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/15_package-config/tasks/main.yml"
-    },
-    {
-      "id": "role_16_custom_terminal_components",
-      "label": "Role 16 Custom Terminal Components",
-      "nodes": [
-        "tasks_16_custom_terminal_tasks_main",
-        "defaults_16_custom_terminal_defaults_main",
-        "handlers_16_custom_terminal_handlers_main",
-        "meta_16_custom_terminal_meta_main",
-        "tests_16_custom_terminal_tests_test",
-        "vars_16_custom_terminal_vars_main"
-      ],
-      "relation": "implement",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/16_custom-terminal/tasks/main.yml"
-    },
-    {
-      "id": "role_17_custom_commands",
-      "label": "Role 17 custom-commands Files",
-      "nodes": [
-        "17_custom-commands_meta_main",
-        "17_custom-commands_tasks_main",
-        "17_custom-commands_tests_test",
-        "17_custom-commands_vars_main"
-      ],
-      "relation": "form",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/17_custom-commands/tasks/main.yml"
-    },
-    {
-      "id": "role_18_app_organise",
-      "label": "Role 18 app-organise Files",
-      "nodes": [
-        "18_app-organise_readme",
-        "18_app-organise_defaults_main",
-        "18_app-organise_handlers_main",
-        "18_app-organise_meta_main",
-        "18_app-organise_tasks_main",
-        "18_app-organise_tests_test",
-        "18_app-organise_vars_main"
-      ],
-      "relation": "form",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/18_app-organise/tasks/main.yml"
-    },
-    {
-      "id": "role_1_remove_packages",
-      "label": "Role 1 remove-packages Files",
-      "nodes": [
-        "1_remove-packages_readme",
-        "1_remove-packages_defaults_main",
-        "1_remove-packages_handlers_main",
-        "1_remove-packages_meta_main",
-        "1_remove-packages_tasks_main",
-        "1_remove-packages_tests_test",
-        "1_remove-packages_vars_main"
-      ],
-      "relation": "form",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/1_remove-packages/tasks/main.yml"
-    },
-    {
-      "id": "update_system_role_files",
-      "label": "Update System Role Files",
-      "nodes": [
-        "2_update-system_handlers_main",
-        "2_update-system_meta_main",
-        "2_update-system_tasks_main",
-        "2_update-system_tests_test",
-        "2_update-system_vars_main"
-      ],
-      "relation": "implement",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/2_update-system/tasks/main.yml"
-    },
-    {
-      "id": "all_packages_role_files",
-      "label": "All Packages Role Files",
-      "nodes": [
-        "3_all-packages_defaults_main",
-        "3_all-packages_handlers_main",
-        "3_all-packages_meta_main",
-        "3_all-packages_tasks_main",
-        "3_all-packages_tests_test",
-        "3_all-packages_vars_main"
-      ],
-      "relation": "implement",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/3_all-packages/tasks/main.yml"
-    },
-    {
-      "id": "asus_zenscreen_role_files",
-      "label": "ASUS ZenScreen Role Files",
-      "nodes": [
-        "4_asus-zenscreen_defaults_main",
-        "4_asus-zenscreen_handlers_main",
-        "4_asus-zenscreen_meta_main",
-        "4_asus-zenscreen_tasks_main",
-        "4_asus-zenscreen_tests_test",
-        "4_asus-zenscreen_vars_main"
-      ],
-      "relation": "implement",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/4_asus-zenscreen/tasks/main.yml"
-    },
-    {
-      "id": "machine_type_consumers",
-      "label": "Roles Consuming machine_type",
-      "nodes": [
-        "2_update-system_tasks_main",
-        "3_all-packages_tasks_main",
-        "concept_machine_type"
-      ],
-      "relation": "participate_in",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/2_update-system/tasks/main.yml"
-    },
-    {
-      "id": "distrobox_role_components",
-      "label": "Distrobox Role Components",
-      "nodes": [
-        "5_distrobox_defaults",
-        "5_distrobox_handlers",
-        "5_distrobox_meta",
-        "5_distrobox_tasks",
-        "5_distrobox_vars"
-      ],
-      "relation": "implement",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/5_distrobox/tasks/main.yml"
-    },
-    {
-      "id": "vmm_role_components",
-      "label": "VMM Role Components",
-      "nodes": [
-        "6_vmm_defaults",
-        "6_vmm_handlers",
-        "6_vmm_meta",
-        "6_vmm_tasks",
-        "6_vmm_vars"
-      ],
-      "relation": "implement",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/6_vmm/tasks/main.yml"
-    },
-    {
-      "id": "ubuntu_packages_role_components",
-      "label": "Ubuntu Packages Role Components",
-      "nodes": [
-        "7_ubuntu_packages_defaults",
-        "7_ubuntu_packages_handlers",
-        "7_ubuntu_packages_meta",
-        "7_ubuntu_packages_tasks",
-        "7_ubuntu_packages_vars"
-      ],
-      "relation": "implement",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml"
-    },
-    {
-      "id": "ubuntu_box_consumer_roles",
-      "label": "Roles Using ubuntu-box Container",
-      "nodes": [
-        "5_distrobox_tasks",
-        "7_ubuntu_packages_tasks"
-      ],
-      "relation": "participate_in",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/7_ubuntu-packages/tasks/main.yml"
-    },
-    {
-      "id": "role_8_vm_setup",
-      "label": "Role: 8_vm-setup (tiny11 Windows VM)",
-      "nodes": [
-        "8_vm_setup_tasks_main",
-        "8_vm_setup_defaults_main",
-        "8_vm_setup_handlers_main",
-        "8_vm_setup_meta_main",
-        "8_vm_setup_vars_main",
-        "8_vm_setup_readme",
-        "8_vm_setup_tests_test"
-      ],
-      "relation": "implement",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/8_vm-setup/tasks/main.yml"
-    },
-    {
-      "id": "role_9_github",
-      "label": "Role: 9_github (Git and gh CLI Setup)",
-      "nodes": [
-        "9_github_tasks_main",
-        "9_github_defaults_main",
-        "9_github_handlers_main",
-        "9_github_meta_main",
-        "9_github_vars_main",
-        "9_github_readme",
-        "9_github_tests_test"
-      ],
-      "relation": "implement",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "roles/9_github/tasks/main.yml"
-    }
-  ],
-  "built_at_commit": "e04633d1a2d93766ad3214af45e715c3984bdcd3"
+  "hyperedges": [],
+  "built_at_commit": "42cbe569dfba56b321e1daa4995753260b109add"
 }

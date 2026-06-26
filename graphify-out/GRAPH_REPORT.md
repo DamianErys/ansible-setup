@@ -1,16 +1,16 @@
 # Graph Report - ansible-setup  (2026-06-26)
 
 ## Corpus Check
-- 42 files · ~165,501 words
+- 42 files · ~165,546 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 204 nodes · 151 edges · 82 communities (15 shown, 67 thin omitted)
-- Extraction: 76% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 36 edges (avg confidence: 0.81)
+- 179 nodes · 112 edges · 89 communities (12 shown, 77 thin omitted)
+- Extraction: 76% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 27 edges (avg confidence: 0.79)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7d8effd7`
+- Built from commit: `c800ea87`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -97,18 +97,25 @@
 - [[_COMMUNITY_Vars 15 Package Config Vars Main|Vars 15 Package Config Vars Main]]
 - [[_COMMUNITY_Vars 16 Custom Terminal Vars Main|Vars 16 Custom Terminal Vars Main]]
 - [[_COMMUNITY_Community 81|Community 81]]
+- [[_COMMUNITY_Community 82|Community 82]]
+- [[_COMMUNITY_Community 83|Community 83]]
+- [[_COMMUNITY_Community 84|Community 84]]
+- [[_COMMUNITY_Community 85|Community 85]]
+- [[_COMMUNITY_Community 86|Community 86]]
+- [[_COMMUNITY_Community 87|Community 87]]
+- [[_COMMUNITY_Community 88|Community 88]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `12_gnome-settings Role Tasks` - 10 edges
 2. `13_touchpad Role Tasks` - 9 edges
-3. `All Packages Tasks (Flatpak)` - 9 edges
-4. `Distrobox Role Tasks` - 7 edges
-5. `Ubuntu Packages Role Tasks` - 7 edges
-6. `RunAnsible.sh script` - 6 edges
-7. `Update System Tasks` - 6 edges
-8. `VMM Role Tasks` - 6 edges
-9. `8_vm-setup Tasks - tiny11 Windows VM Setup` - 6 edges
-10. `move_installer()` - 5 edges
+3. `RunAnsible.sh script` - 6 edges
+4. `Distrobox Role Tasks` - 6 edges
+5. `VMM Role Tasks` - 6 edges
+6. `8_vm-setup Tasks - tiny11 Windows VM Setup` - 6 edges
+7. `move_installer()` - 5 edges
+8. `site.yml Master Playbook` - 5 edges
+9. `vault.yml Ansible Vault (encrypted secrets)` - 5 edges
+10. `Role 16 Custom Terminal Tasks` - 5 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `site.yml Master Playbook` --references--> `build-base.yml Playbook`  [EXTRACTED]
@@ -125,49 +132,23 @@
 ## Import Cycles
 - None detected.
 
-## Hyperedges (group relationships)
-- **All Playbooks Share vault.yml for Encrypted Variables** — build_base_yml, build_vms_yml, configure_yml, connectivity_yml, desktop_yml, vault_yml [EXTRACTED 1.00]
-- **configure.yml Role Execution Chain** — configure_yml, appearance_tasks_main_yml, power_tasks_main_yml [EXTRACTED 1.00]
-- **GNOME Appearance Configuration Concepts** — gsettings_dark_mode, gnome_wallpaper_setup, accounts_service_avatar [INFERRED 0.85]
-- **GNOME dconf Configuration Roles** — tasks_main_12_gnome_settings, tasks_main_13_touchpad, dconf_gnome_settings [EXTRACTED 1.00]
-- **Roles Using main_user Variable** — tasks_main_12_gnome_settings, tasks_main_13_touchpad, main_user_variable [EXTRACTED 1.00]
-- **12_gnome-settings Role Structure** — defaults_main_12_gnome_settings, handlers_main_12_gnome_settings, meta_main_12_gnome_settings, tasks_main_12_gnome_settings, tests_test_12_gnome_settings, vars_main_12_gnome_settings [INFERRED 0.95]
-- **13_touchpad Role Structure** — defaults_main_13_touchpad, handlers_main_13_touchpad, meta_main_13_touchpad, tasks_main_13_touchpad, tests_test_13_touchpad, vars_main_13_touchpad [INFERRED 0.95]
-- **14_audio Role Structure** — defaults_main_14_audio, handlers_main_14_audio, meta_main_14_audio [INFERRED 0.95]
-- **Role 14 Audio Components** — tasks_14_audio_tasks_main, tests_14_audio_tests_test, vars_14_audio_vars_main [INFERRED 0.95]
-- **Role 15 Package Config Components** — tasks_15_package_config_tasks_main, defaults_15_package_config_defaults_main, handlers_15_package_config_handlers_main, meta_15_package_config_meta_main, tests_15_package_config_tests_test, vars_15_package_config_vars_main [INFERRED 0.95]
-- **Role 16 Custom Terminal Components** — tasks_16_custom_terminal_tasks_main, defaults_16_custom_terminal_defaults_main, handlers_16_custom_terminal_handlers_main, meta_16_custom_terminal_meta_main, tests_16_custom_terminal_tests_test, vars_16_custom_terminal_vars_main [INFERRED 0.95]
-- **Role 17 custom-commands Files** — 17_custom-commands_meta_main, 17_custom-commands_tasks_main, 17_custom-commands_tests_test, 17_custom-commands_vars_main [EXTRACTED 1.00]
-- **Role 18 app-organise Files** — 18_app-organise_readme, 18_app-organise_defaults_main, 18_app-organise_handlers_main, 18_app-organise_meta_main, 18_app-organise_tasks_main, 18_app-organise_tests_test, 18_app-organise_vars_main [EXTRACTED 1.00]
-- **Role 1 remove-packages Files** — 1_remove-packages_readme, 1_remove-packages_defaults_main, 1_remove-packages_handlers_main, 1_remove-packages_meta_main, 1_remove-packages_tasks_main, 1_remove-packages_tests_test, 1_remove-packages_vars_main [EXTRACTED 1.00]
-- **Update System Role Files** — 2_update-system_handlers_main, 2_update-system_meta_main, 2_update-system_tasks_main, 2_update-system_tests_test, 2_update-system_vars_main [EXTRACTED 1.00]
-- **All Packages Role Files** — 3_all-packages_defaults_main, 3_all-packages_handlers_main, 3_all-packages_meta_main, 3_all-packages_tasks_main, 3_all-packages_tests_test, 3_all-packages_vars_main [EXTRACTED 1.00]
-- **ASUS ZenScreen Role Files** — 4_asus-zenscreen_defaults_main, 4_asus-zenscreen_handlers_main, 4_asus-zenscreen_meta_main, 4_asus-zenscreen_tasks_main, 4_asus-zenscreen_tests_test, 4_asus-zenscreen_vars_main [EXTRACTED 1.00]
-- **Roles Consuming machine_type** — 2_update-system_tasks_main, 3_all-packages_tasks_main, concept_machine_type [EXTRACTED 1.00]
-- **Distrobox Role Components** — 5_distrobox_defaults, 5_distrobox_handlers, 5_distrobox_meta, 5_distrobox_tasks, 5_distrobox_vars [INFERRED 0.95]
-- **VMM Role Components** — 6_vmm_defaults, 6_vmm_handlers, 6_vmm_meta, 6_vmm_tasks, 6_vmm_vars [INFERRED 0.95]
-- **Ubuntu Packages Role Components** — 7_ubuntu_packages_defaults, 7_ubuntu_packages_handlers, 7_ubuntu_packages_meta, 7_ubuntu_packages_tasks, 7_ubuntu_packages_vars [INFERRED 0.95]
-- **Roles Using ubuntu-box Container** — 5_distrobox_tasks, 7_ubuntu_packages_tasks [EXTRACTED 1.00]
-- **Role: 8_vm-setup (tiny11 Windows VM)** — 8_vm_setup_tasks_main, 8_vm_setup_defaults_main, 8_vm_setup_handlers_main, 8_vm_setup_meta_main, 8_vm_setup_vars_main, 8_vm_setup_readme, 8_vm_setup_tests_test [EXTRACTED 1.00]
-- **Role: 9_github (Git and gh CLI Setup)** — 9_github_tasks_main, 9_github_defaults_main, 9_github_handlers_main, 9_github_meta_main, 9_github_vars_main, 9_github_readme, 9_github_tests_test [EXTRACTED 1.00]
-
-## Communities (82 total, 67 thin omitted)
+## Communities (89 total, 77 thin omitted)
 
 ### Community 0 - "GNOME dconf Settings"
 Cohesion: 0.13
 Nodes (17): 12_gnome-settings Role README, 13_touchpad Role README, ABRT Daemon Service (abrtd), dconf GNOME Settings Configuration, 12_gnome-settings Role Defaults, 13_touchpad Role Defaults, 12_gnome-settings Role Handlers, machine_type Variable (+9 more)
 
 ### Community 1 - "Appearance and Playbook Core"
-Cohesion: 0.17
-Nodes (16): AccountsService User Avatar Configuration, 10_appearance tasks/main.yml, 10_appearance tests/test.yml, build-base.yml Playbook, build-vms.yml Playbook, configure.yml Playbook, connectivity.yml Playbook, dconf GNOME Power Settings (+8 more)
+Cohesion: 0.27
+Nodes (11): build-base.yml Playbook, build-vms.yml Playbook, configure.yml Playbook, connectivity.yml Playbook, dconf GNOME Power Settings, desktop.yml Playbook, machine_type Variable Conditional Logic, 11_power tasks/main.yml (+3 more)
 
 ### Community 2 - "Package and System Updates"
-Cohesion: 0.15
-Nodes (14): Update System Tasks, Update System Test Playbook, All Packages Role README, All Packages Tasks (Flatpak), All Packages Test Playbook, akmod-nvidia NVIDIA Driver, amdgpu In-kernel GPU Driver, Flathub Remote Repository (+6 more)
+Cohesion: 0.33
+Nodes (6): Update System Tasks, Update System Test Playbook, akmod-nvidia NVIDIA Driver, amdgpu In-kernel GPU Driver, fwupd Firmware Updater, machine_type Variable
 
 ### Community 3 - "Distrobox Container Setup"
-Cohesion: 0.21
-Nodes (12): Distrobox Role Defaults, Distrobox Role Handlers, Distrobox Role Tasks, Distrobox Role Test Playbook, Ubuntu Packages Role README, Ubuntu Packages Role Tasks, Ubuntu Packages Role Test Playbook, Distrobox Container Tool (+4 more)
+Cohesion: 0.29
+Nodes (7): Distrobox Role Defaults, Distrobox Role Handlers, Distrobox Role Tasks, Distrobox Role Test Playbook, Distrobox Container Tool, Podman Container Runtime, ubuntu-box Distrobox Container
 
 ### Community 4 - "Package Removal"
 Cohesion: 0.31
@@ -193,30 +174,18 @@ Nodes (7): Custom Bash Prompt with Git Info, Distrobox Container Detection, Fira
 Cohesion: 0.67
 Nodes (6): RunAnsible.sh script, fail(), info(), move_installer(), pass(), warn()
 
-### Community 10 - "Custom Shell Commands"
-Cohesion: 0.33
-Nodes (6): Role 17 custom-commands Tasks, Role 17 custom-commands Test Playbook, Role 17 custom-commands Vars, Custom Commands Role, ~/.local/bin User Scripts Directory, picocom Serial Communication Tool
-
 ### Community 11 - "GitHub and Git Config"
 Cohesion: 0.33
 Nodes (6): 9_github Defaults, 9_github Handlers, 9_github Tasks - Git and gh CLI Setup, 9_github Test Playbook, GitHub CLI (gh), Vault GitHub PAT Secret
-
-### Community 12 - "Package Configuration"
-Cohesion: 0.40
-Nodes (6): Firefox Enterprise Policies JSON, Rclone VFS Cache Warm Script, Rclone Proton Drive Mount, STM32 DFU Udev Rule, Role 15 Package Config Tasks, Role 15 Package Config Test Playbook
-
-### Community 13 - "GNOME App Organization"
-Cohesion: 0.50
-Nodes (5): Role 18 app-organise Tasks, Role 18 app-organise Test Playbook, Role 18 app-organise Vars, dconf GNOME Settings, GNOME App Folders Organisation
 
 ### Community 14 - "PipeWire Audio Setup"
 Cohesion: 0.67
 Nodes (4): PipeWire Audio System, qpwgraph PipeWire Graph Tool, Role 14 Audio Tasks, Role 14 Audio Test Playbook
 
 ## Knowledge Gaps
-- **140 isolated node(s):** `graphify`, `OpenVault.sh script`, `VaultExample.sh script`, `install_displaylink.sh script`, `10_appearance defaults/main.yml` (+135 more)
+- **131 isolated node(s):** `graphify`, `OpenVault.sh script`, `VaultExample.sh script`, `install_displaylink.sh script`, `10_appearance defaults/main.yml` (+126 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **67 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **77 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -225,13 +194,11 @@ _Questions this graph is uniquely positioned to answer:_
   _`12_gnome-settings Role Tasks` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 5 inferred relationships involving `13_touchpad Role Tasks` (e.g. with `13_touchpad Role README` and `13_touchpad Role Meta`) actually correct?**
   _`13_touchpad Role Tasks` has 5 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 2 inferred relationships involving `All Packages Tasks (Flatpak)` (e.g. with `Update System Tasks` and `machine_type Variable`) actually correct?**
-  _`All Packages Tasks (Flatpak)` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 3 inferred relationships involving `Distrobox Role Tasks` (e.g. with `Distrobox Role Defaults` and `Distrobox Role Handlers`) actually correct?**
-  _`Distrobox Role Tasks` has 3 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 2 inferred relationships involving `Ubuntu Packages Role Tasks` (e.g. with `Ubuntu Packages Role README` and `Distrobox Role Tasks`) actually correct?**
-  _`Ubuntu Packages Role Tasks` has 2 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 2 inferred relationships involving `Distrobox Role Tasks` (e.g. with `Distrobox Role Defaults` and `Distrobox Role Handlers`) actually correct?**
+  _`Distrobox Role Tasks` has 2 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 2 inferred relationships involving `VMM Role Tasks` (e.g. with `VMM Role README` and `VMM Role Defaults`) actually correct?**
+  _`VMM Role Tasks` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `graphify`, `OpenVault.sh script`, `VaultExample.sh script` to the rest of the system?**
-  _140 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _131 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `GNOME dconf Settings` be split into smaller, more focused modules?**
   _Cohesion score 0.1323529411764706 - nodes in this community are weakly interconnected._
