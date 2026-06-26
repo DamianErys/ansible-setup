@@ -34,20 +34,28 @@
     state: present
     remote: flathub
   loop:
-    - com.spotify.Client
-    - com.anydesk.Anydesk
-    - com.protonvpn.www
-    - me.proton.Mail
-    - me.proton.Pass
     - org.videolan.VLC
     - org.inkscape.Inkscape
-    - com.rtosta.zapzap
-    - com.discordapp.Discord
     - org.raspberrypi.rpi-imager
     - com.github.flxzt.rnote
     - com.mattjakeman.ExtensionManager
-    - org.gnome.Evolution
     - org.qbittorrent.qBittorrent
+    - com.anydesk.Anydesk
+
+- name: Install personal Flatpak apps
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: present
+    remote: flathub
+  loop:
+    - com.spotify.Client
+    - com.protonvpn.www
+    - me.proton.Mail
+    - me.proton.Pass
+    - com.rtosta.zapzap
+    - com.discordapp.Discord
+    - org.gnome.Evolution
+  when: not (skip_personal | default(false))
 
 - name: Install KiCad via DNF (native Fedora package)
   ansible.builtin.dnf:
