@@ -85,14 +85,6 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
 
-- name: Deploy kiadd command
-  ansible.builtin.template:
-    src: kiadd.j2
-    dest: "/home/{{ main_user }}/.local/bin/kiadd"
-    mode: '0755'
-    owner: "{{ main_user }}"
-    group: "{{ main_user }}"
-
 # -----------------------------------------------
 # Install dependencies
 # -----------------------------------------------
