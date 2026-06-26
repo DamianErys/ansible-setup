@@ -1,0 +1,123 @@
+#SPDX-License-Identifier: MIT-0
+---
+# roles/17_custom-commands/tasks/main.yml
+# Custom helper commands for daily workflow
+# ============================================================
+
+# -----------------------------------------------
+# Create custom scripts directory
+# -----------------------------------------------
+- name: Create ~/.local/bin directory
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.local/bin"
+    state: directory
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+
+- name: Ensure ~/.local/bin is in PATH via .bashrc
+  ansible.builtin.lineinfile:
+    path: "/home/{{ main_user }}/.bashrc"
+    line: 'export PATH="$HOME/.local/bin:$PATH"'
+    insertbefore: '^# Source global bashrc'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
+
+# -----------------------------------------------
+# Deploy scripts from templates
+# -----------------------------------------------
+- name: Deploy GoToUbuntu command
+  ansible.builtin.template:
+    src: GoToUbuntu.j2
+    dest: "/home/{{ main_user }}/.local/bin/GoToUbuntu"
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+
+- name: Deploy windows-boot command
+  ansible.builtin.template:
+    src: windows-boot.j2
+    dest: "/home/{{ main_user }}/.local/bin/windows-boot"
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+  when: machine_type == 'pc'
+
+- name: Deploy reboot-windows alias command
+  ansible.builtin.template:
+    src: reboot-windows.j2
+    dest: "/home/{{ main_user }}/.local/bin/reboot-windows"
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+  when: machine_type == 'pc'
+
+- name: Deploy serial command
+  ansible.builtin.template:
+    src: serial.j2
+    dest: "/home/{{ main_user }}/.local/bin/serial"
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+
+- name: Deploy update-system command
+  ansible.builtin.template:
+    src: update-system.j2
+    dest: "/home/{{ main_user }}/.local/bin/update-system"
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+
+- name: Deploy find-file command
+  ansible.builtin.template:
+    src: find-file.j2
+    dest: "/home/{{ main_user }}/.local/bin/find-file"
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+
+- name: Deploy ports command
+  ansible.builtin.template:
+    src: ports.j2
+    dest: "/home/{{ main_user }}/.local/bin/ports"
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+
+- name: Deploy kiadd command
+  ansible.builtin.template:
+    src: kiadd.j2
+    dest: "/home/{{ main_user }}/.local/bin/kiadd"
+    mode: '0755'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+
+# -----------------------------------------------
+# Install dependencies
+# -----------------------------------------------
+- name: Install picocom for serial communication
+  ansible.builtin.dnf:
+    name: picocom
+    state: present
+
+# -----------------------------------------------
+# Bash functions (stay in .bashrc — can't be standalone scripts)
+# -----------------------------------------------
+- name: Add mkcd as bash function to .bashrc
+  ansible.builtin.blockinfile:
+    path: "/home/{{ main_user }}/.bashrc"
+    block: |
+      # mkcd - Create directory and cd into it
+      mkcd() {
+          if [[ -z "$1" ]]; then
+              echo "Usage: mkcd <directory>"
+              return 1
+          fi
+          mkdir -p "$1" && cd "$1"
+      }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - mkcd function"
+    insertbefore: '^# Source global bashrc'
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'

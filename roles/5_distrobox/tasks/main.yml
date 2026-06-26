@@ -1,0 +1,36 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/distrobox
+# ============================================================
+# roles/distrobox/tasks/main.yml
+# Installs Podman + Distrobox and creates ubuntu-box on both machines
+# ============================================================
+# tasks file for roles/5_distrobox
+
+- name: Install Podman and Distrobox on Fedora host
+  ansible.builtin.dnf:
+    name:
+      - podman
+      - distrobox
+    state: present
+  become: true
+
+- name: Create ubuntu-box container
+  ansible.builtin.command: distrobox create -n ubuntu-box --image ubuntu:22.04 --yes
+  become: false
+  register: create_result
+  changed_when: "'already exists' not in create_result.stderr"
+  failed_when: 
+    - create_result.rc != 0
+    - "'already exists' not in create_result.stderr"
+
+- name: Install dependencies and Git inside ubuntu-box
+  # Git is added here so ReqView can see your host files via the shared home mount
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- /bin/bash -c "sudo apt update && sudo apt install -y 
+    git xdg-desktop-portal xdg-desktop-portal-gtk xdg-utils
+    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2
+    libgtk-3-0 libgbm1 libasound2 libxshmfence1 libxcomposite1 
+    libxdamage1 libxrandr2 libxkbcommon0"
+  become: false
+  changed_when: false

@@ -1,0 +1,7 @@
+*.retry
+*.log
+vault-pass.txt
+*.iso
+*.rpm
+*.deb
+*.tar.gz

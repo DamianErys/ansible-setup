@@ -1,0 +1,357 @@
+#!/usr/bin/env bash
+# kiadd — Add (or remove) an LCSC part from a KiCad project's local libs
+# Usage: kiadd [LCSC_ID]
+# Usage: kiadd remove [LCSC_ID]
+
+set -euo pipefail
+
+# ─── Colours ────────────────────────────────────────────────────────────────
+RED='\033[0;31m'
+GRN='\033[0;32m'
+YLW='\033[1;33m'
+CYN='\033[0;36m'
+BLD='\033[1m'
+RST='\033[0m'
+
+info()  { echo -e "${CYN}[kiadd]${RST} $*"; }
+ok()    { echo -e "${GRN}[kiadd]${RST} $*"; }
+warn()  { echo -e "${YLW}[kiadd]${RST} $*"; }
+die()   { echo -e "${RED}[kiadd] ERROR:${RST} $*" >&2; exit 1; }
+
+# ─── 1. Find the kicad/ folder (walk up from cwd) ───────────────────────────
+KICAD_DIR=""
+search="$PWD"
+while [[ "$search" != "/" ]]; do
+    if [[ "$(basename "$search")" == "kicad" ]] && compgen -G "$search/*.kicad_pro" > /dev/null 2>&1; then
+        KICAD_DIR="$search"
+        break
+    fi
+    parent="$(dirname "$search")"
+    if [[ "$(basename "$parent")" == "kicad" ]] && compgen -G "$parent/*.kicad_pro" > /dev/null 2>&1; then
+        KICAD_DIR="$parent"
+        break
+    fi
+    search="$parent"
+done
+
+[[ -z "$KICAD_DIR" ]] && die "Not inside a kicad/ project folder.\n       cd into your project's kicad/ directory first."
+
+# ─── 2. Derive project name ──────────────────────────────────────────────────
+PRO_FILE="$(compgen -G "$KICAD_DIR/*.kicad_pro" | head -n1)"
+PROJECT="$(basename "$PRO_FILE" .kicad_pro)"
+LIBS_DIR="$KICAD_DIR/libs"
+SYM_LIB="$LIBS_DIR/symbols/${PROJECT}.kicad_sym"
+FP_DIR="$LIBS_DIR/footprints/${PROJECT}.pretty"
+MODEL_DIR="$LIBS_DIR/3dmodels"
+
+info "Project  : ${BLD}${PROJECT}${RST}"
+info "Libs dir : ${BLD}${LIBS_DIR}${RST}"
+echo ""
+
+# ─── Helper: normalise LCSC ID ───────────────────────────────────────────────
+normalise_id() {
+    local id="${1^^}"
+    id="${id#C}"
+    echo "C${id}"
+}
+
+# ════════════════════════════════════════════════════════════════════════════
+# REMOVE MODE — kiadd remove [LCSC_ID]
+# ════════════════════════════════════════════════════════════════════════════
+if [[ "${1:-}" == "remove" ]]; then
+    shift
+
+    if [[ $# -ge 1 ]]; then
+        LCSC_ID="$(normalise_id "$1")"
+    else
+        read -rp "$(echo -e "${BLD}LCSC part number to remove${RST} (e.g. C94355): ")" LCSC_ID
+        LCSC_ID="$(normalise_id "$LCSC_ID")"
+    fi
+
+    info "Looking up ${BLD}${LCSC_ID}${RST} in local libs …"
+    echo ""
+
+    # ── Find matching symbol name(s) in the sym lib ──────────────────────────
+    # easyeda2kicad stores the LCSC id in an "LCSC" property inside the symbol.
+    # We need to find the symbol name whose block contains that id, then remove
+    # the whole (symbol "Name" …) block.
+
+    REMOVE_PY="$(mktemp /tmp/kiadd_remove_XXXXXX.py)"
+    cat > "$REMOVE_PY" << 'PYEOF'
+import sys, re
+
+lcsc_id  = sys.argv[1]
+sym_path = sys.argv[2]
+fp_dir   = sys.argv[3]
+model_dir= sys.argv[4]
+
+with open(sym_path) as f:
+    src = f.read()
+
+# Walk the file and collect top-level (symbol …) blocks with their spans
+depth = 0
+blocks = []   # (name, start, end)
+in_block = False
+block_start = 0
+block_name = ""
+i = 0
+
+while i < len(src):
+    if src[i] == '(':
+        if depth == 1 and src[i:].startswith('(symbol '):
+            in_block = True
+            block_start = i
+            # Parse the name: (symbol "Name" …
+            m = re.match(r'\(symbol\s+"([^"]+)"', src[i:])
+            block_name = m.group(1) if m else ""
+        depth += 1
+    elif src[i] == ')':
+        depth -= 1
+        if in_block and depth == 1:
+            blocks.append((block_name, block_start, i+1))
+            in_block = False
+    i += 1
+
+# Find blocks that reference this LCSC id
+to_remove = []
+for name, start, end in blocks:
+    chunk = src[start:end]
+    if lcsc_id in chunk:
+        to_remove.append((name, start, end))
+
+if not to_remove:
+    print(f"NOT_FOUND:{lcsc_id}")
+    sys.exit(0)
+
+# Report what we found
+for name, start, end in to_remove:
+    print(f"SYMBOL:{name}")
+
+    # Also find any Footprint value referenced in this block
+    fp_match = re.search(r'"Footprint"\s+"[^:]+:([^"]+)"', src[start:end])
+    if fp_match:
+        print(f"FOOTPRINT:{fp_match.group(1)}")
+
+    # Also find any Model value
+    model_matches = re.findall(r'\$\{KIPRJMOD\}/libs/3dmodels/([^\s"]+)', src[start:end])
+    for m in model_matches:
+        print(f"MODEL:{m.strip()}")
+
+# Remove the blocks (process in reverse order to preserve offsets)
+result = src
+for name, start, end in reversed(to_remove):
+    result = result[:start] + result[end:]
+
+# Clean up extra blank lines
+result = re.sub(r'\n{3,}', '\n\n', result)
+
+with open(sym_path, 'w') as f:
+    f.write(result)
+
+print("DONE")
+PYEOF
+
+    OUTPUT="$(python3 "$REMOVE_PY" "$LCSC_ID" "$SYM_LIB" "$FP_DIR" "$MODEL_DIR")"
+    rm -f "$REMOVE_PY"
+
+    if echo "$OUTPUT" | grep -q "^NOT_FOUND:"; then
+        die "Part ${LCSC_ID} not found in ${SYM_LIB}\n       Is it added to this project?"
+    fi
+
+    # Parse output and remove associated files
+    FOUND_SYMBOLS=()
+    FOUND_FPS=()
+    FOUND_MODELS=()
+    while IFS= read -r line; do
+        case "$line" in
+            SYMBOL:*)   FOUND_SYMBOLS+=("${line#SYMBOL:}") ;;
+            FOOTPRINT:*) FOUND_FPS+=("${line#FOOTPRINT:}") ;;
+            MODEL:*)    FOUND_MODELS+=("${line#MODEL:}") ;;
+        esac
+    done <<< "$OUTPUT"
+
+    for sym in "${FOUND_SYMBOLS[@]}"; do
+        ok "Symbol removed: ${sym}"
+    done
+
+    # Confirm before deleting footprint/model files
+    echo ""
+    warn "The following files will also be deleted:"
+    for fp in "${FOUND_FPS[@]}";    do echo -e "   ${FP_DIR}/${fp}.kicad_mod" 2>/dev/null || true; done
+    for fp in "${FOUND_FPS[@]}";    do echo -e "   ${FP_DIR}/${fp}" 2>/dev/null || true; done
+    for m  in "${FOUND_MODELS[@]}"; do echo -e "   ${MODEL_DIR}/${m}"; done
+    echo ""
+    read -rp "$(echo -e "${YLW}Confirm delete?${RST} [y/N] ")" CONFIRM
+    CONFIRM="${CONFIRM,,}"
+
+    if [[ "$CONFIRM" == "y" || "$CONFIRM" == "yes" ]]; then
+        for fp in "${FOUND_FPS[@]}"; do
+            # Try exact name, then with .kicad_mod extension
+            local_fp="$FP_DIR/${fp}.kicad_mod"
+            if [[ -f "$local_fp" ]]; then
+                rm -f "$local_fp"
+                ok "Footprint deleted: ${fp}.kicad_mod"
+            else
+                warn "Footprint file not found (may have a different name): ${fp}"
+            fi
+        done
+        for m in "${FOUND_MODELS[@]}"; do
+            local_model="$MODEL_DIR/${m}"
+            # Also try .step and .wrl variants with same stem
+            stem="${m%.*}"
+            for ext in step wrl; do
+                f="$MODEL_DIR/${stem}.${ext}"
+                if [[ -f "$f" ]]; then
+                    rm -f "$f"
+                    ok "3D model deleted: ${stem}.${ext}"
+                fi
+            done
+        done
+        echo ""
+        ok "Done! ${BLD}${LCSC_ID}${RST} removed from ${BLD}${PROJECT}${RST}."
+        info "Reload the KiCad project to reflect the changes."
+    else
+        warn "Aborted. Symbol was already removed from the lib file."
+        warn "Run 'git checkout' or restore from backup if needed."
+    fi
+
+    exit 0
+fi
+
+# ════════════════════════════════════════════════════════════════════════════
+# ADD MODE (default)
+# ════════════════════════════════════════════════════════════════════════════
+
+# ─── 3. Prompt for LCSC part number ─────────────────────────────────────────
+if [[ $# -ge 1 ]]; then
+    LCSC_ID="$(normalise_id "$1")"
+else
+    read -rp "$(echo -e "${BLD}LCSC part number${RST} (e.g. C94355): ")" LCSC_ID
+    LCSC_ID="$(normalise_id "$LCSC_ID")"
+fi
+
+echo ""
+
+# ─── 4. Check easyeda2kicad is available ────────────────────────────────────
+command -v easyeda2kicad &>/dev/null || \
+    die "easyeda2kicad not found. Install it with:\n       pip install easyeda2kicad"
+
+# ─── 5. Ensure lib dirs exist ───────────────────────────────────────────────
+mkdir -p "$(dirname "$SYM_LIB")" "$FP_DIR" "$MODEL_DIR"
+
+TMPBASE="$(mktemp -d)/e2k_import"
+
+info "Downloading ${BLD}${LCSC_ID}${RST} from LCSC/EasyEDA …"
+echo ""
+
+easyeda2kicad --full --lcsc_id="$LCSC_ID" --output="$TMPBASE" --overwrite
+
+echo ""
+
+# ─── 6. Merge symbol into project .kicad_sym ────────────────────────────────
+SRC_SYM="${TMPBASE}.kicad_sym"
+if [[ -f "$SRC_SYM" ]]; then
+    if [[ ! -f "$SYM_LIB" ]]; then
+        cp "$SRC_SYM" "$SYM_LIB"
+        ok "Symbol library created: ${SYM_LIB}"
+    else
+        MERGE_PY="$(mktemp /tmp/kiadd_merge_XXXXXX.py)"
+        cat > "$MERGE_PY" << 'PYEOF'
+import sys
+
+src_path, dst_path = sys.argv[1], sys.argv[2]
+
+with open(src_path) as f:
+    src = f.read()
+with open(dst_path) as f:
+    dst = f.read()
+
+depth = 0
+blocks = []
+in_block = False
+block_start = 0
+i = 0
+while i < len(src):
+    if src[i] == '(':
+        if depth == 1 and src[i:].startswith('(symbol '):
+            in_block = True
+            block_start = i
+        depth += 1
+    elif src[i] == ')':
+        depth -= 1
+        if in_block and depth == 1:
+            blocks.append(src[block_start:i+1])
+            in_block = False
+    i += 1
+
+if not blocks:
+    print("NO_NEW_SYMBOLS")
+    sys.exit(0)
+
+new_content = '\n'.join('    ' + b for b in blocks)
+last_paren = dst.rfind(')')
+merged = dst[:last_paren] + '\n' + new_content + '\n' + dst[last_paren:]
+print(merged)
+PYEOF
+        NEW_SYMS="$(python3 "$MERGE_PY" "$SRC_SYM" "$SYM_LIB")"
+        rm -f "$MERGE_PY"
+
+        if [[ "$NEW_SYMS" == "NO_NEW_SYMBOLS" ]]; then
+            warn "No new symbols found to merge (part may already exist)."
+        else
+            echo "$NEW_SYMS" > "$SYM_LIB"
+            ok "Symbol merged into: ${SYM_LIB}"
+        fi
+    fi
+else
+    warn "No .kicad_sym found in easyeda2kicad output — skipping symbol."
+fi
+
+# ─── 7. Fix footprint library nickname in symbol file ───────────────────────
+if [[ -f "$SYM_LIB" ]]; then
+    TMPBASE_NAME="$(basename "$TMPBASE")"
+    sed -i \
+        -e "s/\"${TMPBASE_NAME}:/\"${PROJECT}:/g" \
+        -e 's/\"easyeda2kicad:/\"'"${PROJECT}"':/g' \
+        -e 's/\"e2k_import:/\"'"${PROJECT}"':/g' \
+        "$SYM_LIB"
+    ok "Footprint nicknames normalised to: ${PROJECT}"
+fi
+
+# ─── 8. Copy footprint(s) ────────────────────────────────────────────────────
+SRC_FP_DIR="${TMPBASE}.pretty"
+if [[ -d "$SRC_FP_DIR" ]]; then
+    FP_COUNT=0
+    for mod in "$SRC_FP_DIR"/*.kicad_mod; do
+        [[ -f "$mod" ]] || continue
+        cp "$mod" "$FP_DIR/"
+        ok "Footprint copied: $(basename "$mod")"
+        FP_COUNT=$((FP_COUNT+1))
+    done
+    [[ $FP_COUNT -eq 0 ]] && warn "No .kicad_mod files found in output."
+else
+    warn "No .pretty dir found — skipping footprints."
+fi
+
+# ─── 9. Copy 3D models ───────────────────────────────────────────────────────
+SRC_3D="${TMPBASE}.3dshapes"
+if [[ -d "$SRC_3D" ]]; then
+    for model in "$SRC_3D"/*; do
+        [[ -f "$model" ]] || continue
+        cp "$model" "$MODEL_DIR/"
+        ok "3D model copied: $(basename "$model")"
+    done
+else
+    warn "No .3dshapes dir found — skipping 3D models."
+fi
+
+# ─── 10. Cleanup temp dir ────────────────────────────────────────────────────
+rm -rf "$(dirname "$TMPBASE")"
+
+# ─── 11. Summary ─────────────────────────────────────────────────────────────
+echo ""
+ok "Done! ${BLD}${LCSC_ID}${RST} added to ${BLD}${PROJECT}${RST}."
+echo ""
+info "Reload the KiCad project (or restart KiCad) to see the new part."
+info "Symbol lib : \${KIPRJMOD}/libs/symbols/${PROJECT}.kicad_sym"
+info "Footprint  : \${KIPRJMOD}/libs/footprints/${PROJECT}.pretty"

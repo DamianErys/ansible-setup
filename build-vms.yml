@@ -1,0 +1,16 @@
+# ============================================================
+# setup-vms.yml
+# Distrobox and VMM on both machines.
+# Windows VM on laptop, gaming emulators on PC.
+# ============================================================
+
+- name: Setup VMs
+  hosts: "{{ machine_type }}"
+  become: true
+  vars_files:
+    - vault.yml
+  roles:
+    - 5_distrobox
+    - 6_vmm
+    - 7_ubuntu-packages
+    - 8_vm-setup

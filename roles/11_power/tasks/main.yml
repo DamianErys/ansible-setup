@@ -1,0 +1,119 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/11_power
+# ============================================================
+# roles/11_power/tasks/main.yml
+# Power saving, screen dim, suspend rules, hot corners
+# Both: powersave profile, dim after 5 min, no auto suspend on AC
+# Laptop only: dim after 2 min on battery, suspend after 10 min on battery
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Power profile (both machines)
+# -----------------------------------------------
+- name: Install tuned-ppd
+  ansible.builtin.dnf:
+    name: tuned-ppd
+    state: present
+
+- name: Enable and start tuned-ppd service
+  ansible.builtin.systemd:
+    name: tuned-ppd
+    enabled: true
+    state: started
+
+- name: Set power profile to powersave
+  ansible.builtin.command: tuned-adm profile powersave
+  changed_when: false
+
+# -----------------------------------------------
+# Prerequisites
+# -----------------------------------------------
+- name: Ensure system dependencies for dconf are present
+  ansible.builtin.dnf:
+    name: python3-psutil
+    state: present
+  become: true
+
+# -----------------------------------------------
+# Step 2 — Screen dim and suspend (both machines)
+# -----------------------------------------------
+
+- name: "Both: enable screen dimming when idle"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/idle-dim
+    value: "true"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: "Both: screen blank after 5 minutes"
+  community.general.dconf:
+    key: /org/gnome/desktop/session/idle-delay
+    value: "uint32 300"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: "AC: action on timeout is blank"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type
+    value: "'blank'"
+  become: true
+  become_user: "{{ main_user }}"
+
+- name: "AC: never suspend (set timeout to 0)"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout
+    value: "0"
+  become: true
+  become_user: "{{ main_user }}"
+
+# -----------------------------------------------
+# Step 3 — Laptop battery rules
+# -----------------------------------------------
+
+# NOTE: This overrides the 'Both: screen blank' setting above if on a laptop
+- name: "Battery: blank screen faster (2 mins) if on laptop"
+  community.general.dconf:
+    key: /org/gnome/desktop/session/idle-delay
+    value: "uint32 120"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: "Battery: suspend after 10 minutes"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-timeout
+    value: "600"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: "Battery: suspend action"
+  community.general.dconf:
+    key: /org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-type
+    value: "'suspend'"
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+- name: "Laptop: lid/button actions"
+  community.general.dconf:
+    key: "/org/gnome/settings-daemon/plugins/power/{{ item.key }}"
+    value: "'suspend'"
+  loop:
+    - { key: 'lid-close-battery-action' }
+    - { key: 'lid-close-ac-action' }
+    - { key: 'power-button-action' }
+  become: true
+  become_user: "{{ main_user }}"
+  when: machine_type == 'laptop'
+
+# -----------------------------------------------
+# Step 4 — Disable hot corners
+# -----------------------------------------------
+- name: Disable hot corners
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/enable-hot-corners
+    value: "false"
+  become: true
+  become_user: "{{ main_user }}"

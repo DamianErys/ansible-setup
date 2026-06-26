@@ -1,0 +1,59 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/asus-zenscreen
+# ============================================================
+# roles/asus-zenscreen/tasks/main.yml
+# Runs install_displaylink.sh to install DisplayLink/ZenScreen
+# RPM expected at: {{ playbook_dir }}/installers/DisplayLink.rpm
+#
+# RPM source: https://github.com/displaylink-rpm/displaylink-rpm/releases
+# Current tested version: fedora-44-displaylink-1.14.15-1.github_evdi.x86_64.rpm
+# Rename to DisplayLink.rpm before placing on USB
+# ============================================================
+
+- name: Check that DisplayLink RPM exists in installers folder
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/installers/DisplayLink.rpm"
+  register: displaylink_rpm
+
+- name: Fail early if RPM is missing
+  ansible.builtin.fail:
+    msg: >
+      DisplayLink.rpm not found at {{ playbook_dir }}/installers/DisplayLink.rpm.
+      Download fedora-44-displaylink-1.14.15-1.github_evdi.x86_64.rpm from
+      https://github.com/displaylink-rpm/displaylink-rpm/releases,
+      rename it to DisplayLink.rpm, and place it next to RunAnsible.sh.
+  when: not displaylink_rpm.stat.exists
+
+- name: Run DisplayLink install script
+  ansible.builtin.script:
+    cmd: "{{ role_path }}/files/install_displaylink.sh {{ playbook_dir }}/installers/DisplayLink.rpm"
+  register: displaylink_result
+  changed_when: "'already installed' not in displaylink_result.stdout"
+
+- name: Show install script output
+  ansible.builtin.debug:
+    msg: "{{ displaylink_result.stdout_lines }}"
+
+- name: Show any install errors
+  ansible.builtin.debug:
+    msg: "{{ displaylink_result.stderr_lines }}"
+  when: displaylink_result.stderr_lines | length > 0
+
+- name: Confirm DKMS module status
+  ansible.builtin.command: dkms status
+  register: dkms_status
+  changed_when: false
+
+- name: Show DKMS status
+  ansible.builtin.debug:
+    msg: "{{ dkms_status.stdout_lines }}"
+
+- name: Confirm displaylink-driver.service is running
+  ansible.builtin.systemd:
+    name: displaylink-driver.service
+  register: dl_service
+
+- name: Show service status
+  ansible.builtin.debug:
+    msg: "displaylink-driver.service is {{ dl_service.status.ActiveState }}"

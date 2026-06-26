@@ -1,0 +1,168 @@
+#!/bin/bash
+# serial - Interactive serial port connection tool
+
+CONFIG_FILE="$HOME/.serial_config"
+
+list_ports() {
+    echo "Available serial ports:"
+    ls -la /dev/ttyUSB* /dev/ttyACM* /dev/ttyS* 2>/dev/null | awk '{print $NF}' || echo "No serial ports found"
+}
+
+show_config() {
+    if [[ -f "$CONFIG_FILE" ]]; then
+        source "$CONFIG_FILE"
+        echo "Current configuration:"
+        echo "  Port: $SERIAL_PORT"
+        echo "  Baud rate: $BAUD"
+        echo "  Data bits: $DATABITS"
+        echo "  Parity: $PARITY"
+        echo "  Stop bits: $STOPBITS"
+    else
+        echo "No saved configuration. Using defaults."
+        SERIAL_PORT="/dev/ttyUSB0"
+        BAUD="115200"
+        DATABITS="8"
+        PARITY="none"
+        STOPBITS="1"
+    fi
+}
+
+configure_serial() {
+    echo "========================================="
+    echo "Serial Port Configuration"
+    echo "========================================="
+
+    list_ports
+    echo ""
+
+    read -p "Enter serial port [${SERIAL_PORT:-/dev/ttyUSB0}]: " input_port
+    SERIAL_PORT="${input_port:-${SERIAL_PORT:-/dev/ttyUSB0}}"
+
+    echo ""
+    echo "Common baud rates: 9600, 19200, 38400, 57600, 115200, 230400, 460800"
+    read -p "Enter baud rate [${BAUD:-115200}]: " input_baud
+    BAUD="${input_baud:-${BAUD:-115200}}"
+
+    echo ""
+    echo "Data bits options: 5, 6, 7, 8"
+    read -p "Enter data bits [${DATABITS:-8}]: " input_databits
+    DATABITS="${input_databits:-${DATABITS:-8}}"
+
+    echo ""
+    echo "Parity options: none, even, odd"
+    read -p "Enter parity [${PARITY:-none}]: " input_parity
+    PARITY="${input_parity:-${PARITY:-none}}"
+
+    echo ""
+    echo "Stop bits options: 1, 2"
+    read -p "Enter stop bits [${STOPBITS:-1}]: " input_stopbits
+    STOPBITS="${input_stopbits:-${STOPBITS:-1}}"
+
+    cat > "$CONFIG_FILE" << EOF
+SERIAL_PORT="$SERIAL_PORT"
+BAUD="$BAUD"
+DATABITS="$DATABITS"
+PARITY="$PARITY"
+STOPBITS="$STOPBITS"
+EOF
+    echo ""
+    echo "Configuration saved to $CONFIG_FILE"
+}
+
+connect_serial() {
+    if [[ ! -e "$SERIAL_PORT" ]]; then
+        echo "Error: Serial port $SERIAL_PORT does not exist"
+        list_ports
+        exit 1
+    fi
+
+    if [[ ! -r "$SERIAL_PORT" || ! -w "$SERIAL_PORT" ]]; then
+        echo "Warning: No permission to access $SERIAL_PORT"
+        echo "Attempting to connect with sudo..."
+        SUDO="sudo"
+    else
+        SUDO=""
+    fi
+
+    PARITY_FLAG=""
+    case "$PARITY" in
+        even)
+            PARITY_FLAG="-p e"
+            ;;
+        odd)
+            PARITY_FLAG="-p o"
+            ;;
+        none)
+            PARITY_FLAG="-p n"
+            ;;
+    esac
+
+    echo "========================================="
+    echo "Connecting to $SERIAL_PORT at $BAUD baud"
+    echo "Data bits: $DATABITS, Parity: $PARITY, Stop bits: $STOPBITS"
+    echo "Press Ctrl+A then Ctrl+Q to exit"
+    echo "========================================="
+    sleep 2
+
+    $SUDO picocom -b "$BAUD" -d "$DATABITS" $PARITY_FLAG -s "$STOPBITS" "$SERIAL_PORT"
+}
+
+show_menu() {
+    echo ""
+    echo "========================================="
+    echo "Serial Port Tool"
+    echo "========================================="
+    echo "1. Show available ports"
+    echo "2. Show current configuration"
+    echo "3. Configure serial settings"
+    echo "4. Connect to serial port"
+    echo "5. Exit"
+    echo "========================================="
+    read -p "Select option [1-5]: " option
+
+    case "$option" in
+        1)
+            list_ports
+            show_menu
+            ;;
+        2)
+            show_config
+            show_menu
+            ;;
+        3)
+            configure_serial
+            show_menu
+            ;;
+        4)
+            if [[ -f "$CONFIG_FILE" ]]; then
+                source "$CONFIG_FILE"
+            else
+                SERIAL_PORT="/dev/ttyUSB0"
+                BAUD="115200"
+                DATABITS="8"
+                PARITY="none"
+                STOPBITS="1"
+            fi
+            connect_serial
+            ;;
+        5)
+            echo "Goodbye!"
+            exit 0
+            ;;
+        *)
+            echo "Invalid option"
+            show_menu
+            ;;
+    esac
+}
+
+if [[ $# -eq 0 ]]; then
+    show_menu
+else
+    SERIAL_PORT="$1"
+    BAUD="${2:-115200}"
+    DATABITS="8"
+    PARITY="none"
+    STOPBITS="1"
+    connect_serial
+fi

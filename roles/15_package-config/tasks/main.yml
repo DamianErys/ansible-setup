@@ -1,0 +1,236 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/15_package-config
+# ============================================================
+# roles/15_package-config/tasks/main.yml
+# Firefox — remove default bookmarks, disable Fedora
+# override pages, keep Firefox default homepage.
+# Uses policies.json (enterprise policy, no profile needed)
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Deploy Firefox policies.json
+# Applies system-wide, no profile path needed
+# -----------------------------------------------
+- name: Ensure Firefox policies directory exists
+  ansible.builtin.file:
+    path: /etc/firefox/policies
+    state: directory
+    mode: '0755'
+
+- name: Deploy Firefox policies.json
+  ansible.builtin.copy:
+    dest: /etc/firefox/policies/policies.json
+    mode: '0644'
+    content: |
+      {
+        "policies": {
+          "Homepage": {
+            "URL": "about:home",
+            "Locked": false,
+            "StartPage": "homepage"
+          },
+          "NoDefaultBookmarks": true,
+          "Bookmarks": [],
+          "OverrideFirstRunPage": "",
+          "OverridePostUpdatePage": "",
+          "StartDownloadsInTempDirectory": false,
+          "FirefoxHome": {
+            "TopSites": true,
+            "Highlights": false,
+            "Pocket": false,
+            "Snippets": false,
+            "Locked": false
+          },
+          "UserMessaging": {
+            "WhatsNew": false,
+            "ExtensionRecommendations": false,
+            "FeatureRecommendations": false,
+            "UrlbarInterventions": false,
+            "SkipOnboarding": true,
+            "MoreFromMozilla": false,
+            "Locked": false
+          }
+        }
+      }
+#SPDX-License-Identifier: MIT-0
+# tasks file for roles/proton-drive
+# ============================================================
+# roles/proton-drive/tasks/main.yml
+# Installs rclone, creates mount point, deploys systemd unit.
+#
+# Auth and first mount are done MANUALLY after Ansible runs:
+#
+#   1. Run:  rclone config
+#            → New remote → name: proton → type: protondrive
+#            → enter your Proton email and password
+#            → 2FA if applicable
+#
+#   2. Test: rclone lsd proton:
+#            (should list your Drive root folders)
+#
+#   3. Enable the mount:
+#            systemctl --user daemon-reload
+#            systemctl --user enable --now rclone-proton.service
+#
+# The systemd unit is already deployed by this role — step 3
+# is all that's needed after auth is confirmed working.
+#
+# Cache behaviour:
+#   On every mount start, a background job warms the directory
+#   cache via rclone rc vfs/refresh so folder traversal is
+#   instant by the time you sit down to use the machine.
+#   Files are NOT downloaded — only folder listings are cached.
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Install rclone and fuse3
+# -----------------------------------------------
+- name: Install rclone and fuse3
+  ansible.builtin.dnf:
+    name:
+      - rclone
+      - fuse3
+    state: present
+
+# -----------------------------------------------
+# Step 2 — Create mount point
+# -----------------------------------------------
+- name: Create Proton Drive mount point
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/ProtonDrive"
+    state: directory
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0755'
+
+# -----------------------------------------------
+# Step 3 — Ensure user systemd directory exists
+# -----------------------------------------------
+- name: Ensure user systemd directory exists
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.config/systemd/user"
+    state: directory
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0755'
+
+# -----------------------------------------------
+# Step 4 — Ensure ~/.local/bin exists BEFORE
+# deploying the cache warm script into it
+# -----------------------------------------------
+- name: Ensure ~/.local/bin exists
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.local/bin"
+    state: directory
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0755'
+
+# -----------------------------------------------
+# Step 5 — Deploy cache warm script
+# Runs in the background after mount starts.
+# Waits for the RC server to be ready, then
+# triggers a recursive directory refresh.
+# --fast-list batches API calls to reduce
+# the number of round trips to Proton.
+# -----------------------------------------------
+- name: Deploy rclone cache warm script
+  ansible.builtin.copy:
+    dest: "/home/{{ main_user }}/.local/bin/rclone-warm-cache.sh"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0755'
+    content: |
+      #!/bin/bash
+      # Warms the rclone VFS directory cache after mount starts.
+      # Called by rclone-proton.service via ExecStartPost.
+      # Runs in background so it doesn't block the service start.
+
+      # Wait for the RC server to be ready
+      for i in $(seq 1 30); do
+        rclone rc vfs/list 2>/dev/null && break
+        sleep 1
+      done
+
+      # Trigger recursive directory cache refresh (no file downloads)
+      rclone rc vfs/refresh recursive=true _async=true 2>/dev/null \
+        && echo "rclone dir cache warm started" \
+        || echo "rclone dir cache warm failed — RC server not responding"
+
+# -----------------------------------------------
+# Step 6 — Deploy systemd user service unit
+# Does NOT enable or start — do that manually
+# after confirming rclone auth works.
+#
+# --rc enables the remote control server so
+# ExecStartPost can call vfs/refresh against it.
+# --rc-no-auth skips token auth since this is
+# local-only on a single user machine.
+# -----------------------------------------------
+- name: Deploy rclone Proton Drive systemd user service
+  ansible.builtin.copy:
+    dest: "/home/{{ main_user }}/.config/systemd/user/rclone-proton.service"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Rclone mount — Proton Drive
+      After=network-online.target
+      Wants=network-online.target
+
+      [Service]
+      Type=notify
+      ExecStart=rclone mount proton: %h/ProtonDrive \
+        --vfs-cache-mode full \
+        --vfs-cache-max-size 2G \
+        --vfs-read-ahead 128M \
+        --dir-cache-time 720h \
+        --poll-interval 15m \
+        --transfers 4 \
+        --log-level INFO \
+        --rc \
+        --rc-no-auth
+      ExecStartPost=/bin/bash %h/.local/bin/rclone-warm-cache.sh
+      ExecStop=/bin/fusermount3 -u %h/ProtonDrive
+      Restart=on-failure
+      RestartSec=30
+
+      [Install]
+      WantedBy=default.target
+
+
+- name: Create plugdev group
+  ansible.builtin.group:
+    name: plugdev
+    state: present
+
+- name: Add user to plugdev group
+  ansible.builtin.user:
+    name: "{{ ansible_facts['user_id'] }}"
+    groups: plugdev
+    append: yes
+    
+- name: Install dfu-util
+  ansible.builtin.dnf:
+    name: dfu-util
+    state: present
+
+- name: Create STM32 DFU udev rule
+  ansible.builtin.copy:
+    dest: /etc/udev/rules.d/60-stm32-dfu.rules
+    mode: '0644'
+    content: |
+      SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0666", TAG+="uaccess", TAG+="udev-acl"
+
+- name: Add user to plugdev group
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: plugdev
+    append: yes
+
+- name: Reload udev rules
+  ansible.builtin.shell: |
+    udevadm control --reload-rules && udevadm trigger
+  changed_when: false

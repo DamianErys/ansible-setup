@@ -1,0 +1,245 @@
+#SPDX-License-Identifier: MIT-0
+---
+# roles/18_app-organise/tasks/main.yml
+
+# ============================================================
+# Step 1: Register all folders with GNOME
+# ============================================================
+- name: Register all folders with GNOME
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folder-children"
+    value: "['Proton', 'KiCad', 'VMs', 'Games', 'Media', 'Interfaces', 'Accessories', 'SystemTools', 'Documentation', 'Office', 'LibreOffice', 'TeX']"
+
+# ============================================================
+# Proton
+# ============================================================
+- name: Proton folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Proton/name"
+    value: "'Proton'"
+
+- name: Proton folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Proton/apps"
+    value: "['me.proton.Mail.desktop', 'me.proton.Pass.desktop', 'com.protonvpn.www.desktop']"
+
+# ============================================================
+# KiCad
+# ============================================================
+- name: KiCad folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/KiCad/name"
+    value: "'KiCad'"
+
+- name: KiCad folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/KiCad/apps"
+    value: "['org.kicad.KiCad.desktop', 'org.kicad.KiCad.eeschema.desktop', 'org.kicad.KiCad.gerbview.desktop', 'org.kicad.KiCad.pcbcalculator.desktop', 'org.kicad.KiCad.pcbnew.desktop', 'org.kicad.KiCad.bitmap2component.desktop']"
+
+# ============================================================
+# VMs
+# ============================================================
+- name: VMs folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/VMs/name"
+    value: "'VMs'"
+
+- name: VMs folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/VMs/apps"
+    value: "['virt-manager.desktop', 'ubuntu-box.desktop', 'net.rpcs3.RPCS3.desktop', 'net.pcsx2.PCSX2.desktop']"
+
+# ============================================================
+# Games
+# ============================================================
+- name: Games folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Games/name"
+    value: "'Games'"
+
+- name: Games folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Games/apps"
+    value: "['GameConqueror.desktop', 'com.valvesoftware.Steam.desktop', 'com.heroicgameslauncher.hgl.desktop']"
+
+# ============================================================
+# Media
+# ============================================================
+- name: Media folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Media/name"
+    value: "'Media'"
+
+- name: Media folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Media/apps"
+    value: "['org.gnome.Showtime.desktop', 'org.gnome.Decibels.desktop', 'org.gnome.Loupe.desktop', 'org.videolan.VLC.desktop', 'org.gnome.Papers.desktop', 'com.spotify.Client.desktop']"
+
+# ============================================================
+# Interfaces — network/hardware tools + scanner + qBittorrent
+# ============================================================
+- name: Interfaces folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Interfaces/name"
+    value: "'Interfaces'"
+
+- name: Interfaces folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Interfaces/apps"
+    value: "['org.gnome.DiskUtility.desktop', 'org.sigrok.PulseView.desktop', 'org.gnome.baobab.desktop', 'org.raspberrypi.rpi-imager.desktop', 'org.fedoraproject.MediaWriter.desktop', 'com.anydesk.Anydesk.desktop', 'org.gnome.SimpleScan.desktop', 'org.qbittorrent.qBittorrent.desktop']"
+
+# ============================================================
+# Accessories — personal/lifestyle
+# ============================================================
+- name: Accessories folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Accessories/name"
+    value: "'Accessories'"
+
+- name: Accessories folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Accessories/apps"
+    value: "['org.gnome.Calculator.desktop', 'org.gnome.clocks.desktop', 'org.gnome.Weather.desktop', 'org.gnome.Maps.desktop', 'org.gnome.Contacts.desktop', 'org.gnome.Calendar.desktop', 'org.gnome.Snapshot.desktop']"
+
+# ============================================================
+# System Tools — split from Accessories
+# ============================================================
+- name: SystemTools folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/SystemTools/name"
+    value: "'System Tools'"
+
+- name: SystemTools folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/SystemTools/apps"
+    value: "['org.gnome.Settings.desktop', 'org.gnome.Software.desktop', 'org.gnome.Logs.desktop', 'org.gnome.SystemMonitor.desktop', 'org.gnome.Yelp.desktop', 'com.mattjakeman.ExtensionManager.desktop']"
+
+# ============================================================
+# Documentation — writing, drawing, notes
+# ============================================================
+- name: Documentation folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Documentation/name"
+    value: "'Documentation'"
+
+- name: Documentation folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Documentation/apps"
+    value: "['reqview.desktop', 'com.github.PintaProject.Pinta.desktop', 'org.inkscape.Inkscape.desktop', 'org.gnome.TextEditor.desktop', 'com.github.flxzt.rnote.desktop']"
+
+# ============================================================
+# Office — daily productivity + email
+# ============================================================
+- name: Office folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Office/name"
+    value: "'Office'"
+
+- name: Office folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/Office/apps"
+    value: "['org.gnome.Evolution.desktop', 'libreoffice-writer.desktop', 'libreoffice-calc.desktop', 'libreoffice-impress.desktop']"
+
+# ============================================================
+# LibreOffice — remaining LO tools
+# ============================================================
+- name: LibreOffice folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/LibreOffice/name"
+    value: "'LibreOffice'"
+
+- name: LibreOffice folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/LibreOffice/apps"
+    value: "['libreoffice-startcenter.desktop', 'libreoffice-draw.desktop', 'libreoffice-math.desktop', 'libreoffice-base.desktop']"
+
+# ============================================================
+# TeX — tools installed alongside texlive-scheme-full
+# ============================================================
+- name: TeX folder name
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/TeX/name"
+    value: "'TeX'"
+
+- name: TeX folder apps
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/app-folders/folders/TeX/apps"
+    value: "['tikzit.desktop', 'io.github.vectorgraphics.asymptote.desktop']"
+
+# ============================================================
+# Favourites (dash/taskbar)
+# virt-manager removed, code (native) added
+# ============================================================
+- name: Set favourites
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/favorite-apps"
+    value: "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Ptyxis.desktop', 'code.desktop', 'com.spotify.Client.desktop', 'com.discordapp.Discord.desktop', 'com.rtosta.zapzap.desktop']"
+
+# ============================================================
+# Clean up stale keys from previous runs
+# ============================================================
+- name: Remove stale folder-names key from wrong path
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folder-names"
+    state: absent
+
+- name: Remove stale folders key from wrong path
+  become: true
+  become_user: "{{ main_user }}"
+  community.general.dconf:
+    key: "/org/gnome/shell/app-folder/folders"
+    state: absent

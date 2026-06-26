@@ -1,0 +1,121 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/update-system
+# ============================================================
+# roles/update-system/tasks/main.yml
+# Full system update — DNF upgrade, drivers, firmware
+# Kernel updates are permitted (no lock)
+#
+# Machine-aware:
+#   laptop      — AMD CPU + NVIDIA RTX 4060 (akmod-nvidia)
+#   pc          — Intel CPU + AMD RX 9060 (amdgpu in-kernel)
+#   workstation — generic, no GPU-specific handling
+# ============================================================
+
+# -----------------------------------------------
+# Step 1 — Full system upgrade (all machines)
+# Kernel included — no lock required
+# -----------------------------------------------
+- name: Upgrade all packages to latest
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+    update_cache: true
+# -----------------------------------------------
+# Step 2 — NVIDIA driver update (laptop only)
+# akmod-nvidia rebuilds automatically on kernel
+# upgrade but we ensure the package is current
+# and wait for the kmod build to complete
+# -----------------------------------------------
+- name: Ensure akmod-nvidia and development headers are installed (laptop)
+  ansible.builtin.dnf:
+    name:
+      - akmod-nvidia
+      - xorg-x11-drv-nvidia
+      - xorg-x11-drv-nvidia-cuda
+      - kernel-devel
+      - kernel-headers
+    state: latest
+  when: machine_type == "laptop"
+
+- name: Wait for akmod-nvidia kmod build to complete (laptop)
+  ansible.builtin.command: >
+    akmods --force
+  register: akmod_result
+  changed_when: "'already exists' not in akmod_result.stdout"
+  failed_when: akmod_result.rc != 0
+  when: machine_type == "laptop"
+
+# -----------------------------------------------
+# Step 3 — AMD GPU firmware update (pc only)
+# RX 9060 uses amdgpu (in-kernel) — no driver
+# package needed, but firmware blobs must be
+# current. Requires kernel 6.14+ and Mesa 25.0+
+# both satisfied by Fedora 44 defaults
+# -----------------------------------------------
+- name: Ensure linux-firmware is current (pc)
+  ansible.builtin.dnf:
+    name: linux-firmware
+    state: latest
+  when: machine_type == "pc"
+
+- name: Ensure Mesa is current for RX 9060 support (pc)
+  ansible.builtin.dnf:
+    name:
+      - mesa-dri-drivers
+      - mesa-vulkan-drivers
+      - mesa-libGL
+      - mesa-libEGL
+    state: latest
+  when: machine_type == "pc"
+
+# -----------------------------------------------
+# Step 4 — Firmware updates via fwupd (all machines)
+# laptop: AMD CPU microcode + ASUS BIOS
+# pc:     Intel microcode + ASUS Prime Z890
+# -----------------------------------------------
+- name: Ensure fwupd is installed and current
+  ansible.builtin.dnf:
+    name: fwupd
+    state: latest
+
+- name: Refresh firmware metadata
+  ansible.builtin.command: fwupdmgr refresh --force
+  changed_when: false
+
+- name: Apply firmware updates
+  ansible.builtin.command: fwupdmgr update -y
+  register: fwupd_result
+  changed_when: fwupd_result.rc == 0 and 'No updates' not in fwupd_result.stdout
+  failed_when: fwupd_result.rc not in [0, 2]
+
+
+  # -----------------------------------------------
+# Step 5 — Workstation setup (workstation only)
+# RX 570 uses amdgpu (in-kernel) — no driver
+# package needed, but firmware blobs and Mesa
+# must be current.
+# CPU: Intel i5-10400F (no iGPU)
+# Board: ASUS ROG B460-H
+# -----------------------------------------------
+- name: Ensure linux-firmware is current (workstation)
+  ansible.builtin.dnf:
+    name: linux-firmware
+    state: latest
+  when: machine_type == "workstation"
+
+- name: Ensure Mesa is current for RX 570 support (workstation)
+  ansible.builtin.dnf:
+    name:
+      - mesa-dri-drivers
+      - mesa-vulkan-drivers
+      - mesa-libGL
+      - mesa-libEGL
+    state: latest
+  when: machine_type == "workstation"
+
+- name: Ensure Intel microcode is current (workstation)
+  ansible.builtin.dnf:
+    name: microcode_ctl
+    state: latest
+  when: machine_type == "workstation"

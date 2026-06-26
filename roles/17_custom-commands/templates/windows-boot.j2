@@ -1,0 +1,14 @@
+#!/bin/bash
+# windows-boot - One-time boot to Windows
+
+# 1. Clear any stuck GRUB next_entry flags first
+sudo grub2-editenv - unset next_entry
+
+# 2. Use ONLY efibootmgr. This tells the BIOS: 
+# "Just for the VERY NEXT boot, use entry 0000."
+echo "Setting EFI BootNext to 0000 (Windows)..."
+sudo efibootmgr -n 0000
+
+# 3. Reboot
+echo "Rebooting into Windows. Hardware will revert to Fedora on next restart."
+sudo reboot

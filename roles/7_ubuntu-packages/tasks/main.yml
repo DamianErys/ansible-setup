@@ -1,0 +1,98 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/7_ubuntu-packages
+# ============================================================
+# Installs ReqView with proper desktop icon integration
+# ============================================================
+
+- name: Install dependencies and Git inside ubuntu-box
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- /bin/bash -c "sudo apt update && sudo apt install -y 
+    git xdg-desktop-portal xdg-desktop-portal-gtk xdg-utils
+    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2
+    libgtk-3-0 libgbm1 libasound2 libxshmfence1 libxcomposite1 
+    libxdamage1 libxrandr2 libxkbcommon0 ffmpeg libavcodec-extra"
+  become: false
+  changed_when: false
+
+- name: Configure git user inside ubuntu-box
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- git config --global user.name "{{ vault_github_user }}"
+  become: false
+  changed_when: false
+
+- name: Configure git email inside ubuntu-box  
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- git config --global user.email "{{ vault_github_email }}"
+  become: false
+  changed_when: false
+
+- name: Ensure installer directory exists in home
+  ansible.builtin.file:
+    path: "~/tmp_installers"
+    state: directory
+    mode: '0755'
+  become: false
+
+- name: Copy ReqView installer to host tmp
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/installers/ReqView.deb"
+    dest: "~/tmp_installers/ReqView.deb"
+    mode: '0644'
+  become: false
+
+- name: Install ReqView inside ubuntu-box
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- sudo apt install -y /home/{{ lookup('env', 'USER') }}/tmp_installers/ReqView.deb
+  become: false
+  register: req_install
+  changed_when: "'is already the newest version' not in req_install.stdout"
+
+- name: Extract ReqView icon from package
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- bash -c "
+    if [ -f /opt/ReqView/reqview.png ]; then
+      cp /opt/ReqView/reqview.png /run/host/home/{{ lookup('env', 'USER') }}/.local/share/icons/reqview.png
+    elif [ -f /usr/share/icons/hicolor/256x256/apps/reqview.png ]; then
+      cp /usr/share/icons/hicolor/256x256/apps/reqview.png /run/host/home/{{ lookup('env', 'USER') }}/.local/share/icons/reqview.png
+    else
+      echo 'Warning: ReqView icon not found'
+    fi
+    "
+  become: false
+  changed_when: true
+
+- name: Ensure icons directory exists on host
+  ansible.builtin.file:
+    path: "~/.local/share/icons"
+    state: directory
+    mode: '0755'
+  become: false
+
+- name: Create proper desktop entry for ReqView
+  ansible.builtin.copy:
+    dest: "~/.local/share/applications/reqview.desktop"
+    mode: '0644'
+    content: |
+      [Desktop Entry]
+      Name=ReqView
+      Exec=distrobox enter ubuntu-box -- /opt/ReqView/reqview
+      Terminal=false
+      Type=Application
+      Icon=reqview
+      Categories=Office;
+      StartupNotify=true
+      StartupWMClass=ReqView
+      Comment=Simply powerful requirements management tool for HW/SW systems
+  become: false
+
+- name: Update desktop database
+  ansible.builtin.command: update-desktop-database ~/.local/share/applications/
+  become: false
+  changed_when: false
+
+- name: Install missing DBus dependencies (fixes portal integration)
+  ansible.builtin.command: >
+    distrobox enter ubuntu-box -- sudo apt install -y dbus dbus-x11
+  become: false
+  changed_when: false

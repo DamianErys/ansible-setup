@@ -1,0 +1,157 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/8_vm-setup
+# ============================================================
+# roles/8_vm-setup/tasks/main.yml
+# Windows VM — tiny11 (all machines)
+# VM is defined but NOT started — boot manually
+# via virt-manager or: virsh start tiny11
+# ============================================================
+
+# -----------------------------------------------
+# Variable setup
+# -----------------------------------------------
+- name: Set tiny11 VM variables
+  ansible.builtin.set_fact:
+    vm_name: "tiny11"
+    vm_ram_mb: 4096
+    vm_vcpus: 4
+    vm_disk_path: "/var/lib/libvirt/images/tiny11.qcow2"
+    iso_path: "/var/lib/libvirt/images/tiny11.iso"
+
+# -----------------------------------------------
+# ISO discovery — check both locations
+# -----------------------------------------------
+- name: Check tiny11.iso in libvirt images dir
+  ansible.builtin.stat:
+    path: "{{ iso_path }}"
+  register: iso_stat_libvirt
+
+- name: Check tiny11.iso in repo isos folder (USB source)
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/isos/tiny11.iso"
+  register: iso_stat_repo
+  when: not iso_stat_libvirt.stat.exists
+
+# iso_stat_repo is undefined when the above task is skipped (ISO already in
+# libvirt dir), so guard with `is defined` before accessing .stat.exists
+- name: Set iso_available flag
+  ansible.builtin.set_fact:
+    tiny11_iso_available: >-
+      {{ iso_stat_libvirt.stat.exists or
+         (iso_stat_repo.stat is defined and iso_stat_repo.stat.exists) }}
+
+- name: Copy tiny11.iso from repo isos into libvirt images dir
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/isos/tiny11.iso"
+    dest: "{{ iso_path }}"
+    owner: qemu
+    group: qemu
+    mode: '0644'
+    remote_src: true
+  when:
+    - not iso_stat_libvirt.stat.exists
+    - iso_stat_repo.stat is defined
+    - iso_stat_repo.stat.exists
+
+- name: Warn and skip VM setup if ISO is missing entirely
+  ansible.builtin.debug:
+    msg: >
+      tiny11.iso not found in /var/lib/libvirt/images/ or {{ playbook_dir }}/isos/.
+      Copy it next to RunAnsible.sh and re-run to set up the VM. Skipping VM setup.
+  when: not tiny11_iso_available | bool
+
+# -----------------------------------------------
+# Cleanup — only runs if ISO is available so we
+# don't destroy a VM we cannot rebuild
+# -----------------------------------------------
+- name: Check if stale VM exists
+  ansible.builtin.command: virsh dominfo {{ vm_name }}
+  register: stale_vm_check
+  failed_when: false
+  changed_when: false
+  when: tiny11_iso_available | bool
+
+- name: Destroy stale VM if running
+  ansible.builtin.command: virsh destroy {{ vm_name }}
+  failed_when: false
+  changed_when: true
+  when:
+    - tiny11_iso_available | bool
+    - stale_vm_check.rc is defined
+    - stale_vm_check.rc == 0
+
+- name: Undefine stale VM
+  ansible.builtin.command: virsh undefine {{ vm_name }} --nvram
+  failed_when: false
+  changed_when: true
+  when:
+    - tiny11_iso_available | bool
+    - stale_vm_check.rc is defined
+    - stale_vm_check.rc == 0
+
+- name: Remove stale disk image
+  ansible.builtin.file:
+    path: "{{ vm_disk_path }}"
+    state: absent
+  when:
+    - tiny11_iso_available | bool
+    - stale_vm_check.rc is defined
+    - stale_vm_check.rc == 0
+
+# -----------------------------------------------
+# VM creation
+# -----------------------------------------------
+- name: Create qcow2 disk image
+  ansible.builtin.command:
+    cmd: qemu-img create -f qcow2 {{ vm_disk_path }} 60G
+    creates: "{{ vm_disk_path }}"
+  when: tiny11_iso_available | bool
+
+# virt-install --print-xml emits multiple XML documents (one per device)
+# which causes virsh define to fail with "Extra content at the end of the
+# document". Fix: write to a temp file, extract only the first <domain>
+# block with python3, then pass the clean single-document XML to virsh.
+- name: Define tiny11 VM via virt-install
+  ansible.builtin.shell: |
+    virt-install \
+      --name {{ vm_name }} \
+      --ram {{ vm_ram_mb }} \
+      --vcpus {{ vm_vcpus }} \
+      --cpu host-model \
+      --os-variant win11 \
+      --disk path={{ vm_disk_path }},format=qcow2,bus=sata \
+      --cdrom {{ iso_path }} \
+      --network network=default,model=virtio \
+      --graphics vnc,listen=127.0.0.1 \
+      --video vga \
+      --boot uefi \
+      --noautoconsole \
+      --print-xml > /tmp/tiny11.xml
+    python3 -c "
+    xml = open('/tmp/tiny11.xml').read()
+    start = xml.index('<domain')
+    end = xml.index('</domain>') + len('</domain>')
+    print(xml[start:end])
+    " > /tmp/tiny11-clean.xml
+    virsh define /tmp/tiny11-clean.xml
+    rm -f /tmp/tiny11.xml /tmp/tiny11-clean.xml
+  args:
+    executable: /bin/bash
+  when:
+    - tiny11_iso_available | bool
+    - stale_vm_check.rc is not defined or stale_vm_check.rc != 0
+
+# -----------------------------------------------
+# Verify
+# -----------------------------------------------
+- name: Confirm VM is defined
+  ansible.builtin.command: virsh dominfo {{ vm_name }}
+  register: vm_info
+  changed_when: false
+  when: tiny11_iso_available | bool
+
+- name: Show VM info
+  ansible.builtin.debug:
+    var: vm_info.stdout_lines
+  when: tiny11_iso_available | bool

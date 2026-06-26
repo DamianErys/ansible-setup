@@ -1,0 +1,166 @@
+{
+    "packages": [
+        {
+            "current_version": "1.6",
+            "install_timestamp": 1779892817,
+            "package": {
+                "author": {
+                    "contact": {
+                        "web": "https://mitxela.com"
+                    },
+                    "name": "mitxela"
+                },
+                "description": "A subdivision- and/or native arc-based track rounding plugin.",
+                "description_full": "Algorithmically smooth tracks in a predictable manner. Useful for flex PCBs, or just because it looks cool.",
+                "identifier": "com.github.mitxela.kicad-round-tracks",
+                "license": "Apache-2.0",
+                "name": "Round Tracks",
+                "resources": {
+                    "homepage": "https://github.com/mitxela/kicad-round-tracks"
+                },
+                "type": "plugin",
+                "versions": [
+                    {
+                        "download_sha256": "660242c52f248cb50a6c51c041f602a0150800ea4c9863e80f25534eea996d8f",
+                        "download_size": 17476,
+                        "download_url": "https://github.com/mitxela/kicad-round-tracks/releases/download/1.6/kicad-round-tracks-1.6.zip",
+                        "install_size": 41195,
+                        "kicad_version": "7.0.1",
+                        "platforms": [
+                            "linux",
+                            "macos",
+                            "windows"
+                        ],
+                        "status": "stable",
+                        "version": "1.6"
+                    },
+                    {
+                        "download_sha256": "5f0e15a8e12db58b91c70154cbfcc4d293309af2f1aad503d1560e7b375800f3",
+                        "download_size": 15881,
+                        "download_url": "https://github.com/mitxela/kicad-round-tracks/releases/download/1.5/kicad-round-tracks-1.5.zip",
+                        "install_size": 33698,
+                        "kicad_version": "7.0.1",
+                        "platforms": [
+                            "linux",
+                            "macos",
+                            "windows"
+                        ],
+                        "status": "stable",
+                        "version": "1.5"
+                    },
+                    {
+                        "download_sha256": "4466d0a379c25773c07bac3a76815745bbae40576eb3b3fb6eeec22812788547",
+                        "download_size": 15878,
+                        "download_url": "https://github.com/mitxela/kicad-round-tracks/releases/download/1.4/kicad-round-tracks-1.4.zip",
+                        "install_size": 33698,
+                        "kicad_version": "7.0.1",
+                        "platforms": [
+                            "linux",
+                            "macos",
+                            "windows"
+                        ],
+                        "status": "stable",
+                        "version": "1.4"
+                    },
+                    {
+                        "download_sha256": "e4d1087cf726018840f5f75291aae55de8cece49e2bada30be1e19ab6b474c40",
+                        "download_size": 15433,
+                        "download_url": "https://github.com/mitxela/kicad-round-tracks/releases/download/1.2/kicad-round-tracks-1.2.zip",
+                        "install_size": 32694,
+                        "kicad_version": "6.0",
+                        "kicad_version_max": "6.1",
+                        "platforms": [
+                            "linux",
+                            "macos",
+                            "windows"
+                        ],
+                        "status": "stable",
+                        "version": "1.2"
+                    },
+                    {
+                        "download_sha256": "3ac65b3be5f1acd3e56583846d49b19ff425ed0a03154c775f4d655cd30fbdcc",
+                        "download_size": 14742,
+                        "download_url": "https://github.com/mitxela/kicad-round-tracks/releases/download/1.1/kicad-round-tracks-1.1.zip",
+                        "install_size": 29430,
+                        "kicad_version": "6.0",
+                        "kicad_version_max": "6.1",
+                        "platforms": [
+                            "linux",
+                            "macos",
+                            "windows"
+                        ],
+                        "status": "stable",
+                        "version": "1.1"
+                    },
+                    {
+                        "download_sha256": "0ee531e5f324e22af07df691d529848e36f9960c2e0cf9ce8d4da3c2bcf0cc21",
+                        "download_size": 14632,
+                        "download_url": "https://github.com/mitxela/kicad-round-tracks/releases/download/1.0/kicad-round-tracks-1.0.zip",
+                        "install_size": 29167,
+                        "kicad_version": "6.0",
+                        "kicad_version_max": "6.1",
+                        "platforms": [
+                            "linux",
+                            "macos",
+                            "windows"
+                        ],
+                        "status": "stable",
+                        "version": "1.0"
+                    }
+                ]
+            },
+            "pinned": false,
+            "repository_id": "46f88614eade3439",
+            "repository_name": "KiCad official repository"
+        },
+        {
+            "current_version": "1.0.0",
+            "install_timestamp": 1779880830,
+            "package": {
+                "author": {
+                    "contact": {
+                        "github": "https://github.com/ulikoehler",
+                        "web": "https://techoverflow.net"
+                    },
+                    "name": "Uli Köhler"
+                },
+                "description": "Hide all silkscreen reference designators for selected footprints",
+                "description_full": "Hide all silkscreen reference designators for selected footprints",
+                "identifier": "com.github.ulikoehler.kicad-bulk-hide-silkscreen-designators",
+                "license": "CC0-1.0",
+                "maintainer": {
+                    "contact": {
+                        "github": "https://github.com/ulikoehler",
+                        "web": "https://techoverflow.net"
+                    },
+                    "name": "Uli Köhler"
+                },
+                "name": "Bulk hide silkscreen designators",
+                "resources": {
+                    "homepage": "https://github.com/ulikoehler/KiCADBulkHideSilkscreenDesignators"
+                },
+                "tags": [
+                    "silkscreen",
+                    "hide",
+                    "visible",
+                    "efficiency"
+                ],
+                "type": "plugin",
+                "versions": [
+                    {
+                        "download_sha256": "1ed6606cfe6089b11a4197508db0dd12181443d8128649d362530c34bc03d5e0",
+                        "download_size": 5458,
+                        "download_url": "https://github.com/ulikoehler/KiCADBulkHideSilkscreenDesignators/releases/download/v1.0.0/kicad-package.zip",
+                        "install_size": 5897,
+                        "kicad_version": "6.0",
+                        "status": "stable",
+                        "version": "1.0.0"
+                    }
+                ]
+            },
+            "pinned": false,
+            "repository_id": "46f88614eade3439",
+            "repository_name": "KiCad official repository"
+        }
+    ]
+}
