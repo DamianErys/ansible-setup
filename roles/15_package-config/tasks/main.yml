@@ -53,38 +53,8 @@
           }
         }
       }
-#SPDX-License-Identifier: MIT-0
-# tasks file for roles/proton-drive
-# ============================================================
-# roles/proton-drive/tasks/main.yml
-# Installs rclone, creates mount point, deploys systemd unit.
-#
-# Auth and first mount are done MANUALLY after Ansible runs:
-#
-#   1. Run:  rclone config
-#            → New remote → name: proton → type: protondrive
-#            → enter your Proton email and password
-#            → 2FA if applicable
-#
-#   2. Test: rclone lsd proton:
-#            (should list your Drive root folders)
-#
-#   3. Enable the mount:
-#            systemctl --user daemon-reload
-#            systemctl --user enable --now rclone-proton.service
-#
-# The systemd unit is already deployed by this role — step 3
-# is all that's needed after auth is confirmed working.
-#
-# Cache behaviour:
-#   On every mount start, a background job warms the directory
-#   cache via rclone rc vfs/refresh so folder traversal is
-#   instant by the time you sit down to use the machine.
-#   Files are NOT downloaded — only folder listings are cached.
-# ============================================================
-
 # -----------------------------------------------
-# Step 1 — Install rclone and fuse3
+# Proton Drive rclone setup (personal only)
 # -----------------------------------------------
 - name: Install rclone and fuse3
   ansible.builtin.dnf:
@@ -92,10 +62,8 @@
       - rclone
       - fuse3
     state: present
+  when: not (skip_personal | default(false))
 
-# -----------------------------------------------
-# Step 2 — Create mount point
-# -----------------------------------------------
 - name: Create Proton Drive mount point
   ansible.builtin.file:
     path: "/home/{{ main_user }}/ProtonDrive"
@@ -103,10 +71,8 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     mode: '0755'
+  when: not (skip_personal | default(false))
 
-# -----------------------------------------------
-# Step 3 — Ensure user systemd directory exists
-# -----------------------------------------------
 - name: Ensure user systemd directory exists
   ansible.builtin.file:
     path: "/home/{{ main_user }}/.config/systemd/user"
@@ -114,11 +80,8 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     mode: '0755'
+  when: not (skip_personal | default(false))
 
-# -----------------------------------------------
-# Step 4 — Ensure ~/.local/bin exists BEFORE
-# deploying the cache warm script into it
-# -----------------------------------------------
 - name: Ensure ~/.local/bin exists
   ansible.builtin.file:
     path: "/home/{{ main_user }}/.local/bin"
@@ -126,15 +89,8 @@
     owner: "{{ main_user }}"
     group: "{{ main_user }}"
     mode: '0755'
+  when: not (skip_personal | default(false))
 
-# -----------------------------------------------
-# Step 5 — Deploy cache warm script
-# Runs in the background after mount starts.
-# Waits for the RC server to be ready, then
-# triggers a recursive directory refresh.
-# --fast-list batches API calls to reduce
-# the number of round trips to Proton.
-# -----------------------------------------------
 - name: Deploy rclone cache warm script
   ansible.builtin.copy:
     dest: "/home/{{ main_user }}/.local/bin/rclone-warm-cache.sh"
@@ -157,17 +113,8 @@
       rclone rc vfs/refresh recursive=true _async=true 2>/dev/null \
         && echo "rclone dir cache warm started" \
         || echo "rclone dir cache warm failed — RC server not responding"
+  when: not (skip_personal | default(false))
 
-# -----------------------------------------------
-# Step 6 — Deploy systemd user service unit
-# Does NOT enable or start — do that manually
-# after confirming rclone auth works.
-#
-# --rc enables the remote control server so
-# ExecStartPost can call vfs/refresh against it.
-# --rc-no-auth skips token auth since this is
-# local-only on a single user machine.
-# -----------------------------------------------
 - name: Deploy rclone Proton Drive systemd user service
   ansible.builtin.copy:
     dest: "/home/{{ main_user }}/.config/systemd/user/rclone-proton.service"
@@ -199,7 +146,7 @@
 
       [Install]
       WantedBy=default.target
-
+  when: not (skip_personal | default(false))
 
 - name: Create plugdev group
   ansible.builtin.group:
