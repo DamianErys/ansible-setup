@@ -1,0 +1,46 @@
+#SPDX-License-Identifier: MIT-0
+# ============================================================
+# generic.yml
+# Generic profile — no personal identity, no Proton apps,
+# no hardware-specific drivers (ZenScreen), no games.
+# Does NOT require vault.yml.
+#
+# Before running: set main_user in inventory.ini [generic]
+# to the actual target username.
+# ============================================================
+- name: Generic Base
+  hosts: generic
+  become: true
+  vars:
+    skip_personal: true
+  roles:
+    - 1_remove-packages
+    - 2_update-system
+    - 3_all-packages
+    - 5_distrobox
+    - 6_vmm
+    - 7_ubuntu-packages
+    - 8_vm-setup
+
+- name: Generic Configure
+  hosts: generic
+  become: true
+  vars:
+    skip_personal: true
+  roles:
+    - 10_appearance
+    - 11_power
+    - 12_gnome-settings
+    - 13_touchpad
+    - 14_audio
+    - 15_package-config
+    - 16_custom-terminal
+    - 17_custom-commands
+
+- name: Generic Desktop
+  hosts: generic
+  become: true
+  vars:
+    skip_personal: true
+  roles:
+    - 18_app-organise
