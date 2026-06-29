@@ -13,9 +13,9 @@
         "kind": "file"
       },
       "_origin": "ast",
+      "id": "runansible",
       "community": 9,
-      "norm_label": "runansible.sh",
-      "id": "runansible"
+      "norm_label": "runansible.sh"
     },
     {
       "label": "RunAnsible.sh script",
@@ -27,9 +27,9 @@
         "kind": "bash_entrypoint"
       },
       "_origin": "ast",
+      "id": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry",
       "community": 9,
-      "norm_label": "runansible.sh script",
-      "id": "home_erys_workstation_repos_ansible_setup_runansible_sh__entry"
+      "norm_label": "runansible.sh script"
     },
     {
       "label": "pass()",
@@ -41,9 +41,9 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
+      "id": "runansible_pass",
       "community": 9,
-      "norm_label": "pass()",
-      "id": "runansible_pass"
+      "norm_label": "pass()"
     },
     {
       "label": "fail()",
@@ -55,9 +55,9 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
+      "id": "runansible_fail",
       "community": 9,
-      "norm_label": "fail()",
-      "id": "runansible_fail"
+      "norm_label": "fail()"
     },
     {
       "label": "warn()",
@@ -69,9 +69,9 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
+      "id": "runansible_warn",
       "community": 9,
-      "norm_label": "warn()",
-      "id": "runansible_warn"
+      "norm_label": "warn()"
     },
     {
       "label": "info()",
@@ -83,9 +83,9 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
+      "id": "runansible_info",
       "community": 9,
-      "norm_label": "info()",
-      "id": "runansible_info"
+      "norm_label": "info()"
     },
     {
       "label": "move_installer()",
@@ -97,9 +97,9 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
+      "id": "runansible_move_installer",
       "community": 9,
-      "norm_label": "move_installer()",
-      "id": "runansible_move_installer"
+      "norm_label": "move_installer()"
     },
     {
       "label": "CLAUDE.md",
@@ -1545,6 +1545,20 @@
       "id": "2_update-system_meta_main"
     },
     {
+      "label": "Update System Tasks",
+      "file_type": "code",
+      "source_file": "roles/2_update-system/tasks/main.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 2,
+      "norm_label": "update system tasks",
+      "community_name": "Package and System Updates",
+      "id": "2_update-system_tasks_main"
+    },
+    {
       "label": "Update System Test Playbook",
       "file_type": "code",
       "source_file": "roles/2_update-system/tests/test.yml",
@@ -1767,6 +1781,62 @@
       "norm_label": "distrobox role readme",
       "community_name": "5 Distrobox Vars",
       "id": "5_distrobox_readme"
+    },
+    {
+      "label": "machine_type Variable",
+      "file_type": "concept",
+      "source_file": "roles/2_update-system/tasks/main.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 2,
+      "norm_label": "machine_type variable",
+      "community_name": "Package and System Updates",
+      "id": "concept_machine_type"
+    },
+    {
+      "label": "akmod-nvidia NVIDIA Driver",
+      "file_type": "concept",
+      "source_file": "roles/2_update-system/tasks/main.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 2,
+      "norm_label": "akmod-nvidia nvidia driver",
+      "community_name": "Package and System Updates",
+      "id": "concept_akmod_nvidia"
+    },
+    {
+      "label": "fwupd Firmware Updater",
+      "file_type": "concept",
+      "source_file": "roles/2_update-system/tasks/main.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 2,
+      "norm_label": "fwupd firmware updater",
+      "community_name": "Package and System Updates",
+      "id": "concept_fwupd"
+    },
+    {
+      "label": "amdgpu In-kernel GPU Driver",
+      "file_type": "concept",
+      "source_file": "roles/2_update-system/tasks/main.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 2,
+      "norm_label": "amdgpu in-kernel gpu driver",
+      "community_name": "Package and System Updates",
+      "id": "concept_amdgpu"
     },
     {
       "label": "DisplayLink Driver",
@@ -3214,6 +3284,56 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
+      "source_file": "roles/2_update-system/tasks/main.yml",
+      "source_location": "line 30",
+      "weight": 1.0,
+      "source": "2_update-system_tasks_main",
+      "target": "concept_akmod_nvidia"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "roles/2_update-system/tasks/main.yml",
+      "source_location": "line 50",
+      "weight": 1.0,
+      "source": "2_update-system_tasks_main",
+      "target": "concept_amdgpu"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "roles/2_update-system/tasks/main.yml",
+      "source_location": "line 77",
+      "weight": 1.0,
+      "source": "2_update-system_tasks_main",
+      "target": "concept_fwupd"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "roles/2_update-system/tasks/main.yml",
+      "source_location": "line 39",
+      "weight": 1.0,
+      "source": "2_update-system_tasks_main",
+      "target": "concept_machine_type"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "roles/2_update-system/tests/test.yml",
+      "source_location": "line 6",
+      "weight": 1.0,
+      "source": "2_update-system_tests_test",
+      "target": "2_update-system_tasks_main"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
       "source_file": "roles/4_asus-zenscreen/handlers/main.yml",
       "source_location": "line 5",
       "weight": 1.0,
@@ -3522,5 +3642,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "521a531228c9136b0fa1ebaf563390a1306e574e"
+  "built_at_commit": "c800ea874feb77c6d431b369cc5bff063f6cb0ce"
 }

@@ -1,16 +1,16 @@
-# Graph Report - ansible-setup  (2026-06-29)
+# Graph Report - ansible-setup  (2026-06-26)
 
 ## Corpus Check
-- 42 files · ~165,572 words
+- 42 files · ~165,546 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 174 nodes · 107 edges · 89 communities (11 shown, 78 thin omitted)
-- Extraction: 75% EXTRACTED · 25% INFERRED · 0% AMBIGUOUS · INFERRED: 27 edges (avg confidence: 0.79)
+- 179 nodes · 112 edges · 89 communities (12 shown, 77 thin omitted)
+- Extraction: 76% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 27 edges (avg confidence: 0.79)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `521a5312`
+- Built from commit: `c800ea87`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -132,7 +132,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (89 total, 78 thin omitted)
+## Communities (89 total, 77 thin omitted)
 
 ### Community 0 - "GNOME dconf Settings"
 Cohesion: 0.13
@@ -141,6 +141,10 @@ Nodes (17): 12_gnome-settings Role README, 13_touchpad Role README, ABRT Daemon 
 ### Community 1 - "Appearance and Playbook Core"
 Cohesion: 0.27
 Nodes (11): build-base.yml Playbook, build-vms.yml Playbook, configure.yml Playbook, connectivity.yml Playbook, dconf GNOME Power Settings, desktop.yml Playbook, machine_type Variable Conditional Logic, 11_power tasks/main.yml (+3 more)
+
+### Community 2 - "Package and System Updates"
+Cohesion: 0.33
+Nodes (6): Update System Tasks, Update System Test Playbook, akmod-nvidia NVIDIA Driver, amdgpu In-kernel GPU Driver, fwupd Firmware Updater, machine_type Variable
 
 ### Community 3 - "Distrobox Container Setup"
 Cohesion: 0.29
@@ -179,9 +183,9 @@ Cohesion: 0.67
 Nodes (4): PipeWire Audio System, qpwgraph PipeWire Graph Tool, Role 14 Audio Tasks, Role 14 Audio Test Playbook
 
 ## Knowledge Gaps
-- **127 isolated node(s):** `graphify`, `OpenVault.sh script`, `VaultExample.sh script`, `install_displaylink.sh script`, `10_appearance defaults/main.yml` (+122 more)
+- **131 isolated node(s):** `graphify`, `OpenVault.sh script`, `VaultExample.sh script`, `install_displaylink.sh script`, `10_appearance defaults/main.yml` (+126 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **78 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **77 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -195,6 +199,6 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 2 inferred relationships involving `VMM Role Tasks` (e.g. with `VMM Role README` and `VMM Role Defaults`) actually correct?**
   _`VMM Role Tasks` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `graphify`, `OpenVault.sh script`, `VaultExample.sh script` to the rest of the system?**
-  _127 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _131 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `GNOME dconf Settings` be split into smaller, more focused modules?**
   _Cohesion score 0.1323529411764706 - nodes in this community are weakly interconnected._
