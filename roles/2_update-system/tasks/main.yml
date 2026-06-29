@@ -87,7 +87,19 @@
   ansible.builtin.command: fwupdmgr update -y
   register: fwupd_result
   changed_when: fwupd_result.rc == 0 and 'No updates' not in fwupd_result.stdout
-  failed_when: fwupd_result.rc not in [0, 2]
+  failed_when: false
+
+- name: Warn if firmware update failed
+  ansible.builtin.debug:
+    msg: |
+      Firmware update failed (rc={{ fwupd_result.rc }})
+
+      stdout:
+      {{ fwupd_result.stdout }}
+
+      stderr:
+      {{ fwupd_result.stderr }}
+  when: fwupd_result.rc not in [0, 2]
 
 
   # -----------------------------------------------
